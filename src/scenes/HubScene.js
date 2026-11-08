@@ -90,9 +90,16 @@ BO.HubScene = class extends Phaser.Scene {
     const y1 = roomTop + 6, y2 = roomTop + 40;
     card('oy', 4, y1, 'OY', '', P.l);
     card('itibar', 4, y2, 'İTİBAR', '', P.w);
+    BO.text(this, 54, y2 - 3, '?', { color: P.y, ox: 0.5, stroke: 2 });
+    this.hotspot(4, y2, () => this.itibarInfo());
     this.add.rectangle(10, y2 + 17, 40, 6, C('N')).setOrigin(0);
     this.itibarBar = this.add.rectangle(10, y2 + 17, 0, 6, C('g')).setOrigin(0);
-    card('kasa', 124, y1, 'KASA', '', P.y);
+    card('kasa', 124, y1, 'KASA +', '', P.y);
+    this.hotspot(124, y1, () => this.paraPanel());
+    if (S.kasa < 2000) {
+      const uyari = this.add.rectangle(124, y1, 52, 28).setOrigin(0).setStrokeStyle(2, C('r'));
+      this.tweens.add({ targets: uyari, alpha: 0.1, duration: 400, yoyo: true, repeat: -1 });
+    }
     card('erzak', 124, y2, 'ERZAK', '', P.w);
     this.refreshCards();
 
@@ -116,8 +123,11 @@ BO.HubScene = class extends Phaser.Scene {
     if (!aksam) {
       const b = BO.button(this, W / 2, H - 46, 164, 22, 'GÜNDÜZ: SAHAYA İN', { fill: 'y', shade: 'o', onClick: () => this.go('Day') });
       this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
-      BO.button(this, 46, H - 18, 84, 16, 'GÜNÜ ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(1) });
-      BO.button(this, W - 46, H - 18, 84, 16, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
+      BO.button(this, 45, H - 18, 84, 16, 'GECEYE GEÇ', {
+        fill: 'n', shade: 'N', color: 'w',
+        onClick: () => { BO.gunduzAtla(); this.go('Hub'); },
+      });
+      BO.button(this, W - 45, H - 18, 84, 16, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
     } else {
       const b = BO.button(this, W / 2, H - 46, 164, 22, 'GECE: OPERASYON', { fill: 'p', shade: 'k', color: 'w', onClick: () => this.go('Night') });
       this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
@@ -128,6 +138,82 @@ BO.HubScene = class extends Phaser.Scene {
     }
 
     this.cameras.main.fadeIn(300, 26, 28, 44);
+  }
+
+  hotspot(x, y, fn) {
+    const z = this.add.zone(x, y, 52, 28).setOrigin(0).setInteractive({ useHandCursor: true });
+    z.on('pointerup', () => { if (!this.modalAcik) { BO.sfx.click(); fn(); } });
+  }
+
+  // Genel pencere: başlık, metin, butonlar
+  modal(baslik, metin, secenekler) {
+    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const ui = [];
+    this.modalAcik = true;
+    const add = (o) => { o.setDepth(500); ui.push(o); return o; };
+    const kapat = () => { ui.forEach((x) => x.destroy()); this.modalAcik = false; };
+    add(this.add.rectangle(0, 0, W, H, 0x000000, 0.6).setOrigin(0).setInteractive());
+    const satir = metin.split('\n').length;
+    const btnH = secenekler.reduce((t, o) => t + (o.label.includes('\n') ? 22 : 14) + 8, 0);
+    const ph = 40 + satir * 12 + btnH;
+    const top = Math.max(8, Math.round((H - ph) / 2));
+    add(this.add.rectangle(8, top, W - 16, ph, 0xf4f4f4).setOrigin(0));
+    add(this.add.rectangle(8, top, W - 16, 14, 0x29366f).setOrigin(0));
+    add(BO.text(this, W / 2, top + 3, baslik, { color: P.w, ox: 0.5 }));
+    const m = add(BO.text(this, 16, top + 22, metin, { color: P.k, lineSpacing: 4 }));
+    let by = top + 30 + satir * 12;
+    secenekler.forEach((o) => {
+      const h = o.label.includes('\n') ? 22 : 14;
+      add(BO.button(this, W / 2, by + h / 2, 150, h, o.label, {
+        fill: o.fill || 'y', shade: o.shade || 'o', color: o.color || 'k', depth: 510,
+        onClick: () => o.onPick(kapat, m),
+      }));
+      by += h + 8;
+    });
+    return kapat;
+  }
+
+  itibarInfo() {
+    const S = BO.state;
+    const gunluk = (S.itibar - 50) * 0.012 + S.kararsiz * 0.012 * (S.itibar / 60);
+    this.modal('İTİBAR: ' + Math.round(S.itibar) + '/100',
+      'YÜKSEK İTİBAR:\n+ HER GECE OY\n+ SEÇMEN MEMNUN\n+ BAĞIŞ ARTAR\n+ SEÇİMDE KARARSIZ\n  SANA GELİR\nDÜŞÜK İTİBAR:\n- DOMATES, KOVALAMA\n- OY KAÇAR\n\nŞU AN HER GECE:\n' + (gunluk >= 0 ? '+%' : '-%') + Math.abs(gunluk).toFixed(1) + ' OY',
+      [{ label: 'ANLADIM', onPick: (kapat) => kapat() }]);
+  }
+
+  paraPanel() {
+    const S = BO.state, P = BO.PAL;
+    const fonAlindi = S.fonGun === S.gun;
+    const yemek = Math.round(S.itibar * 80 / 100) * 100;
+    const aksam = S.faz === 'aksam';
+    const sonuc = (m, yazi, sonra) => {
+      m.setText(yazi).setColor(P.r);
+      this.refreshCards();
+      BO.save();
+      this.time.delayedCall(1600, sonra);
+    };
+    this.modal('PARA BUL',
+      'KASA: ' + BO.tl(S.kasa) + '\n\nFON: HIZLI PARA,\nAMA İTİBAR DÜŞER,\nORTAYA ÇIKABİLİR.\n\nBAĞIŞ YEMEĞİ:\nİTİBARIN KADAR\nPARA, AMA ' + (aksam ? 'GECE' : 'GÜNDÜZ') + '\nBOŞA GİDER.',
+      [
+        { label: fonAlindi ? 'FON: BUGÜN ALDIN' : 'DIŞ GÜÇLERDEN FON\n+6.000 TL',
+          fill: fonAlindi ? 'L' : 'r', shade: fonAlindi ? 'n' : 'k', color: 'w',
+          onPick: (kapat, m) => {
+            if (fonAlindi) return;
+            S.kasa += 6000; S.itibar = BO.clamp(S.itibar - 8, 0, 100);
+            S.fonGun = S.gun; S.fonRisk = true;
+            BO.sfx.coin();
+            sonuc(m, 'ZARF GELDİ!\nKİMSE SORMASIN...\n\n+6.000 TL\nİTİBAR -8', () => this.scene.restart());
+          } },
+        { label: 'BAĞIŞ YEMEĞİ\n+' + BO.tl(yemek), onPick: (kapat, m) => {
+            S.kasa += yemek;
+            BO.sfx.coin();
+            sonuc(m, 'YEMEK BİTTİ,\nKASA DOLDU!\n\n+' + BO.tl(yemek), () => {
+              if (aksam) this.go('Morning', { log: [] });
+              else { S.faz = 'aksam'; this.go('Hub'); }
+            });
+          } },
+        { label: 'VAZGEÇ', fill: 'n', shade: 'N', color: 'w', onPick: (kapat) => kapat() },
+      ]);
   }
 
   refreshCards() {

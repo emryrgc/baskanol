@@ -14,6 +14,8 @@ BO.newGameState = function () {
     ozel: {},        // gösterilmiş özel günler (anket/münazara)
     olayGun: 0,      // en son rastgele olay hangi gün soruldu
     sonAnket: null,  // bir önceki anketin sonuçları (karşılaştırma için)
+    fonGun: 0,       // dış güç fonu en son hangi gün alındı
+    fonRisk: false,  // fon bu gece ortaya çıkabilir mi
   };
 };
 
@@ -58,7 +60,7 @@ BO.TUNE = {
   kacisYolHizi: 150,      // kovalama modunda yol akış hızı
   erzakFiyati: 500,       // 10 erzak kaç TL
   erzakPaketi: 10,
-  tepki: { memnun: 0.70, domates: 0.20 },   // kalan oran = kızıp kovalar
+  tepki: { memnun: 0.70, domates: 0.20 },   // itibar 50'deki oranlar; itibar arttıkça memnun artar
   memnunOy: 0.06,         // memnun seçmen başına oy oranı artışı
   memnunItibar: 0.6,
   domatesItibar: -2,

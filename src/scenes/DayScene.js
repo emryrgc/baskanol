@@ -220,7 +220,10 @@ BO.DayScene = class extends Phaser.Scene {
     const S = BO.state, T = BO.TUNE, P = BO.PAL;
     const r = Math.random();
     v.anims.stop();
-    if (r < T.tepki.memnun) {
+    // İtibar yüksekse seçmen daha çok memnun kalır, düşükse domates/kovalama artar
+    const memnun = BO.clamp(T.tepki.memnun + (S.itibar - 50) * 0.004, 0.45, 0.9);
+    const domates = (1 - memnun) * (T.tepki.domates / (1 - T.tepki.memnun));
+    if (r < memnun) {
       // Memnun
       v.setTexture('secmen_mutlu');
       S.oy += T.memnunOy;
@@ -231,7 +234,7 @@ BO.DayScene = class extends Phaser.Scene {
       this.tweens.add({ targets: h, y: h.y - 14, alpha: 0, duration: 800, onComplete: () => h.destroy() });
       BO.floatText(this, v.x, v.y - 18, '+OY', P.l);
       this.tweens.add({ targets: v, scaleY: 1.25, duration: 90, yoyo: true, repeat: 1 });
-    } else if (r < T.tepki.memnun + T.tepki.domates) {
+    } else if (r < memnun + domates) {
       // Domates fırlatır
       v.setTexture('secmen_kizgin');
       this.stats.domates++;

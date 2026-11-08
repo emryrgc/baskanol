@@ -26,6 +26,21 @@ BO.yeniGun = function () {
   const S = BO.state, log = [];
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
 
+  // İTİBARIN ETKİSİ: yüksek itibar her gün kararsızları sana çeker, düşük itibar oy kaçırır
+  const itibarOy = (S.itibar - 50) * 0.012 + S.kararsiz * 0.012 * (S.itibar / 60);
+  S.oy = Math.max(0, S.oy + itibarOy);
+  S.kararsiz = Math.max(0, S.kararsiz - Math.max(0, itibarOy));
+  log.push({ tip: 'itibar', yazi: 'İTİBARDAN GELEN OY', etki: (itibarOy >= 0 ? '+' : '') + itibarOy.toFixed(1), renk: itibarOy >= 0 ? 'l' : 'r' });
+
+  // Dış güç fonu ortaya çıkabilir
+  if (S.fonRisk) {
+    S.fonRisk = false;
+    if (Math.random() < 0.35) {
+      S.itibar = BO.clamp(S.itibar - 6, 0, 100);
+      log.push({ yazi: 'DIŞ GÜÇ FONU ORTAYA ÇIKTI!', etki: 'İTİBAR -6', renk: 'r', skandal: true });
+    }
+  }
+
   S.rakipler.forEach((r) => {
     r.itibar = BO.clamp(r.itibar + (60 - r.itibar) * 0.06, 0, 100);   // rakip itibarı yavaşça toparlanır
     const g = S.kararsiz * 0.012 * (r.itibar / 60);                     // kararsızları toplar
@@ -53,6 +68,19 @@ BO.yeniGun = function () {
   BO.normalizeOy();
   BO.save();
   return log;
+};
+
+// Sadece gündüz atlanır (akşama geçilir): yarım kazanç
+BO.gunduzAtla = function () {
+  const S = BO.state;
+  const oyD = ((S.itibar - 45) * 0.008 + (Math.random() - 0.5) * 0.2) / 2;
+  S.oy = Math.max(0, S.oy + oyD);
+  const para = Math.round(S.itibar * 4 / 50) * 50;
+  S.kasa += para;
+  S.faz = 'aksam';
+  BO.normalizeOy();
+  BO.save();
+  return { oyD, para };
 };
 
 // Oynanmadan geçen gün: kampanya ekibi idare eder, küçük kazanç

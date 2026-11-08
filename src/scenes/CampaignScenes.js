@@ -25,7 +25,7 @@ BO.SkipScene = class extends Phaser.Scene {
     BO.text(this, W / 2, 32, 'EKİP KAMPANYAYI\nİDARE ETTİ', { color: P.L, ox: 0.5, align: 'center' });
 
     let y = 60;
-    let topOy = 0, topPara = 0;
+    let topOy = 0, topPara = 0, itibarTop = 0;
     const olaylar = [];
     this.gunler.forEach((g) => {
       topOy += g.oyD; topPara += g.para;
@@ -33,12 +33,15 @@ BO.SkipScene = class extends Phaser.Scene {
       BO.text(this, 92, y, (g.oyD >= 0 ? '+' : '') + g.oyD.toFixed(1), { color: g.oyD >= 0 ? P.l : P.r, ox: 1 });
       BO.text(this, W - 10, y, '+' + BO.tl(g.para), { color: P.y, ox: 1 });
       y += 11;
-      g.olaylar.forEach((o) => olaylar.push(o));
+      g.olaylar.forEach((o) => { if (o.tip === 'itibar') itibarTop += parseFloat(o.etki); else olaylar.push(o); });
     });
-    y += 4;
+    y += 2;
+    BO.text(this, 10, y, 'İTİBAR ETKİSİ', { color: P.L });
+    BO.text(this, W - 10, y, (itibarTop >= 0 ? '+%' : '-%') + Math.abs(itibarTop).toFixed(1), { color: itibarTop >= 0 ? P.l : P.r, ox: 1 });
+    y += 14;
     if (olaylar.length) {
       BO.text(this, 10, y, 'RAKİPLER:', { color: P.o }); y += 12;
-      olaylar.slice(0, 4).forEach((o) => {
+      olaylar.slice(0, 3).forEach((o) => {
         BO.text(this, 10, y, o.yazi, { color: P.L, wrap: W - 20 }); y += 11;
         BO.text(this, W - 10, y, o.etki, { color: P[o.renk], ox: 1 }); y += 12;
       });

@@ -34,6 +34,7 @@ BO.MorningScene = class extends Phaser.Scene {
     // Manşet önceliği: skandal > video > gazete > sakin
     const has = (t) => this.log.find((e) => e.tip === t);
     if (has('skandal')) manset = pick(BO.MANSET.skandal);
+    else if (geceOlaylari.some((o) => o.skandal)) manset = 'ADAYIN DIŞ GÜÇ\nBAĞLANTISI\nORTAYA ÇIKTI!';
     else if (has('video')) manset = pick(BO.MANSET.video).replace('{AD}', BO.rakipBilgi(has('video').id).kisa);
     else if (has('gazete')) manset = pick(BO.MANSET.gazete[has('gazete').id]);
     else manset = pick(BO.MANSET.sakin);

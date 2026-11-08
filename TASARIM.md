@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: Prototip 3 (kampanya takvimi)
+> Son güncelleme: Prototip 3, ilk tam oyun geri bildirimleri işlendi
 
 ## 1. Özet
 
@@ -19,10 +19,14 @@
 |---|---|
 | **Oy oranı (%)** | Ana skor. Seçim günü en yüksek oy oranına sahip olan kazanır. |
 | **Kasa (TL)** | Belli bir miktar parayla başlanır. Erzak almak ve gazetelere para vermek için harcanır. |
-| **İtibar (0-100)** | Arttıkça seçmenler **bağış** yapar ve kasa dolar. Skandallar ve yakalanmalar itibarı düşürür. |
+| **İtibar (0-100)** | Arttıkça seçmenler **bağış** yapar ve kasa dolar. Skandallar ve yakalanmalar itibarı düşürür. Ayrıca: **her gece** itibara göre oy kazanılır ya da kaybedilir; gündüz seçmenlerin memnun kalma ihtimali itibarla artar; seçimde kararsızlar itibara göre dağılır. Ana sayfada itibar kartına dokununca açıklama çıkar. |
 | **Erzak** | Gündüz seçmenlere fırlatılan hediyeler. Kasadan satın alınır. |
 
 Rakip partilerin de kendi oy oranı ve itibarı vardır.
+
+**Para bulma** (ana sayfada KASA kartına dokun; kasa 2.000 TL'nin altına düşünce kart kırmızı yanıp söner):
+- **Dış güçlerden fon:** +6.000 TL, itibar -8. Günde bir kez alınabilir. Ertesi sabah %35 ihtimalle ortaya çıkar (itibar -6, manşet olur).
+- **Bağış yemeği:** İtibar x 80 TL kazandırır, ama o gündüzü ya da geceyi harcar.
 
 ## 3. Rakipler
 
@@ -75,6 +79,9 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
 - **Risk:** Yakalanırsan kılığın düşer, skandal patlar ve itibarın düşer.
 
 **Prototip 2'deki uygulama:**
+- Gece başında kamera gazete binasını, rakibi ve oyuncuyu sırayla gösterir. Ekrana dokununca bu tanıtım geçilir.
+- Üstte görev listesi var: GAZETE[ ] RAKİP[ ]. Hedef ekran dışındaysa kenarda yanıp sönen bir ok çıkar.
+- Gazete binasının etrafı yanıp sönen bir çerçeveyle işaretlidir.
 - Gece 90 saniye sürer. İstenirse "EVE DÖN" ile erken bitirilebilir.
 - 3 polis devriye gezer ve fenerinin konisine giren oyuncuyu görür. Lamba ışığındaysan seni daha uzaktan görür.
 - Çalı ve çöp konteynerlerinde saklanılabilir. Görülünce yakalanma göstergesi dolar, dolarsa yakalanırsın.
@@ -115,7 +122,7 @@ Hedef oyun süresi: 30-45 dakika.
 
 **Prototip 3'teki uygulama:**
 - Ana sayfanın üstünde 60 günlük takvim şeridi ve "sıradaki özel gün" yazısı var.
-- **Sabah:** Gündüze çık, **günü atla** ya da **haftayı atla** (özel güne gelince durur).
+- **Sabah:** Gündüze çık, **geceye geç** (sadece gündüzü atlar, yarım otomatik kazanç sağlar) ya da **haftayı atla** (özel güne gelince durur).
 - **Akşam:** Geceye çık ya da geceyi atla.
 - Atlanan günlerde ekip kampanyayı idare eder: itibara bağlı küçük oy değişimi ve bağış gelir.
 - Her gece yarısı rakipler hamle yapar: kararsızları toplarlar, bazen seni eleştirirler (itibar -2), bazen birbirleriyle kavga ederler.

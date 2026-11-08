@@ -41,6 +41,11 @@ BO.NightScene = class extends Phaser.Scene {
     this.doorPos = { x: kx * TS + TS / 2, y: (ky + 1) * TS + TS / 2 };
     this.doorMark = BO.text(this, kx * TS + TS / 2, ky * TS - 2, '$', { color: BO.PAL.y, ox: 0.5, oy: 1, stroke: 2, depth: 400 });
     this.tweens.add({ targets: this.doorMark, y: this.doorMark.y - 3, duration: 400, yoyo: true, repeat: -1 });
+    // gazete binası etrafında yanıp sönen çerçeve + kapı ışığı
+    const [, , , gh] = N.gazeteBlok;
+    this.gazeteCerceve = this.add.rectangle(gx * TS, gy * TS, gw * TS, gh * TS).setOrigin(0).setStrokeStyle(2, 0xffcd75).setDepth(3);
+    this.tweens.add({ targets: this.gazeteCerceve, alpha: 0.2, duration: 500, yoyo: true, repeat: -1 });
+    this.add.image(this.doorPos.x, this.doorPos.y - 6, 'isik').setDepth(1).setScale(0.6);
 
     // Bizim araba (dönüş noktası, süs)
     this.add.image(N.araba[0] * TS + 14, N.araba[1] * TS + 6, 'araba_siyah').setAngle(90).setDepth(5);
@@ -72,6 +77,7 @@ BO.NightScene = class extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
 
     this.buildHud();
+    this.updateHud(false);
 
     // Dokun: yürü
     this.input.on('pointerdown', (p, over) => {
@@ -81,10 +87,10 @@ BO.NightScene = class extends Phaser.Scene {
 
     const hint = this.hint = BO.text(this, W / 2, H * 0.42, 'DOKUN: YÜRÜ\nFENERLERE YAKALANMA\nÇALIDA SAKLAN', {
       color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 500,
-    }).setScrollFactor(0);
-    this.tweens.add({ targets: hint, alpha: 0, delay: 3200, duration: 500, onComplete: () => hint.destroy() });
+    }).setScrollFactor(0).setVisible(false);
 
     this.cameras.main.fadeIn(400, 0, 0, 0);
+    this.intro();
   }
 
   // ================= Yardımcılar =================
@@ -142,13 +148,41 @@ BO.NightScene = class extends Phaser.Scene {
     fix(this.add.rectangle(17, 15, 60, 6, 0x333c57).setOrigin(0));
     this.hudDet = fix(this.add.rectangle(17, 15, 0, 6, 0xffcd75).setOrigin(0));
     this.hudGizli = fix(BO.text(this, 84, 15, '', { color: P.l }));
+    fix(this.add.rectangle(0, 27, W, 12, 0x1a1c2c, 0.8).setOrigin(0));
+    this.hudGorev = fix(BO.text(this, W / 2, 29, '', { color: P.w, ox: 0.5 }));
+    // hedef okları (hedef ekran dışındayken)
+    this.oklar = ['gazete', 'rakip'].map((k) => ({
+      k, g: fix(this.add.graphics()),
+      t: fix(BO.text(this, 0, 0, k === 'gazete' ? 'GAZETE' : this.rivalInfo.kisa, { color: P.y, ox: 0.5, oy: 0.5, stroke: 2 })),
+    }));
     this.eveBtn = BO.button(this, W - 30, H - 14, 52, 14, 'EVE DÖN', {
       fill: 'p', shade: 'k', color: 'w', depth: 600, onClick: () => this.endNight(),
     });
     this.eveBtn.setScrollFactor(0);
   }
 
+  updateArrows() {
+    const cam = this.cameras.main, H = this.H, W = this.W;
+    this.oklar.forEach((o) => {
+      const done = o.k === 'gazete' ? this.gazeteDone : this.rivalDone;
+      const hedef = o.k === 'gazete' ? { x: this.doorPos.x, y: this.doorPos.y - 12 } : this.rival;
+      const sy = hedef.y - cam.scrollY;
+      o.g.clear();
+      const ust = sy < 44, alt = sy > H - 24;
+      if (done || (!ust && !alt)) { o.t.setVisible(false); return; }
+      const x = BO.clamp(hedef.x, 30, W - 30);
+      const y = ust ? 46 : H - 34;
+      const blink = Math.floor(this.time.now / 300) % 2 === 0;
+      o.g.fillStyle(0xffcd75, blink ? 1 : 0.6);
+      if (ust) o.g.fillTriangle(x, y - 4, x - 5, y + 2, x + 5, y + 2);
+      else o.g.fillTriangle(x, y + 4, x - 5, y - 2, x + 5, y - 2);
+      o.t.setVisible(true).setPosition(x, ust ? y + 9 : y - 9);
+    });
+  }
+
   updateHud(hidden) {
+    this.hudGorev.setText('GAZETE[' + (this.gazeteDone ? 'X' : ' ') + '] RAKİP[' + (this.rivalDone ? 'X' : ' ') + ']');
+    this.updateArrows();
     const t = Math.max(0, Math.ceil(this.timeLeft));
     this.hudSaat.setText('GECE ' + Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'));
     this.hudKasa.setText(BO.tl(BO.state.kasa));
@@ -350,6 +384,7 @@ BO.NightScene = class extends Phaser.Scene {
         S.kasa -= N.gazeteFiyat;
         this.gazeteDone = true;
         this.doorMark.setVisible(false);
+        this.gazeteCerceve.setVisible(false);
         this.log.push({ tip: 'gazete', id: r.id });
         BO.sfx.coin();
         say.setText('ANLAŞTIK!\nYARIN SABAH\nMANŞETTE!');
@@ -419,6 +454,41 @@ BO.NightScene = class extends Phaser.Scene {
       this.closePanel();
       this.rivalLeaves();
     });
+  }
+
+  // Gece başında kamera hedefleri gezdirir
+  intro() {
+    const cam = this.cameras.main, W = this.W, H = this.H;
+    this.paused = true;
+    cam.stopFollow();
+    this.oklar.forEach((o) => { o.g.clear(); o.t.setVisible(false); });
+    const yazi = BO.text(this, W / 2, H - 44, '', { color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 900 }).setScrollFactor(0);
+    const adimlar = [
+      { x: this.doorPos.x, y: this.doorPos.y, t: 'GAZETE: PARA VER,\nRAKİBE MANŞET ATSIN!' },
+      { x: this.rival.x, y: this.rival.y, t: this.rivalInfo.kisa + ': LAF SOK,\nKIZINCA VİDEOYA ÇEK!' },
+      { x: this.player.x, y: this.player.y, t: 'SEN BURADASIN.\nPOLİSLERE YAKALANMA!' },
+    ];
+    let i = 0, bitti = false;
+    const bitir = () => {
+      if (bitti) return; bitti = true;
+      yazi.destroy(); this.input.off('pointerdown', bitir);
+      cam.startFollow(this.player, true, 0.12, 0.12);
+      this.paused = false;
+      if (this.hint && this.hint.active) {
+        this.hint.setVisible(true);
+        this.tweens.add({ targets: this.hint, alpha: 0, delay: 2600, duration: 500, onComplete: () => this.hint.destroy() });
+      }
+    };
+    const sonraki = () => {
+      if (bitti) return;
+      if (i >= adimlar.length) { bitir(); return; }
+      const a = adimlar[i++];
+      cam.pan(a.x, a.y, 600, 'Sine.easeInOut');
+      yazi.setText(a.t);
+      this.time.delayedCall(1700, sonraki);
+    };
+    this.time.delayedCall(300, () => this.input.on('pointerdown', bitir));
+    sonraki();
   }
 
   rivalLeaves() {
