@@ -267,8 +267,152 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
     // Tek piksel beyaz (UI kutuları için)
     draw(scene, 'px', 1, 1, (r) => r(0, 0, 1, 1, 'w'));
 
+    // ================= GECE =================
+    // Kılık değiştirmiş aday: şapka, güneş gözlüğü, trençkot, takma bıyık
+    const KILIK_UST = [
+      '..kkkkkk..',
+      '.kkkkkkkk.',
+      'kkkkkkkkkk',
+      '.keeeeeek.',
+      '.kkkeekkk.',
+      '.keeeeeek.',
+      '.kekkkkek.',
+      '..EmmmmE..',
+      '.mmmEEmmm.',
+      'mmmmEEmmmm',
+      'emyyyyyyme',
+      '.mmmmmmmm.',
+    ];
+    fromRows(scene, 'kilik0', KILIK_UST.concat(['.mm....mm.', '.kk....kk.']));
+    fromRows(scene, 'kilik1', KILIK_UST.concat(['.mmm..mmm.', 'kk......kk']));
+
+    // Polis (fenerli)
+    const POLIS_UST = [
+      '.BBBBBBB.',
+      'BBBByBBBB',
+      '.eeeeeee.',
+      '.ekeeeke.',
+      '.eeeeeee.',
+      '..eeeee..',
+      '.bbbbbbb.',
+      'bbbybbbbb',
+      'e.bbbbb.e',
+      'e.bbbbb.e',
+    ];
+    fromRows(scene, 'polis0', POLIS_UST.concat(['..BBBBB..', '..BB.BB..', '..B...B..', '.kk...kk.']));
+    fromRows(scene, 'polis1', POLIS_UST.concat(['..BBBBB..', '.BB...BB.', '.B.....B.', 'kk.....kk']));
+
+    // Rakip liderler
+    fromRows(scene, 'rakip_vedat', [
+      '.LLLLLLLL.',
+      'LLLLLLLLLL',
+      'LLeeeeeeLL',
+      '.kekeekek.',
+      '.keeeeeek.',
+      '.keEEEEek.',
+      '..keeeek..',
+      '.bbwyywbb.',
+      'bbbwyywbbb',
+      'ebbbyybbbe',
+      '.bbbbbbbb.',
+      '.bbb..bbb.',
+      '.bb....bb.',
+      '.kk....kk.',
+    ]);
+    fromRows(scene, 'rakip_selin', [
+      '..yyyyyy..',
+      '.yyyyyyyy.',
+      'yyeeeeeeyy',
+      'yykeeeekyy',
+      'yyeeeeeeyy',
+      'yyeerreeyy',
+      'y.keeeek.y',
+      '.rrwwwwrr.',
+      'rrrwwwwrrr',
+      'errrrrrrrk',
+      '.rrrrrrrr.',
+      '..rr..rr..',
+      '..ee..ee..',
+      '.kk....kk.',
+    ]);
+    fromRows(scene, 'rakip_ulvi', [
+      'm.mmmm.m..',
+      '.mmmmmmmm.',
+      '.meeeeeem.',
+      '.ekkeekke.',
+      '.eeeeeeee.',
+      '.eeekkeee.',
+      '..eeeeee..',
+      '.ggwrrwgg.',
+      'gggwrrwggg',
+      'egggrrggge',
+      '.gggggggg.',
+      '.ggg..ggg.',
+      '.gg....gg.',
+      '.kk....kk.',
+    ]);
+
+    // Sokak lambası ışığı (yarı saydam daire), çap 52
+    draw(scene, 'isik', 52, 52, (r, ctx) => {
+      for (let y = 0; y < 52; y++) for (let x = 0; x < 52; x++) {
+        const d = Math.hypot(x - 25.5, y - 25.5);
+        if (d > 26) continue;
+        // halka halka, pixel tarzı
+        const a = d < 10 ? 0.30 : d < 18 ? 0.20 : 0.11;
+        ctx.fillStyle = 'rgba(255,205,117,' + a + ')';
+        ctx.fillRect(x, y, 1, 1);
+      }
+    });
+    draw(scene, 'lamba', 4, 14, (r) => { r(1, 2, 2, 12, 'n'); r(0, 0, 4, 3, 'y'); r(1, 3, 2, 1, 'w'); });
+    draw(scene, 'araba_siyah', 16, 28, (r) => {
+      r(1, 0, 14, 28, 'k'); r(2, 1, 12, 26, 'N');
+      r(3, 6, 10, 4, 'B'); r(3, 11, 10, 9, 'N'); r(4, 12, 8, 1, 'n'); r(3, 21, 10, 3, 'B');
+      r(2, 26, 2, 1, 'r'); r(12, 26, 2, 1, 'r');
+    });
+    draw(scene, 'soru', 5, 7, (r) => { r(1, 0, 3, 1, 'y'); r(0, 1, 1, 2, 'y'); r(4, 1, 1, 2, 'y'); r(3, 3, 1, 1, 'y'); r(2, 4, 1, 1, 'y'); r(2, 6, 1, 1, 'y'); });
+    draw(scene, 'goz', 9, 5, (r) => { r(2, 0, 5, 1, 'w'); r(0, 1, 9, 3, 'w'); r(2, 4, 5, 1, 'w'); r(3, 1, 3, 3, 'k'); r(4, 2, 1, 1, 'c'); });
+
+    // Gece haritası tek büyük resim olarak çizilir
+    const M = BO.NIGHT_MAP, TS = BO.NIGHT.tile;
+    const mw = M[0].length * TS, mh = M.length * TS;
+    const isBina = (cx, cy) => cy >= 0 && cy < M.length && cx >= 0 && cx < M[0].length && (M[cy][cx] === '#' || M[cy][cx] === 'D');
+    draw(scene, 'gece_harita', mw, mh, (r) => {
+      let seed = 7;
+      const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      for (let cy = 0; cy < M.length; cy++) {
+        for (let cx = 0; cx < M[0].length; cx++) {
+          const ch = M[cy][cx], x = cx * TS, y = cy * TS;
+          if (ch === '#' || ch === 'D') {
+            r(x, y, TS, TS, '#232a4d');
+            if (!isBina(cx, cy - 1)) r(x, y, TS, 2, '#3b4677');     // çatı kenarı
+            if (!isBina(cx - 1, cy)) r(x, y, 1, TS, '#11131f');
+            if (!isBina(cx + 1, cy)) r(x + TS - 1, y, 1, TS, '#11131f');
+            if (!isBina(cx, cy + 1)) r(x, y + TS - 2, TS, 2, '#11131f');
+            // pencereler: bazıları yanık
+            for (let wy = 3; wy < TS - 3; wy += 5) for (let wx = 2; wx < TS - 2; wx += 5) {
+              r(x + wx, y + wy, 3, 3, rnd() < 0.22 ? '#ffcd75' : '#161a33');
+            }
+          } else {
+            r(x, y, TS, TS, '#1e2236');
+            if (rnd() < 0.3) r(x + Math.floor(rnd() * 10), y + Math.floor(rnd() * 10), 1, 1, '#2a2f4a');
+            if (ch === 'b') {
+              r(x + 1, y + 2, 10, 9, '#16382f'); r(x + 2, y + 1, 8, 10, '#16382f');
+              r(x + 3, y + 3, 3, 2, '#257179'); r(x + 7, y + 6, 2, 2, '#257179');
+            } else if (ch === 'c') {
+              r(x + 1, y + 2, 10, 9, '#11131f'); r(x + 2, y + 3, 8, 7, '#3d4566'); r(x + 2, y + 3, 8, 2, '#566c86');
+            }
+          }
+        }
+      }
+      // gazete binasının kapısı
+      const [kx, ky] = BO.NIGHT.kapi;
+      r(kx * TS + 3, ky * TS + 4, 6, 8, '#8b5a3c'); r(kx * TS + 7, ky * TS + 8, 1, 1, '#ffcd75');
+    });
+
     // Animasyonlar
     scene.anims.create({ key: 'yuru', frames: [{ key: 'secmen0' }, { key: 'secmen1' }], frameRate: 4, repeat: -1 });
+    scene.anims.create({ key: 'kilik_yuru', frames: [{ key: 'kilik0' }, { key: 'kilik1' }], frameRate: 6, repeat: -1 });
+    scene.anims.create({ key: 'polis_yuru', frames: [{ key: 'polis0' }, { key: 'polis1' }], frameRate: 4, repeat: -1 });
     scene.anims.create({ key: 'el_salla', frames: [{ key: 'aday0' }, { key: 'aday1' }], frameRate: 3, repeat: -1 });
   };
 })();

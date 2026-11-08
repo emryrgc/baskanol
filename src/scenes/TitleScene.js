@@ -37,7 +37,7 @@ BO.TitleScene = class extends Phaser.Scene {
     const t2 = BO.text(this, W / 2, 56, 'OL!', { size: 24, color: P.o, ox: 0.5, oy: 0.5, stroke: 4 });
     this.tweens.add({ targets: [t1, t2], scale: 1.06, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     BO.text(this, W / 2, 84, 'SEÇİME 60 GÜN KALDI', { size: 8, color: P.w, ox: 0.5 });
-    BO.text(this, W / 2, 98, 'PROTOTİP 1: GÜNDÜZ', { size: 8, color: P.L, ox: 0.5 });
+    BO.text(this, W / 2, 98, 'PROTOTİP 2: GECE', { size: 8, color: P.L, ox: 0.5 });
 
     // Butonlar
     const basla = BO.button(this, W / 2, H - 70, 120, 24, 'BAŞLA', {
@@ -46,7 +46,7 @@ BO.TitleScene = class extends Phaser.Scene {
         BO.sfx.unlock();
         BO.state = BO.newGameState();
         this.cameras.main.fadeOut(250, 26, 28, 44);
-        this.time.delayedCall(260, () => this.scene.start('Day'));
+        this.time.delayedCall(260, () => this.scene.start('Hub'));
       },
     });
     this.tweens.add({ targets: basla, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });

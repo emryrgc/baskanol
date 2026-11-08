@@ -14,7 +14,7 @@
       backgroundColor: '#1a1c2c',
       scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
       input: { activePointers: 2 },
-      scene: [BO.BootScene, BO.TitleScene, BO.DayScene, BO.SummaryScene],
+      scene: [BO.BootScene, BO.TitleScene, BO.HubScene, BO.DayScene, BO.SummaryScene, BO.NightScene, BO.MorningScene],
     });
   }
 

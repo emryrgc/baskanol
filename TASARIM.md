@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: Prototip 1, ilk geri bildirimler işlendi
+> Son güncelleme: Prototip 2 (gece ve ana sayfa)
 
 ## 1. Özet
 
@@ -26,8 +26,16 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
 
 ## 3. Rakipler
 
-- **3-4 rakip parti** olacak. Her birinin lideri, rengi ve kişiliği farklı olacak.
-- İsimler ve görünüşler daha sonra belirlenecek. Hepsi hayali ve parodi karakterler olacak.
+- **3-4 rakip parti** olacak. Şu an 3 tane var (geçici isimler, `src/data.js` içinde):
+
+| Lider | Parti | Renk | Zaafı (en çok neye kızar) |
+|---|---|---|---|
+| Vaatçi Vedat | Bol Vaat Partisi | Mavi | Tutulmayan vaatler |
+| Selfi Selin | Işıltı Partisi | Kırmızı | Görüntüsü |
+| Uykucu Ulvi | Yarın Partisi | Yeşil | Tembelliği |
+
+- Başlangıç anketi: Biz %12, Vedat %30, Selin %22, Ulvi %18, kararsız %18.
+- Rakibin itibarı düşünce oy kaybeder. Bu oyun %40'ı bize, %60'ı kararsızlara geçer.
 - Bizim siyasetçimizin adı ve görünüşü de şimdilik geçici. Kararı oyun sahibi verecek.
 
 ## 4. Gündüz: Seçim otobüsü
@@ -53,7 +61,7 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
 - **Kurtulursan** dağıtıma geri dönersin.
 - **Yakalanırsan** oy, erzak ve itibar kaybedersin.
 
-## 5. Gece: Gizli operasyon *(Prototip 2)*
+## 5. Gece: Gizli operasyon *(Prototip 2: yapıldı)*
 
 - Siyasetçi **kılık değiştirmiş** hâlde karanlık mahallede gezer.
 - Kontrol: **Dokunulan yere yürür.**
@@ -65,6 +73,24 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
   3. Rakip patlayınca **telefon çıkarılır**. Doğru anda çekim yapılan bir mini oyun oynanır.
   4. Video viral olur ve rakibin itibarı düşer.
 - **Risk:** Yakalanırsan kılığın düşer, skandal patlar ve itibarın düşer.
+
+**Prototip 2'deki uygulama:**
+- Gece 90 saniye sürer. İstenirse "EVE DÖN" ile erken bitirilebilir.
+- 3 polis devriye gezer ve fenerinin konisine giren oyuncuyu görür. Lamba ışığındaysan seni daha uzaktan görür.
+- Çalı ve çöp konteynerlerinde saklanılabilir. Görülünce yakalanma göstergesi dolar, dolarsa yakalanırsın.
+- Gazete: 2.000 TL karşılığında seçilen rakibin itibarı ertesi sabah 8 düşer. Gecede bir kez kullanılabilir.
+- Her gece rastgele bir rakip lider sokakta dolaşır. Ona dokununca yanına gidilir.
+- Laf sokma 3 turdan oluşur, her turda 3 seçenek vardır: rakibin zaafı +45, genel laf +25, başka rakibin zaafı +10.
+- Sinir 100'ü geçerse rakip patlar ve telefon mini oyunu başlar: 3 çekim yapılır, rakip vizörün ortasına ne kadar yakınsa o kadar iyi.
+- Video, rakibin itibarını 5 ile 23 arasında düşürür.
+- Sabah Gazetesi gecenin sonuçlarını manşet olarak gösterir.
+
+## 5.5 Ana sayfa (Kampanya Merkezi)
+- Ortada aday kürsüde durur. Etrafında oy, itibar, kasa ve erzak göstergeleri, altında anket vardır.
+- **Sabah:** "Gündüz: Sahaya in" ya da "Gündüzü atla".
+- **Akşam:** "Gece: Operasyon" ya da "Geceyi atla".
+- Akış: Ana sayfa (sabah) → Gündüz → Akşam Postası → Ana sayfa (akşam) → Gece → Sabah Gazetesi → yeni gün.
+- İleride bu ekrana takvim, olaylar ve hafta atlama eklenecek.
 
 ## 6. 60 günlük takvim *(Prototip 3)*
 
@@ -91,8 +117,8 @@ Hedef oyun süresi: 30-45 dakika.
 
 | Aşama | İçerik | Durum |
 |---|---|---|
-| Prototip 1 | Gündüz otobüs dağıtımı ve KAÇ! kovalama | 🔨 Yapılıyor |
-| Prototip 2 | Gece gizlilik, gazete ve rakibi kışkırtma | ⏳ |
+| Prototip 1 | Gündüz otobüs dağıtımı ve KAÇ! kovalama | ✅ |
+| Prototip 2 | Gece gizlilik, gazete, rakibi kışkırtma ve ana sayfa | ✅ İlk sürüm |
 | Prototip 3 | Takvim, kasa, itibar, bağış, anket ve seçim sonu | ⏳ |
 | Sonra | Karakter tasarımları, müzik, rakip partiler, mağaza hazırlığı | ⏳ |
 

@@ -8,7 +8,35 @@ BO.newGameState = function () {
     itibar: 50,      // 0..100
     oy: 12.0,        // oy oranı %
     erzak: 30,       // fırlatılabilir hediye sayısı
+    faz: 'sabah',    // sabah: gündüze çıkılabilir, aksam: geceye çıkılabilir
+    rakipler: BO.RIVALS.map((r) => ({ id: r.id, oy: r.oy, itibar: r.itibar })),
+    kararsiz: 18,    // kararsız seçmen %
   };
+};
+
+BO.rakip = function (id) { return BO.state.rakipler.find((r) => r.id === id); };
+BO.rakipBilgi = function (id) { return BO.RIVALS.find((r) => r.id === id); };
+
+// Oy oranlarının toplamı 100 olsun: bizim dışımızdakileri orantılı ayarla
+BO.normalizeOy = function () {
+  const S = BO.state;
+  S.oy = BO.clamp(S.oy, 0, 95);
+  const digerleri = S.rakipler.reduce((t, r) => t + r.oy, 0) + S.kararsiz;
+  const hedef = 100 - S.oy;
+  const k = digerleri > 0 ? hedef / digerleri : 0;
+  S.rakipler.forEach((r) => { r.oy *= k; });
+  S.kararsiz *= k;
+};
+
+// Rakibin itibarı düşer -> oy kaybeder; kaybın bir kısmı bize, kalanı kararsızlara
+BO.rakibeDarbe = function (id, itibarKaybi) {
+  const S = BO.state, r = BO.rakip(id);
+  r.itibar = BO.clamp(r.itibar - itibarKaybi, 0, 100);
+  const oyKaybi = Math.min(r.oy - 1, itibarKaybi * 0.12);
+  r.oy -= oyKaybi;
+  S.oy += oyKaybi * 0.4;
+  S.kararsiz += oyKaybi * 0.6;
+  return oyKaybi;
 };
 
 BO.state = BO.newGameState();

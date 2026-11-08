@@ -7,6 +7,7 @@ BO.SummaryScene = class extends Phaser.Scene {
   init(stats) { this.st = stats; }
 
   create() {
+    BO.normalizeOy();
     const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state, st = this.st;
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
 
@@ -40,15 +41,12 @@ BO.SummaryScene = class extends Phaser.Scene {
     row('İTİBAR', Math.round(S.itibar) + '/100', S.itibar >= st.itibarBas ? P.l : P.r);
     row('KASA', BO.tl(S.kasa), P.y);
 
-    const by = Math.max(y + 16, H - 52);
-    BO.button(this, W / 2, by, 140, 20, 'SONRAKİ GÜN', {
+    const by = Math.max(y + 18, H - 30);
+    const devam = BO.button(this, W / 2, by, 140, 20, 'DEVAM', {
       fill: 'y', shade: 'o',
-      onClick: () => { S.gun++; this.go('Day'); },
+      onClick: () => { S.faz = 'aksam'; this.go('Hub'); },
     });
-    BO.button(this, W / 2, by + 28, 140, 16, 'ANA MENÜ', {
-      fill: 'n', shade: 'N', color: 'w',
-      onClick: () => this.go('Title'),
-    });
+    this.tweens.add({ targets: devam, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });
 
     this.cameras.main.fadeIn(400, 26, 28, 44);
   }
