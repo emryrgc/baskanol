@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: Prototip 2 (gece ve ana sayfa)
+> Son güncelleme: Prototip 3 (kampanya takvimi)
 
 ## 1. Özet
 
@@ -92,7 +92,7 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
 - Akış: Ana sayfa (sabah) → Gündüz → Akşam Postası → Ana sayfa (akşam) → Gece → Sabah Gazetesi → yeni gün.
 - İleride bu ekrana takvim, olaylar ve hafta atlama eklenecek.
 
-## 6. 60 günlük takvim *(Prototip 3)*
+## 6. 60 günlük takvim *(Prototip 3: yapıldı)*
 
 Her sabah bir seçim yapılır:
 
@@ -113,13 +113,25 @@ Her sabah dünün olaylarını komik manşetlerle özetleyen bir **gazete ekran�
 
 Hedef oyun süresi: 30-45 dakika.
 
+**Prototip 3'teki uygulama:**
+- Ana sayfanın üstünde 60 günlük takvim şeridi ve "sıradaki özel gün" yazısı var.
+- **Sabah:** Gündüze çık, **günü atla** ya da **haftayı atla** (özel güne gelince durur).
+- **Akşam:** Geceye çık ya da geceyi atla.
+- Atlanan günlerde ekip kampanyayı idare eder: itibara bağlı küçük oy değişimi ve bağış gelir.
+- Her gece yarısı rakipler hamle yapar: kararsızları toplarlar, bazen seni eleştirirler (itibar -2), bazen birbirleriyle kavga ederler.
+- **Anket günleri** 10, 20, 40 ve 50. günlerdir. Bir önceki anketle karşılaştırma gösterilir.
+- **TV münazarası** 30. gündedir. En güçlü rakiple 4 soru sorulur, her soruya ciddi, popülist ya da saldırgan cevap verilir. Seyircinin sevdiği cevap alkış toplar.
+- **Rastgele olaylar:** Sabahları %40 ihtimalle çıkar (8 olay var, örneğin düğün daveti, otobüs arızası, esnaf bağışı). Her birinde iki seçenek vardır.
+- **60. gün seçim:** Kararsızlar itibara göre dağılır, oylar sayılır, kazanan ilan edilir.
+- Oyun her ekranda otomatik kaydedilir. Başlık ekranında "Devam et" çıkar.
+
 ## 7. Geliştirme planı
 
 | Aşama | İçerik | Durum |
 |---|---|---|
 | Prototip 1 | Gündüz otobüs dağıtımı ve KAÇ! kovalama | ✅ |
 | Prototip 2 | Gece gizlilik, gazete, rakibi kışkırtma ve ana sayfa | ✅ İlk sürüm |
-| Prototip 3 | Takvim, kasa, itibar, bağış, anket ve seçim sonu | ⏳ |
+| Prototip 3 | Takvim, atlama, anket, münazara, olaylar, seçim, kayıt | ✅ İlk sürüm |
 | Sonra | Karakter tasarımları, müzik, rakip partiler, mağaza hazırlığı | ⏳ |
 
 ## 8. Teknik notlar
@@ -129,3 +141,17 @@ Hedef oyun süresi: 30-45 dakika.
 - **Grafikler:** Şimdilik kodla çizilen pixel art (`src/sprites.js`). İleride gerçek çizimlerle değiştirilebilir.
 - **Font:** Press Start 2P (OFL lisanslı, Türkçe karakterleri destekler).
 - **Ses:** Kodla üretilen retro efektler (`src/sfx.js`).
+
+## 9. Fikir havuzu (sıradaki işler)
+
+**Görev çeşitliliği** (oyun sahibinin isteği: tekrar eden görevler sıkıcı olmasın):
+- Gündüz: miting kürsüsü (doğru anda alkış topla), kapı kapı gezme, pazar yerinde tezgâh, bebek öpme ve esnaf ziyareti mini oyunları.
+- Gece: rakibin afişlerini değiştirme, rakip kampanya ofisine gizlice girip belge fotoğraflama, rakip otobüsünün lastiğini indirme, sahte anket şirketi.
+- Her gün farklı bir mahalle ve seçmen profili.
+- Görevlerin günlere göre açılması: ilk günlerde basit, ilerledikçe yenileri.
+
+**Diğer:**
+- Karakter ve seçmen tasarımları (oyun sahibi çizecek)
+- 4. rakip parti
+- Müzik
+- Mağaza hazırlığı (Capacitor)

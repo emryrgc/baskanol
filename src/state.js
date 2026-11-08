@@ -11,6 +11,9 @@ BO.newGameState = function () {
     faz: 'sabah',    // sabah: gündüze çıkılabilir, aksam: geceye çıkılabilir
     rakipler: BO.RIVALS.map((r) => ({ id: r.id, oy: r.oy, itibar: r.itibar })),
     kararsiz: 18,    // kararsız seçmen %
+    ozel: {},        // gösterilmiş özel günler (anket/münazara)
+    olayGun: 0,      // en son rastgele olay hangi gün soruldu
+    sonAnket: null,  // bir önceki anketin sonuçları (karşılaştırma için)
   };
 };
 

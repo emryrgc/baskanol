@@ -27,7 +27,9 @@ BO.MorningScene = class extends Phaser.Scene {
         lines.push(['BİZİM OY', '-%' + Math.abs(N.skandalOy).toFixed(1), P.r]);
       }
     });
-    BO.normalizeOy();
+    // Gün ilerler, rakipler hamle yapar
+    const geceOlaylari = BO.yeniGun();
+    geceOlaylari.forEach((o) => lines.push([o.yazi, o.etki, P[o.renk]]));
 
     // Manşet önceliği: skandal > video > gazete > sakin
     const has = (t) => this.log.find((e) => e.tip === t);
@@ -42,6 +44,7 @@ BO.MorningScene = class extends Phaser.Scene {
     this.add.rectangle(8, top, W - 16, 92, 0xf4f4f4).setOrigin(0);
     this.add.rectangle(8, top + 92, W - 16, 2, 0x94b0c2).setOrigin(0);
     BO.text(this, W / 2, top + 6, 'SABAH GAZETESİ', { color: P.k, ox: 0.5 });
+    BO.text(this, W - 12, top + 82, 'GÜN ' + S.gun, { color: P.n, ox: 1 });
     this.add.rectangle(14, top + 17, W - 28, 1, 0x1a1c2c).setOrigin(0);
     BO.text(this, W / 2, top + 24, manset, { color: P.r, ox: 0.5, align: 'center', lineSpacing: 4 });
 
@@ -49,6 +52,11 @@ BO.MorningScene = class extends Phaser.Scene {
     BO.text(this, W / 2, y, 'GECENİN SONUCU', { color: P.y, ox: 0.5 }); y += 16;
     if (!lines.length) { BO.text(this, W / 2, y, 'HİÇBİR ŞEY OLMADI', { color: P.L, ox: 0.5 }); y += 12; }
     lines.forEach(([a, b, c]) => {
+      if (a.length + b.length > 18) {   // uzun satırı ikiye böl
+        BO.text(this, 12, y, a, { color: P.L }); y += 11;
+        BO.text(this, W - 12, y, b, { color: c, ox: 1 }); y += 12;
+        return;
+      }
       BO.text(this, 12, y, a, { color: P.L });
       BO.text(this, W - 12, y, b, { color: c, ox: 1 });
       y += 12;
@@ -63,7 +71,6 @@ BO.MorningScene = class extends Phaser.Scene {
     const b = BO.button(this, W / 2, Math.max(y + 18, H - 30), 140, 20, 'YENİ GÜN', {
       fill: 'y', shade: 'o',
       onClick: () => {
-        S.gun++; S.faz = 'sabah';
         this.cameras.main.fadeOut(250, 26, 28, 44);
         this.time.delayedCall(260, () => this.scene.start('Hub'));
       },

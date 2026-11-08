@@ -16,7 +16,7 @@ BO.TitleScene = class extends Phaser.Scene {
     this.bg = this.add.tileSprite(0, 0, W, H, 'yol').setOrigin(0);
 
     // Yolda giden otobüs + el sallayan aday
-    this.bus = this.add.container(BO.LANE_X[1], H * 0.62);
+    this.bus = this.add.container(BO.LANE_X[1], H * 0.52);
     this.bus.add(this.add.image(0, 0, 'otobus'));
     this.bus.add(this.add.image(4, 10, 'bayrak').setOrigin(0, 1));
     this.bus.add(this.add.sprite(0, -4, 'aday0').play('el_salla'));
@@ -37,19 +37,25 @@ BO.TitleScene = class extends Phaser.Scene {
     const t2 = BO.text(this, W / 2, 56, 'OL!', { size: 24, color: P.o, ox: 0.5, oy: 0.5, stroke: 4 });
     this.tweens.add({ targets: [t1, t2], scale: 1.06, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     BO.text(this, W / 2, 84, 'SEÇİME 60 GÜN KALDI', { size: 8, color: P.w, ox: 0.5 });
-    BO.text(this, W / 2, 98, 'PROTOTİP 2: GECE', { size: 8, color: P.L, ox: 0.5 });
+    BO.text(this, W / 2, 98, 'PROTOTİP 3: KAMPANYA', { size: 8, color: P.L, ox: 0.5 });
 
-    // Butonlar
-    const basla = BO.button(this, W / 2, H - 70, 120, 24, 'BAŞLA', {
-      fill: 'y', shade: 'o', size: 16,
-      onClick: () => {
-        BO.sfx.unlock();
-        BO.state = BO.newGameState();
-        this.cameras.main.fadeOut(250, 26, 28, 44);
-        this.time.delayedCall(260, () => this.scene.start('Hub'));
-      },
-    });
-    this.tweens.add({ targets: basla, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });
+    // Butonlar: kayıt varsa "DEVAM ET"
+    const kayit = BO.load();
+    const basla = (state) => {
+      BO.sfx.unlock();
+      BO.state = state;
+      this.cameras.main.fadeOut(250, 26, 28, 44);
+      this.time.delayedCall(260, () => this.scene.start('Hub'));
+    };
+    let ana;
+    if (kayit) {
+      ana = BO.button(this, W / 2, H - 92, 140, 22, 'DEVAM ET', { fill: 'y', shade: 'o', size: 16, onClick: () => basla(kayit) });
+      BO.text(this, W / 2, H - 76, 'GÜN ' + kayit.gun + '/60', { color: BO.PAL.L, ox: 0.5 });
+      BO.button(this, W / 2, H - 56, 120, 16, 'YENİ OYUN', { fill: 'o', shade: 'r', onClick: () => basla(BO.newGameState()) });
+    } else {
+      ana = BO.button(this, W / 2, H - 70, 120, 24, 'BAŞLA', { fill: 'y', shade: 'o', size: 16, onClick: () => basla(BO.newGameState()) });
+    }
+    this.tweens.add({ targets: ana, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });
 
     const sesLabel = () => (BO.sfx.isMuted() ? 'SES: KAPALI' : 'SES: AÇIK');
     const ses = BO.button(this, W / 2, H - 34, 120, 16, sesLabel(), {
