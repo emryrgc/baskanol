@@ -133,8 +133,15 @@ BO.DayScene = class extends Phaser.Scene {
   spawnVoter() {
     const sideLeft = Math.random() < 0.5;
     const side = sideLeft ? BO.WALK.left : BO.WALK.right;
-    const v = this.add.sprite(Phaser.Math.Between(side[0], side[1]), 30, 'secmen0').setDepth(10);
-    v.y = 20 - Phaser.Math.Between(0, 10);
+    // Başka bir seçmenin üstüne doğmasın: boş yer bul, bulamazsan bu sefer atla
+    let x = 0, y = 0, ok = false;
+    for (let i = 0; i < 6 && !ok; i++) {
+      x = Phaser.Math.Between(side[0], side[1]);
+      y = 18 - Phaser.Math.Between(0, 12);
+      ok = this.voters.every((o) => Math.abs(o.x - x) > 11 || Math.abs(o.y - y) > 17);
+    }
+    if (!ok) return;
+    const v = this.add.sprite(x, y, 'secmen0').setDepth(10);
     v.play({ key: 'yuru', startFrame: Phaser.Math.Between(0, 1) });
     v.setFlipX(sideLeft ? Math.random() < 0.3 : Math.random() < 0.7);
     v.dy = Phaser.Math.FloatBetween(-8, 6);   // kendi yürüme hızı
@@ -142,9 +149,35 @@ BO.DayScene = class extends Phaser.Scene {
     this.voters.push(v);
   }
 
+  // Seçmenler birbirinin içine girmesin: çakışanları it, arkadakini öndekinin hızına uydur
+  separateVoters() {
+    const vs = this.voters, MX = 10, MY = 16;
+    for (let i = 0; i < vs.length; i++) {
+      for (let j = i + 1; j < vs.length; j++) {
+        const a = vs[i], b = vs[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        if (Math.abs(dx) >= MX || Math.abs(dy) >= MY) continue;
+        const ox = MX - Math.abs(dx), oy = MY - Math.abs(dy);
+        if (ox < oy) {
+          const sx = (dx >= 0 ? 1 : -1) * ox / 2;
+          a.x -= sx; b.x += sx;
+        } else {
+          const sy = (dy >= 0 ? 1 : -1) * oy / 2;
+          a.y -= sy; b.y += sy;
+          const avg = (a.dy + b.dy) / 2; a.dy = avg; b.dy = avg;
+        }
+        // kaldırımdan taşmasın
+        [a, b].forEach((v) => {
+          const side = v.x < 90 ? BO.WALK.left : BO.WALK.right;
+          v.x = BO.clamp(v.x, side[0], side[1]);
+        });
+      }
+    }
+  }
+
   tapAt(x, y) {
     if (this.mode !== 'day') return;
-    let best = null, bestD = 22;
+    let best = null, bestD = 24;
     this.voters.forEach((v) => {
       if (v.served || !v.active) return;
       const d = Phaser.Math.Distance.Between(x, y, v.x, v.y);
@@ -167,9 +200,9 @@ BO.DayScene = class extends Phaser.Scene {
 
     const key = Phaser.Utils.Array.GetRandom(['simit', 'makarna', 'cay']);
     const g = this.add.image(this.bus.x, this.bus.y - 10, key).setDepth(30);
-    const sx = g.x, sy = g.y, flight = 420;
+    const sx = g.x, sy = g.y, flight = BO.TUNE.firlatmaSuresi;
     const tx = v.x, ty = v.y + (this.speed + v.dy) * flight / 1000;
-    const arc = 26;
+    const arc = 22;
     this.tweens.addCounter({
       from: 0, to: 1, duration: flight,
       onUpdate: (tw) => {
@@ -210,7 +243,7 @@ BO.DayScene = class extends Phaser.Scene {
       const ex = this.add.image(v.x, v.y - 12, 'isaret').setDepth(40);
       this.tweens.add({ targets: ex, y: ex.y - 4, duration: 100, yoyo: true, repeat: 3, onComplete: () => ex.destroy() });
       BO.floatText(this, v.x, v.y - 20, 'KIZDI!', P.r);
-      this.time.delayedCall(500, () => this.triggerChase());
+      if (this.dayTime > BO.TUNE.kacisSuresi + 4) this.time.delayedCall(500, () => this.triggerChase());
     }
   }
 
@@ -374,6 +407,13 @@ BO.DayScene = class extends Phaser.Scene {
     const S = BO.state, T = BO.TUNE, P = BO.PAL, W = this.W, H = this.H;
     this.mode = 'recover';
     this.leftBtn.setVisible(false); this.rightBtn.setVisible(false);
+    // Kalan trafik sağa sola çekilip kaybolur, otobüsle iç içe geçmez
+    this.cars.forEach((c) => {
+      c.hit = true;
+      const dir = c.x < 90 ? -1 : (c.x > 90 ? 1 : (Math.random() < 0.5 ? -1 : 1));
+      this.tweens.add({ targets: c, x: c.x + dir * 50, alpha: 0, duration: 450, ease: 'Quad.easeIn', onComplete: () => c.destroy() });
+    });
+    this.cars = [];
     this.chaseBar.setVisible(false);
     let title;
     if (won) {
@@ -441,6 +481,7 @@ BO.DayScene = class extends Phaser.Scene {
       v.y += (this.speed + v.dy) * dt;
       if (v.y > this.H + 16 || v.y < -30) { v.destroy(); this.voters.splice(i, 1); }
     }
+    this.separateVoters();
     // Arabalar
     for (let i = this.cars.length - 1; i >= 0; i--) {
       const c = this.cars[i];
@@ -448,15 +489,16 @@ BO.DayScene = class extends Phaser.Scene {
       if (c.y > this.H + 30 || c.y < -60) { c.destroy(); this.cars.splice(i, 1); }
     }
 
+    if (this.mode !== 'end') this.dayTime -= dt;   // süre kovalamada da akar
+
     if (this.mode === 'day') {
-      this.dayTime -= dt;
       this.spawnTimer -= dt;
       if (this.spawnTimer <= 0) {
         this.spawnVoter();
-        this.spawnTimer = Phaser.Math.FloatBetween(0.6, 1.3);
+        this.spawnTimer = Phaser.Math.FloatBetween(T.secmenAraligi[0], T.secmenAraligi[1]);
       }
       this.chaseTimer -= dt;
-      if (this.chaseTimer <= 0 && this.dayTime > 6) {
+      if (this.chaseTimer <= 0 && this.dayTime > T.kacisSuresi + 6) {
         BO.floatText(this, this.W / 2, this.H * 0.5, 'YANDAŞLAR GELİYOR!', BO.PAL.r, { duration: 1000 });
         this.triggerChase();
       }
@@ -469,7 +511,7 @@ BO.DayScene = class extends Phaser.Scene {
           S.kasa += amt;
           this.stats.bagis += amt;
           BO.sfx.coin();
-          BO.floatText(this, this.W - 40, 36, '+' + BO.tl(amt) + ' BAĞIŞ', BO.PAL.y, { rise: 10, duration: 1300 });
+          BO.floatText(this, this.W - 40, 46, '+' + BO.tl(amt) + ' BAĞIŞ', BO.PAL.y, { rise: 10, duration: 1300 });
         }
       }
       if (this.dayTime <= 0) this.endDay();

@@ -22,8 +22,8 @@ BO.tl = function (n) {
 
 // Ayarlanabilir oyun dengesi değerleri — oynanışı değiştirmek için buraya bak.
 BO.TUNE = {
-  gunSuresi: 60,          // gündüz bölümü kaç saniye
-  yolHizi: 22,            // dağıtım modunda yol akış hızı (px/sn)
+  gunSuresi: 70,          // bir günün toplam süresi (kovalamalar dahil), saniye
+  yolHizi: 28,            // dağıtım modunda yol akış hızı (px/sn)
   kacisYolHizi: 150,      // kovalama modunda yol akış hızı
   erzakFiyati: 500,       // 10 erzak kaç TL
   erzakPaketi: 10,
@@ -31,10 +31,12 @@ BO.TUNE = {
   memnunOy: 0.06,         // memnun seçmen başına oy oranı artışı
   memnunItibar: 0.6,
   domatesItibar: -2,
-  kovalamaAraligi: [16, 30], // rastgele kovalama zamanlayıcısı (sn)
-  kacisSuresi: 18,        // kaç saniye dayanınca kurtulursun
+  kovalamaAraligi: [18, 30], // rastgele kovalama zamanlayıcısı (sn)
+  kacisSuresi: 15,        // kaç saniye dayanınca kurtulursun
   kazaMesafe: 26,         // çarpınca kovalayan ne kadar yaklaşır
   yakalanmaOy: -0.4,
   yakalanmaItibar: -6,
   yakalanmaErzak: 5,
+  firlatmaSuresi: 300,    // hediyenin havada kalma süresi (ms)
+  secmenAraligi: [0.45, 0.95], // yeni seçmen gelme aralığı (sn)
 };

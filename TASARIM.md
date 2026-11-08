@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: Prototip 1 başlangıcı
+> Son güncelleme: Prototip 1, ilk geri bildirimler işlendi
 
 ## 1. Özet
 
@@ -35,6 +35,8 @@ Rakip partilerin de kendi oy oranı ve itibarı vardır.
 ### 4.1 Dağıtım modu
 - Üstü açık seçim otobüsü yolda ilerler, yol ekranda aşağı doğru akar.
 - Kaldırımlarda seçmenler yürür. **Tüm seçmenler aynı görünür** (tasarımları daha sonra eklenecek).
+- Bir gün en fazla ~1-1,5 dakika sürer (kovalamalar dahil 70 sn).
+- Seçmenler birbirinin içine girmez.
 - Oyuncu bir seçmene **dokununca** otobüsten ona erzak/hediye fırlatılır (simit, çay, makarna...).
 - Her hediye 1 erzak harcar.
 - **Seçmenin tepkisi rastgeledir**, kim olduğu önceden bilinmez:
