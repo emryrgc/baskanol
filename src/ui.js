@@ -39,10 +39,11 @@ BO.text = function (scene, x, y, str, opts) {
   opts = opts || {};
   const t = new BO.PixelText(scene, Math.round(x), Math.round(y), str, {
     fontFamily: BO.FONT,
-    fontSize: (opts.size || 8) + 'px',
+    fontSize: (opts.size || 12) + 'px',
     color: opts.color || BO.PAL.w,
     align: opts.align || 'left',
-    lineSpacing: opts.lineSpacing == null ? 4 : opts.lineSpacing,
+    lineSpacing: opts.lineSpacing == null ? -1 : opts.lineSpacing,
+    resolution: BO.K || 1,
     wordWrap: opts.wrap ? { width: opts.wrap } : undefined,
   });
   scene.add.existing(t);
@@ -73,7 +74,7 @@ BO.button = function (scene, x, y, w, h, label, opts) {
   c.add(g);
   let inner = null;
   if (label) {
-    inner = BO.text(scene, 0, 0, label, { size: opts.size || 8, color: P[opts.color || 'k'], ox: 0.5, oy: 0.5, align: 'center' });
+    inner = BO.text(scene, 0, 0, label, { size: opts.size || 12, color: P[opts.color || 'k'], ox: 0.5, oy: 0.5, align: 'center' });
   } else if (opts.icon) {
     inner = scene.add.image(0, 0, opts.icon);
   }
@@ -111,10 +112,10 @@ BO.pulse = function (scene, btn, color) {
 // Yukarı süzülüp kaybolan yazı ("+OY" gibi)
 BO.floatText = function (scene, x, y, str, color, opts) {
   opts = opts || {};
-  const t = BO.text(scene, x, y, str, { size: opts.size || 8, color: color, ox: 0.5, oy: 0.5, stroke: 2, depth: 50 });
+  const t = BO.text(scene, x, y, str, { size: opts.size || 12, color: color, ox: 0.5, oy: 0.5, stroke: 2, depth: 50 });
   // ekran dışına taşmasın
   const half = t.width / 2;
-  t.x = Math.round(BO.clamp(t.x, half + 2, scene.scale.width - half - 2));
+  t.x = Math.round(BO.clamp(t.x, half + 2, BO.W - half - 2));
   scene.tweens.add({
     targets: t, y: y - (opts.rise || 18), alpha: 0,
     duration: opts.duration || 900, delay: opts.delay || 0, ease: 'Quad.easeOut',

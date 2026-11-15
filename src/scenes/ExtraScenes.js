@@ -5,7 +5,7 @@ window.BO = window.BO || {};
 BO.ShopScene = class extends Phaser.Scene {
   constructor() { super('Shop'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state;
     S.ekipman = S.ekipman || {};
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
     this.add.rectangle(0, 0, W, 30, 0x5d275d).setOrigin(0);
@@ -48,7 +48,7 @@ BO.RallyScene = class extends Phaser.Scene {
   constructor() { super('Rally'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state;
     this.W = W; this.H = H;
     this.sure = 35;
     this.cosku = 40;
@@ -90,12 +90,12 @@ BO.RallyScene = class extends Phaser.Scene {
     this.yuhTimer = 3;
 
     // HUD
-    this.add.rectangle(0, 0, W, 28, C('k'), 0.92).setOrigin(0).setDepth(500);
-    BO.text(this, 4, 4, 'MİTİNG', { color: P.y, depth: 501 });
-    this.saatT = BO.text(this, W - 4, 4, '', { color: P.w, ox: 1, depth: 501 });
+    this.add.rectangle(0, 0, W, 30, C('k'), 0.92).setOrigin(0).setDepth(500);
+    BO.text(this, 4, 2, 'MİTİNG', { color: P.y, depth: 501 });
+    this.saatT = BO.text(this, W - 4, 2, '', { color: P.w, ox: 1, depth: 501 });
     BO.text(this, 4, 16, 'COŞKU', { color: P.o, depth: 501 });
-    this.add.rectangle(48, 17, W - 54, 6, C('N')).setOrigin(0).setDepth(501);
-    this.coskuBar = this.add.rectangle(48, 17, 0, 6, C('o')).setOrigin(0).setDepth(502);
+    this.add.rectangle(48, 20, W - 54, 6, C('N')).setOrigin(0).setDepth(501);
+    this.coskuBar = this.add.rectangle(48, 20, 0, 6, C('o')).setOrigin(0).setDepth(502);
 
     // Zamanlama çubuğu
     const by = H - 58;
@@ -106,11 +106,11 @@ BO.RallyScene = class extends Phaser.Scene {
     this.add.rectangle(W / 2 - 7, by, 14, 8, C('l')).setOrigin(0).setDepth(500);
     this.ok = this.add.rectangle(this.barX, by - 3, 3, 14, C('w')).setOrigin(0.5, 0).setDepth(501);
     this.okDir = 1;
-    BO.button(this, W / 2, H - 26, 150, 22, 'SLOGAN AT!', { fill: 'y', shade: 'o', size: 8, depth: 510, onDown: () => this.slogan() });
+    BO.button(this, W / 2, H - 26, 150, 22, 'SLOGAN AT!', { fill: 'y', shade: 'o', size: 16, depth: 510, onDown: () => this.slogan() });
 
     this.balon = BO.text(this, W / 2, 56, '', { color: P.w, ox: 0.5, oy: 0.5, stroke: 3, depth: 520 });
 
-    this.input.on('pointerdown', (p, over) => { if (!(over && over.length)) this.dokun(p.x, p.y); });
+    this.input.on('pointerdown', (p, over) => { if (!(over && over.length)) this.dokun(p.worldX, p.worldY); });
     this.input.keyboard.on('keydown-SPACE', () => this.slogan());
 
     const ipucu = BO.text(this, W / 2, H * 0.5, 'OK YEŞİLDEYKEN\nSLOGAN AT!\nYUHALAYANLARA\nDOKUN!', { color: P.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 600 });
@@ -252,7 +252,7 @@ BO.PosterScene = class extends Phaser.Scene {
   constructor() { super('Poster'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     this.W = W; this.H = H;
     this.sure = 45;
     this.bitti = false;
@@ -263,28 +263,28 @@ BO.PosterScene = class extends Phaser.Scene {
     this.polisTimer = 4;
     const C = (k) => Phaser.Display.Color.HexStringToColor(P[k] || k).color;
 
-    this.add.tileSprite(0, 0, W, H - 56, 'tugla').setOrigin(0);
+    this.add.tileSprite(0, 0, W, H - 80, 'tugla').setOrigin(0);
     this.add.rectangle(0, 0, W, H, 0x000000, 0.35).setOrigin(0);
-    this.kaldirimY = H - 56;
-    this.add.rectangle(0, this.kaldirimY, W, 22, C('n')).setOrigin(0);
+    this.kaldirimY = H - 80;
+    this.add.rectangle(0, this.kaldirimY, W, 34, C('n')).setOrigin(0);
     this.add.rectangle(0, this.kaldirimY, W, 2, C('L')).setOrigin(0);
-    this.add.rectangle(0, this.kaldirimY + 22, W, 34, C('#1e2236')).setOrigin(0);
+    this.add.rectangle(0, this.kaldirimY + 34, W, 46, C('#1e2236')).setOrigin(0);
     for (let x = 4; x < W; x += 24) this.add.rectangle(x, H - 18, 12, 2, C('L')).setOrigin(0);
     this.add.image(W - 14, 40, 'isik').setScale(0.8);
 
     // Afişler
     this.afisler = [];
     const top = 40, alt = this.kaldirimY - 6;
-    const ph = 64, pw = 52;
+    const ph = 50, pw = 40;
     const ys = [top + (alt - top) / 2 - 6];   // tek sıra, 3 afiş
     const sirali = Phaser.Utils.Array.Shuffle(BO.RIVALS.slice());   // her afiş farklı rakip
-    ys.forEach((y) => [32, 90, 148].forEach((x, i) => {
+    ys.forEach((y) => [36, 90, 144].forEach((x, i) => {
       const r = sirali[i % sirali.length];
       const c = this.add.container(x, y);
       c.add(this.add.rectangle(0, 0, pw + 2, ph + 2, C('w')));
       c.add(this.add.rectangle(0, 0, pw - 2, ph - 2, C(r.renk)));
-      c.add(this.add.image(0, -6, 'rakip_' + r.id).setScale(3));
-      c.add(BO.text(this, 0, ph / 2 - 11, r.kisa, { color: P.w, ox: 0.5, stroke: 2 }));
+      c.add(this.add.image(0, -5, 'rakip_' + r.id).setScale(2));
+      c.add(BO.text(this, 0, ph / 2 - 14, r.kisa, { color: P.w, ox: 0.5, stroke: 2 }));
       const g = this.add.graphics();
       c.add(g);
       const bar = this.add.rectangle(x - pw / 2, y + ph / 2 + 3, 0, 3, C('l')).setOrigin(0);
@@ -292,20 +292,20 @@ BO.PosterScene = class extends Phaser.Scene {
     }));
 
     // Oyuncu (kılıklı) kaldırımda
-    this.oyuncu = this.add.sprite(W / 2, this.kaldirimY + 16, 'kilik0').setOrigin(0.5, 1).setDepth(50);
+    this.oyuncu = this.add.sprite(W / 2, this.kaldirimY + 30, 'kilik0').setOrigin(0.5, 1).setDepth(50).setScale(2);
     this.coneG = this.add.graphics().setDepth(40);
 
     // HUD
-    this.add.rectangle(0, 0, W, 28, C('k'), 0.92).setOrigin(0).setDepth(500);
-    BO.text(this, 4, 4, 'AFİŞ BASKINI', { color: P.y, depth: 501 });
-    this.saatT = BO.text(this, W - 4, 4, '', { color: P.w, ox: 1, depth: 501 });
+    this.add.rectangle(0, 0, W, 30, C('k'), 0.92).setOrigin(0).setDepth(500);
+    BO.text(this, 4, 2, 'AFİŞ BASKINI', { color: P.y, depth: 501 });
+    this.saatT = BO.text(this, W - 4, 2, '', { color: P.w, ox: 1, depth: 501 });
     this.sayacT = BO.text(this, 4, 16, '', { color: P.l, depth: 501 });
     this.uyariT = BO.text(this, W - 4, 16, '', { color: P.r, ox: 1, depth: 501 });
-    BO.button(this, W - 30, H - 9, 52, 12, 'EVE DÖN', { fill: 'p', shade: 'k', color: 'w', depth: 510, onClick: () => this.bitir(false) });
+    BO.button(this, W - 34, H - 24, 60, 16, 'EVE DÖN', { fill: 'p', shade: 'k', color: 'w', depth: 510, onClick: () => this.bitir(false) });
 
     this.input.on('pointerdown', (p, over) => {
       if (this.bitti || (over && over.length)) return;
-      const a = this.afisler.find((f) => !f.bitti && Math.abs(p.x - f.x) < f.w / 2 + 2 && Math.abs(p.y - f.y) < f.h / 2 + 2);
+      const a = this.afisler.find((f) => !f.bitti && Math.abs(p.worldX - f.x) < f.w / 2 + 4 && Math.abs(p.worldY - f.y) < f.h / 2 + 4);
       if (a) { this.aktif = a; this.tweens.add({ targets: this.oyuncu, x: a.x, duration: 200 }); }
     });
     this.input.on('pointerup', () => { this.aktif = null; });
@@ -319,11 +319,11 @@ BO.PosterScene = class extends Phaser.Scene {
     // bıyık + rastgele süs
     const g = a.g, k = 0x1a1c2c;
     g.fillStyle(k, 1);
-    g.fillRect(-9, 0, 18, 3); g.fillRect(-12, 2, 4, 3); g.fillRect(8, 2, 4, 3);
+    g.fillRect(-6, -7, 12, 2); g.fillRect(-8, -6, 3, 2); g.fillRect(5, -6, 3, 2);
     const tip = Phaser.Math.Between(0, 2);
-    if (tip === 0) { g.fillStyle(0xb13e53, 1); g.fillTriangle(-12, -24, -8, -34, -5, -24); g.fillTriangle(5, -24, 8, -34, 12, -24); }
-    else if (tip === 1) { g.fillStyle(k, 1); g.fillRect(-11, -14, 9, 5); g.fillRect(2, -14, 9, 5); g.fillRect(-2, -13, 4, 2); }
-    else { g.lineStyle(2, k, 1); g.lineBetween(-10, -16, -4, -10); g.lineBetween(-4, -16, -10, -10); g.lineBetween(4, -16, 10, -10); g.lineBetween(10, -16, 4, -10); }
+    if (tip === 0) { g.fillStyle(0xb13e53, 1); g.fillTriangle(-8, -19, -6, -26, -3, -19); g.fillTriangle(3, -19, 6, -26, 8, -19); }
+    else if (tip === 1) { g.fillStyle(k, 1); g.fillRect(-7, -12, 6, 3); g.fillRect(1, -12, 6, 3); g.fillRect(-1, -11, 2, 1); }
+    else { g.lineStyle(1, k, 1); g.lineBetween(-6, -13, -2, -9); g.lineBetween(-2, -13, -6, -9); g.lineBetween(2, -13, 6, -9); g.lineBetween(6, -13, 2, -9); }
     this.tweens.add({ targets: a.c, angle: { from: -4, to: 4 }, duration: 60, yoyo: true, repeat: 3, onComplete: () => a.c.setAngle(Phaser.Math.Between(-3, 3)) });
   }
 
@@ -343,7 +343,7 @@ BO.PosterScene = class extends Phaser.Scene {
         a.bitti = true; this.aktif = null; this.cizilen++;
         this.ciz(a);
         BO.sfx.coin();
-        BO.floatText(this, a.x, a.y - 30, a.r.kisa + ' -2', P.l);
+        BO.floatText(this, a.x, a.y - 32, a.r.kisa + ' -2', P.l);
         const e = this.log.find((l) => l.id === a.r.id);
         if (e) e.sayi++; else this.log.push({ tip: 'afis', id: a.r.id, sayi: 1 });
         if (this.afisler.every((f) => f.bitti)) { BO.floatText(this, this.W / 2, this.H / 2, 'TAM TEMİZLİK!', P.y, { size: 16 }); this.time.delayedCall(800, () => this.bitir(false)); }
@@ -361,12 +361,12 @@ BO.PosterScene = class extends Phaser.Scene {
       p.x += p.dir * 55 * dt;
       p.aci = -Math.PI / 2 + Math.sin(t / 250) * 0.5;
       const L = 120, half = 0.35;
-      const ox = p.x, oy = p.y - 10;
+      const ox = p.x, oy = p.y - 20;
       this.coneG.fillStyle(0xd8f4ff, 0.3).fillTriangle(ox, oy,
         ox + Math.cos(p.aci - half) * L, oy + Math.sin(p.aci - half) * L,
         ox + Math.cos(p.aci + half) * L, oy + Math.sin(p.aci + half) * L);
       // fener altında çiziyorsan yakalanırsın (bıyık seviyesi tolerans verir)
-      const gorur = ciziyor && Math.abs(this.oyuncu.x - p.x) < 28;
+      const gorur = ciziyor && Math.abs(this.oyuncu.x - p.x) < 30;
       p.risk = gorur ? p.risk + dt : 0;
       if (p.risk > 0.15 + 0.15 * BO.seviye('biyik')) { this.yakalandi(); return; }
       if ((p.dir > 0 && p.x > this.W + 20) || (p.dir < 0 && p.x < -20)) {
@@ -386,12 +386,12 @@ BO.PosterScene = class extends Phaser.Scene {
     this.polisUyari = true;
     BO.sfx.alarm();
     const dir = Math.random() < 0.5 ? 1 : -1;
-    const isaret = this.add.image(dir > 0 ? 10 : this.W - 10, this.kaldirimY + 2, 'isaret').setDepth(60).setScale(2);
+    const isaret = this.add.image(dir > 0 ? 10 : this.W - 10, this.kaldirimY + 12, 'isaret').setDepth(60).setScale(2);
     this.tweens.add({ targets: isaret, alpha: 0.2, duration: 150, yoyo: true, repeat: 4, onComplete: () => isaret.destroy() });
     this.time.delayedCall(1400, () => {
       if (this.bitti) return;
       this.polisUyari = false;
-      const p = this.add.sprite(dir > 0 ? -12 : this.W + 12, this.kaldirimY + 18, 'polis0').setOrigin(0.5, 1).setDepth(55).play('polis_yuru');
+      const p = this.add.sprite(dir > 0 ? -12 : this.W + 12, this.kaldirimY + 30, 'polis0').setOrigin(0.5, 1).setDepth(55).setScale(2).play('polis_yuru');
       p.dir = dir; p.risk = 0; p.setFlipX(dir < 0);
       this.polis = p;
     });

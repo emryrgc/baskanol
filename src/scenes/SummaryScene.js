@@ -8,15 +8,15 @@ BO.SummaryScene = class extends Phaser.Scene {
 
   create() {
     BO.normalizeOy();
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state, st = this.st;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state, st = this.st;
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
 
     // Gazete kâğıdı
     const top = 10;
     this.add.rectangle(8, top, W - 16, 64, 0xf4f4f4).setOrigin(0);
     this.add.rectangle(8, top + 64, W - 16, 2, 0x94b0c2).setOrigin(0);
-    BO.text(this, W / 2, top + 6, 'AKŞAM POSTASI', { color: P.k, ox: 0.5 });
-    this.add.rectangle(14, top + 17, W - 28, 1, 0x1a1c2c).setOrigin(0);
+    BO.text(this, W / 2, top + 3, 'AKŞAM POSTASI', { color: P.k, ox: 0.5 });
+    this.add.rectangle(14, top + 18, W - 28, 1, 0x1a1c2c).setOrigin(0);
     BO.text(this, W / 2, top + 22, this.headline(), { color: P.r, ox: 0.5, align: 'center', wrap: W - 28, lineSpacing: 3 });
 
     // İstatistikler

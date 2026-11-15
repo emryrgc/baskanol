@@ -18,7 +18,7 @@ BO.SkipScene = class extends Phaser.Scene {
   constructor() { super('Skip'); }
   init(d) { this.gunler = d.gunler || []; }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state;
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
     const n = this.gunler.length;
     BO.text(this, W / 2, 10, n + ' GÜN GEÇTİ', { size: 16, color: P.y, ox: 0.5 });
@@ -69,7 +69,7 @@ BO.SkipScene = class extends Phaser.Scene {
 BO.PollScene = class extends Phaser.Scene {
   constructor() { super('Poll'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state;
     const C = (k) => Phaser.Display.Color.HexStringToColor(P[k] || k).color;
     BO.normalizeOy();
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
@@ -85,12 +85,12 @@ BO.PollScene = class extends Phaser.Scene {
     list.forEach((p, i) => {
       this.add.rectangle(8, y + 1, 6, 6, C(p.renk)).setOrigin(0);
       BO.text(this, 18, y, p.ad, { color: p.id === 'biz' ? P.y : P.w });
-      const bar = this.add.rectangle(18, y + 12, 0, 7, C(p.renk)).setOrigin(0);
+      const bar = this.add.rectangle(18, y + 15, 0, 7, C(p.renk)).setOrigin(0);
       this.tweens.add({ targets: bar, width: Math.max(2, Math.round(110 * p.oy / max)), duration: 900, delay: i * 150, ease: 'Quad.easeOut' });
       BO.text(this, W - 8, y, '%' + p.oy.toFixed(1), { color: P.w, ox: 1 });
       if (once[p.id] != null) {
         const d = p.oy - once[p.id];
-        BO.text(this, W - 8, y + 11, (d >= 0 ? '+' : '') + d.toFixed(1), { color: d >= 0 ? P.l : P.r, ox: 1 });
+        BO.text(this, W - 8, y + 12, (d >= 0 ? '+' : '') + d.toFixed(1), { color: d >= 0 ? P.l : P.r, ox: 1 });
       }
       y += 26;
     });
@@ -113,7 +113,7 @@ BO.PollScene = class extends Phaser.Scene {
 BO.DebateScene = class extends Phaser.Scene {
   constructor() { super('Debate'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     const C = (k) => Phaser.Display.Color.HexStringToColor(P[k] || k).color;
     this.W = W; this.H = H; this.P = P;
     // en güçlü rakip karşına çıkar
@@ -131,8 +131,8 @@ BO.DebateScene = class extends Phaser.Scene {
     this.add.rectangle(0, 120, W, 4, C('p')).setOrigin(0);
     // kürsüler
     const kursu = (x, renk) => {
-      this.add.rectangle(x - 16, 92, 32, 28, C('k')).setOrigin(0);
-      this.add.rectangle(x - 15, 93, 30, 26, C(renk)).setOrigin(0);
+      this.add.rectangle(x - 24, 92, 48, 28, C('k')).setOrigin(0);
+      this.add.rectangle(x - 23, 93, 46, 26, C(renk)).setOrigin(0);
     };
     this.bizSp = this.add.sprite(40, 96, 'aday0').setOrigin(0.5, 1).setScale(2).play('el_salla');
     kursu(40, 'o');
@@ -149,7 +149,7 @@ BO.DebateScene = class extends Phaser.Scene {
     this.bizBar = this.add.rectangle(48, 129, 0, 6, C('o')).setOrigin(0);
     this.oBar = this.add.rectangle(116, 129, 0, 6, C(lider.renk)).setOrigin(0);
 
-    this.soruT = BO.text(this, W / 2, 144, '', { color: P.w, ox: 0.5, align: 'center' });
+    this.soruT = BO.text(this, W / 2, 138, '', { color: P.w, ox: 0.5, align: 'center' });
     this.balonBiz = BO.text(this, 40, 40, '', { color: P.y, ox: 0.5, align: 'center', stroke: 2, depth: 20 });
     this.balonO = BO.text(this, 140, 40, '', { color: P.w, ox: 0.5, align: 'center', stroke: 2, depth: 20 });
     this.btns = [];
@@ -164,9 +164,9 @@ BO.DebateScene = class extends Phaser.Scene {
     const tipler = Phaser.Utils.Array.Shuffle(['ciddi', 'populist', 'saldirgan']);
     let y = 186;
     const room = H - y - 4;
-    const step = Math.min(30, Math.floor(room / 3));
+    const step = Math.min(36, Math.floor(room / 3));
     tipler.forEach((t) => {
-      const b = BO.button(this, W / 2, y + 11, 164, 22, q.cevap[t], {
+      const b = BO.button(this, W / 2, y + 14, 164, 28, q.cevap[t], {
         fill: 'w', shade: 'L', onClick: () => this.answer(t),
       });
       this.btns.push(b);
@@ -219,7 +219,7 @@ BO.DebateScene = class extends Phaser.Scene {
 BO.ElectionScene = class extends Phaser.Scene {
   constructor() { super('Election'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     const C = (k) => Phaser.Display.Color.HexStringToColor(P[k] || k).color;
     const sonuc = BO.secimSonucu();
     BO.clearSave();
@@ -241,7 +241,7 @@ BO.ElectionScene = class extends Phaser.Scene {
     sonuc.forEach((p, i) => {
       this.add.rectangle(8, y + 1, 6, 6, C(p.renk)).setOrigin(0);
       BO.text(this, 18, y, p.ad, { color: p.id === 'biz' ? P.y : P.w });
-      const bar = this.add.rectangle(18, y + 12, 0, 8, C(p.renk)).setOrigin(0);
+      const bar = this.add.rectangle(18, y + 15, 0, 8, C(p.renk)).setOrigin(0);
       const t = BO.text(this, W - 8, y, '%0.0', { color: P.w, ox: 1 });
       const counter = { v: 0 };
       this.tweens.add({
@@ -269,7 +269,7 @@ BO.ElectionScene = class extends Phaser.Scene {
   }
 
   konfeti() {
-    const W = this.scale.width, H = this.scale.height;
+    const W = BO.W, H = BO.H;
     const renk = [0xef7d57, 0xffcd75, 0xa7f070, 0x41a6f6, 0xf4f4f4, 0xb13e53];
     for (let i = 0; i < 60; i++) {
       const p = this.add.rectangle(Phaser.Math.Between(0, W), -10 - Phaser.Math.Between(0, 120), 2, 3, Phaser.Utils.Array.GetRandom(renk)).setDepth(50);

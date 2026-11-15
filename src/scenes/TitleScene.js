@@ -11,7 +11,7 @@ BO.BootScene = class extends Phaser.Scene {
 
 // Menü ekranlarının ortak arka planı: akan yol + yürüyen seçmenler
 BO.menuArkaPlan = function (scene, karart) {
-  const W = scene.scale.width, H = scene.scale.height;
+  const W = BO.W, H = BO.H;
   scene.bg = scene.add.tileSprite(0, 0, W, H, 'yol').setOrigin(0);
   scene.walkers = [];
   for (let i = 0; i < 6; i++) {
@@ -23,14 +23,14 @@ BO.menuArkaPlan = function (scene, karart) {
   if (karart) scene.add.rectangle(0, 0, W, H, 0x1a1c2c, karart).setOrigin(0);
 };
 BO.menuArkaPlanGuncelle = function (scene, delta) {
-  const dt = delta / 1000, H = scene.scale.height;
+  const dt = delta / 1000, H = BO.H;
   scene.bg.tilePositionY -= 26 * dt;
   scene.walkers.forEach((s) => { s.y += 26 * dt; if (s.y > H + 12) s.y = -12; });
 };
 
 // Basit evet/hayır penceresi
 BO.onayKutusu = function (scene, soru, evet, hayir) {
-  const W = scene.scale.width, H = scene.scale.height, P = BO.PAL;
+  const W = BO.W, H = BO.H, P = BO.PAL;
   const ui = [];
   const add = (o) => { o.setDepth(900); ui.push(o); return o; };
   const kapat = () => ui.forEach((o) => o.destroy());
@@ -46,7 +46,7 @@ BO.TitleScene = class extends Phaser.Scene {
   constructor() { super('Title'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     BO.menuArkaPlan(this, 0);
 
     this.add.rectangle(0, 0, W, 104, 0x1a1c2c, 0.9).setOrigin(0);
@@ -72,7 +72,7 @@ BO.TitleScene = class extends Phaser.Scene {
       if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.5', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.6', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
@@ -106,7 +106,7 @@ BO.NameScene = class extends Phaser.Scene {
   constructor() { super('Name'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
     this.ad = '';
     BO.text(this, W / 2, 8, 'ADAYIN ADI NE?', { color: P.y, ox: 0.5 });
@@ -166,14 +166,14 @@ BO.NameScene = class extends Phaser.Scene {
 
   guncelle() {
     this.adT.setText(this.ad || '');
-    this.imlec.x = Math.round(this.scale.width / 2 + this.adT.width / 2 + 1);
+    this.imlec.x = Math.round(BO.W / 2 + this.adT.width / 2 + 1);
     this.tamam.setAlpha(this.ad.trim().length >= 2 ? 1 : 0.5);
   }
 
   basla() {
     const ad = this.ad.trim();
     if (ad.length < 2) {
-      BO.floatText(this, this.scale.width / 2, 96, 'EN AZ 2 HARF!', BO.PAL.r);
+      BO.floatText(this, BO.W / 2, 96, 'EN AZ 2 HARF!', BO.PAL.r);
       return;
     }
     BO.sfx.unlock();
@@ -189,7 +189,7 @@ BO.NameScene = class extends Phaser.Scene {
 BO.LoadScene = class extends Phaser.Scene {
   constructor() { super('Load'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     BO.menuArkaPlan(this, 0.85);
     BO.text(this, W / 2, 14, 'OYUN YÜKLE', { size: 16, color: P.y, ox: 0.5 });
     const k = BO.load();
@@ -231,7 +231,7 @@ BO.LoadScene = class extends Phaser.Scene {
 BO.SettingsScene = class extends Phaser.Scene {
   constructor() { super('Settings'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, A = BO.ayar;
+    const W = BO.W, H = BO.H, P = BO.PAL, A = BO.ayar;
     BO.menuArkaPlan(this, 0.85);
     BO.text(this, W / 2, 14, 'AYARLAR', { size: 16, color: P.y, ox: 0.5 });
     let y = 52;
@@ -247,8 +247,8 @@ BO.SettingsScene = class extends Phaser.Scene {
       const sira = ['kolay', 'normal', 'zor'];
       A.zorluk = sira[(sira.indexOf(A.zorluk) + 1) % 3];
     });
-    BO.text(this, W / 2, y - 6, 'KOLAY: POLİS YAVAŞ,\nRAKİPLER YUMUŞAK.\nZOR: TAM TERSİ.\nBAŞLANGIÇ PARASI\nDA DEĞİŞİR.', { color: P.L, ox: 0.5, align: 'center', lineSpacing: 3 });
-    y += 66;
+    BO.text(this, W / 2, y - 10, 'KOLAY: POLİS YAVAŞ,\nRAKİPLER YUMUŞAK.\nZOR: TAM TERSİ.\nBAŞLANGIÇ PARASI\nDA DEĞİŞİR.', { color: P.L, ox: 0.5, align: 'center', lineSpacing: 3 });
+    y += 90;
     BO.button(this, W / 2, y, 140, 16, 'KAYITLARI SİL', {
       fill: 'r', shade: 'k', color: 'w',
       onClick: () => BO.onayKutusu(this, 'TÜM KAYITLAR\nSİLİNECEK!', () => { BO.clearSave(); BO.floatText(this, W / 2, y - 14, 'SİLİNDİ', P.l); }),
@@ -262,7 +262,7 @@ BO.SettingsScene = class extends Phaser.Scene {
 BO.CreditsScene = class extends Phaser.Scene {
   constructor() { super('Credits'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
     const satirlar = [
       ['BAŞKAN OL!', P.y, 16], ['', P.w],
@@ -286,7 +286,7 @@ BO.CreditsScene = class extends Phaser.Scene {
   }
   update(t, d) {
     this.liste.y -= 18 * d / 1000;
-    if (this.liste.y < -this.boy) this.liste.y = this.scale.height + 10;
+    if (this.liste.y < -this.boy) this.liste.y = BO.H + 10;
   }
 };
 
@@ -294,7 +294,7 @@ BO.CreditsScene = class extends Phaser.Scene {
 BO.ByeScene = class extends Phaser.Scene {
   constructor() { super('Bye'); }
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL;
+    const W = BO.W, H = BO.H, P = BO.PAL;
     this.add.rectangle(0, 0, W, H, 0x000000).setOrigin(0);
     BO.text(this, W / 2, H / 2 - 30, 'GÖRÜŞÜRÜZ\nBAŞKANIM!', { size: 16, color: P.y, ox: 0.5, align: 'center' });
     BO.text(this, W / 2, H / 2 + 14, 'OYUN KAYDEDİLDİ.\nSEKMEYİ\nKAPATABİLİRSİN.', { color: P.L, ox: 0.5, align: 'center' });

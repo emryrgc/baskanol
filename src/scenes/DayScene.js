@@ -5,7 +5,7 @@ BO.DayScene = class extends Phaser.Scene {
   constructor() { super('Day'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height;
+    const W = BO.W, H = BO.H;
     const S = BO.state, T = BO.TUNE;
     this.W = W; this.H = H;
 
@@ -26,7 +26,7 @@ BO.DayScene = class extends Phaser.Scene {
     this.bg = this.add.tileSprite(0, 0, W, H, 'yol').setOrigin(0).setDepth(0);
 
     // --- Otobüs ---
-    this.busDayY = H - 84;
+    this.busDayY = H - 100;
     this.busChaseY = Math.round(H * 0.5);
     this.lane = 1;
     this.bus = this.add.container(BO.LANE_X[1], this.busDayY).setDepth(20);
@@ -51,14 +51,14 @@ BO.DayScene = class extends Phaser.Scene {
     // Ekrana dokununca en yakın seçmene fırlat (küçük hedefleri vurmak kolay olsun)
     this.input.on('pointerdown', (p, over) => {
       if (over && over.length) return;
-      this.tapAt(p.x, p.y);
+      this.tapAt(p.worldX, p.worldY);
     });
     this.input.keyboard.on('keydown-LEFT', () => this.changeLane(-1));
     this.input.keyboard.on('keydown-RIGHT', () => this.changeLane(1));
     this.input.keyboard.on('keydown-A', () => this.changeLane(-1));
     this.input.keyboard.on('keydown-D', () => this.changeLane(1));
 
-    const hint = BO.text(this, W / 2, H * 0.42, 'SEÇMENLERE DOKUN\nERZAK FIRLAT!', { size: 8, color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 60 });
+    const hint = BO.text(this, W / 2, H * 0.42, 'SEÇMENLERE DOKUN\nERZAK FIRLAT!', { color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 60 });
     this.tweens.add({ targets: hint, alpha: 0, delay: 2600, duration: 500, onComplete: () => hint.destroy() });
     this.tweens.add({ targets: hint, alpha: 0.3, duration: 300, yoyo: true, repeat: 3 });
 
@@ -68,24 +68,24 @@ BO.DayScene = class extends Phaser.Scene {
   // ================= HUD =================
   buildHud() {
     const W = this.W, P = BO.PAL;
-    this.add.rectangle(0, 0, W, 26, 0x1a1c2c, 0.92).setOrigin(0).setDepth(80);
-    this.add.rectangle(0, 26, W, 1, 0x566c86).setOrigin(0).setDepth(80);
-    this.hudOy = BO.text(this, 4, 4, '', { color: P.l, depth: 81 });
-    this.hudKasa = BO.text(this, W - 4, 4, '', { color: P.y, ox: 1, depth: 81 });
-    this.hudGun = BO.text(this, 4, 15, '', { color: P.w, depth: 81 });
-    this.add.image(52, 18, 'kalp').setDepth(81);
-    this.add.rectangle(57, 15, 32, 6, 0x333c57).setOrigin(0).setDepth(81);
-    this.hudItibar = this.add.rectangle(57, 15, 32, 6, 0x38b764).setOrigin(0).setDepth(82);
-    this.add.image(98, 18, 'simit').setDepth(81);
-    this.hudErzak = BO.text(this, 103, 15, '', { color: P.w, depth: 81 });
-    this.hudSaat = BO.text(this, W - 4, 15, '', { color: P.w, ox: 1, depth: 81 });
+    this.add.rectangle(0, 0, W, 30, 0x1a1c2c, 0.92).setOrigin(0).setDepth(80);
+    this.add.rectangle(0, 30, W, 1, 0x566c86).setOrigin(0).setDepth(80);
+    this.hudOy = BO.text(this, 4, 2, '', { color: P.l, depth: 81 });
+    this.hudKasa = BO.text(this, W - 4, 2, '', { color: P.y, ox: 1, depth: 81 });
+    this.hudGun = BO.text(this, 4, 16, '', { color: P.w, depth: 81 });
+    this.add.image(52, 23, 'kalp').setDepth(81);
+    this.add.rectangle(57, 20, 32, 6, 0x333c57).setOrigin(0).setDepth(81);
+    this.hudItibar = this.add.rectangle(57, 20, 32, 6, 0x38b764).setOrigin(0).setDepth(82);
+    this.add.image(98, 23, 'simit').setDepth(81);
+    this.hudErzak = BO.text(this, 103, 16, '', { color: P.w, depth: 81 });
+    this.hudSaat = BO.text(this, W - 4, 16, '', { color: P.w, ox: 1, depth: 81 });
 
     // Kaçış ilerleme çubuğu (kovalamada görünür)
-    this.chaseBar = this.add.container(0, 30).setDepth(80).setVisible(false);
-    this.chaseBar.add(this.add.rectangle(0, 0, W, 12, 0x1a1c2c, 0.85).setOrigin(0));
-    this.chaseBar.add(BO.text(this, 4, 2, 'KAÇIŞ', { color: P.o }));
-    this.chaseBar.add(this.add.rectangle(48, 3, W - 54, 6, 0x333c57).setOrigin(0));
-    this.chaseFill = this.add.rectangle(48, 3, 0, 6, 0xa7f070).setOrigin(0);
+    this.chaseBar = this.add.container(0, 31).setDepth(80).setVisible(false);
+    this.chaseBar.add(this.add.rectangle(0, 0, W, 16, 0x1a1c2c, 0.85).setOrigin(0));
+    this.chaseBar.add(BO.text(this, 4, 1, 'KAÇIŞ', { color: P.o }));
+    this.chaseBar.add(this.add.rectangle(48, 5, W - 54, 6, 0x333c57).setOrigin(0));
+    this.chaseFill = this.add.rectangle(48, 5, 0, 6, 0xa7f070).setOrigin(0);
     this.chaseBar.add(this.chaseFill);
     this.updateHud();
   }
@@ -105,12 +105,12 @@ BO.DayScene = class extends Phaser.Scene {
   // ================= Kontroller =================
   buildControls() {
     const W = this.W, H = this.H, T = BO.TUNE;
-    this.erzakBtn = BO.button(this, W / 2, H - 22, 140, 18, '+' + T.erzakPaketi + ' ERZAK ' + T.erzakFiyati + 'TL', {
+    this.erzakBtn = BO.button(this, W / 2, H - 42, 150, 20, '+' + T.erzakPaketi + ' ERZAK ' + T.erzakFiyati + 'TL', {
       fill: 'y', shade: 'o', depth: 70,
       onClick: () => this.buyErzak(),
     });
-    this.leftBtn = this.yonTusu(28, H - 30, -1);
-    this.rightBtn = this.yonTusu(W - 28, H - 30, 1);
+    this.leftBtn = this.yonTusu(28, H - 60, -1);
+    this.rightBtn = this.yonTusu(W - 28, H - 60, 1);
     this.leftBtn.setVisible(false); this.rightBtn.setVisible(false);
   }
 

@@ -5,7 +5,7 @@ BO.NightScene = class extends Phaser.Scene {
   constructor() { super('Night'); }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, N = BO.NIGHT, M = BO.NIGHT_MAP, TS = N.tile;
+    const W = BO.W, H = BO.H, N = BO.NIGHT, M = BO.NIGHT_MAP, TS = N.tile;
     this.W = W; this.H = H;
     this.cols = M[0].length; this.rows = M.length;
     this.worldH = this.rows * TS;
@@ -77,8 +77,9 @@ BO.NightScene = class extends Phaser.Scene {
     this.tweens.add({ targets: this.rival, scaleY: 1.06, duration: 300, yoyo: true, repeat: -1 });
 
     // Kamera
-    this.cameras.main.setBounds(0, -30, W, this.worldH + 30 + 30);
-    this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
+    // (kamera elle takip eder: updateCam)
+    this.camHedef = this.player;
+    this.cameras.main.scrollY = this.camY(this.player.y);
 
     this.buildHud();
     this.updateHud(false);
@@ -144,22 +145,22 @@ BO.NightScene = class extends Phaser.Scene {
   buildHud() {
     const W = this.W, H = this.H, P = BO.PAL;
     const fix = (o) => o.setScrollFactor(0).setDepth(600);
-    fix(this.add.rectangle(0, 0, W, 26, 0x1a1c2c, 0.92).setOrigin(0));
-    fix(this.add.rectangle(0, 26, W, 1, 0x5d275d).setOrigin(0));
-    this.hudSaat = fix(BO.text(this, 4, 4, '', { color: P.L }));
-    this.hudKasa = fix(BO.text(this, W - 4, 4, '', { color: P.y, ox: 1 }));
-    fix(this.add.image(9, 18, 'goz'));
-    fix(this.add.rectangle(17, 15, 60, 6, 0x333c57).setOrigin(0));
-    this.hudDet = fix(this.add.rectangle(17, 15, 0, 6, 0xffcd75).setOrigin(0));
-    this.hudGizli = fix(BO.text(this, 84, 15, '', { color: P.l }));
-    fix(this.add.rectangle(0, 27, W, 12, 0x1a1c2c, 0.8).setOrigin(0));
-    this.hudGorev = fix(BO.text(this, W / 2, 29, '', { color: P.w, ox: 0.5 }));
+    fix(this.add.rectangle(0, 0, W, 30, 0x1a1c2c, 0.92).setOrigin(0));
+    fix(this.add.rectangle(0, 30, W, 1, 0x5d275d).setOrigin(0));
+    this.hudSaat = fix(BO.text(this, 4, 2, '', { color: P.L }));
+    this.hudKasa = fix(BO.text(this, W - 4, 2, '', { color: P.y, ox: 1 }));
+    fix(this.add.image(9, 23, 'goz'));
+    fix(this.add.rectangle(17, 20, 60, 6, 0x333c57).setOrigin(0));
+    this.hudDet = fix(this.add.rectangle(17, 20, 0, 6, 0xffcd75).setOrigin(0));
+    this.hudGizli = fix(BO.text(this, 84, 16, '', { color: P.l }));
+    fix(this.add.rectangle(0, 31, W, 15, 0x1a1c2c, 0.8).setOrigin(0));
+    this.hudGorev = fix(BO.text(this, W / 2, 32, '', { color: P.w, ox: 0.5 }));
     // hedef okları (hedef ekran dışındayken)
     this.oklar = ['gazete', 'rakip'].map((k) => ({
       k, g: fix(this.add.graphics()),
       t: fix(BO.text(this, 0, 0, k === 'gazete' ? 'GAZETE' : this.rivalInfo.kisa, { color: P.y, ox: 0.5, oy: 0.5, stroke: 2 })),
     }));
-    this.eveBtn = BO.button(this, W - 30, H - 14, 52, 14, 'EVE DÖN', {
+    this.eveBtn = BO.button(this, W - 34, H - 26, 60, 16, 'EVE DÖN', {
       fill: 'p', shade: 'k', color: 'w', depth: 600, onClick: () => this.endNight(),
     });
     this.eveBtn.setScrollFactor(0);
@@ -172,10 +173,10 @@ BO.NightScene = class extends Phaser.Scene {
       const hedef = o.k === 'gazete' ? { x: this.doorPos.x, y: this.doorPos.y - 12 } : this.rival;
       const sy = hedef.y - cam.scrollY;
       o.g.clear();
-      const ust = sy < 44, alt = sy > H - 24;
+      const ust = sy < 50, alt = sy > H - 24;
       if (done || (!ust && !alt)) { o.t.setVisible(false); return; }
       const x = BO.clamp(hedef.x, 30, W - 30);
-      const y = ust ? 46 : H - 34;
+      const y = ust ? 52 : H - 40;
       const blink = Math.floor(this.time.now / 300) % 2 === 0;
       o.g.fillStyle(0xffcd75, blink ? 1 : 0.6);
       if (ust) o.g.fillTriangle(x, y - 4, x - 5, y + 2, x + 5, y + 2);
@@ -225,7 +226,18 @@ BO.NightScene = class extends Phaser.Scene {
   }
 
   // ================= Döngü =================
+  // Kameranın dikey kayması (dünya pikseli). Haritanın biraz üstü/altı da görünebilir.
+  camY(y) { return BO.clamp(y - this.H / 2, -30, this.worldH + 30 - this.H); }
+
+  updateCam(dt) {
+    const cam = this.cameras.main, t = this.camHedef;
+    if (!t) return;
+    const k = this.camHizli ? Math.min(1, dt * 5) : Math.min(1, dt * 7);
+    cam.scrollY += (this.camY(t.y) - cam.scrollY) * k;
+  }
+
   update(time, delta) {
+    this.updateCam(Math.min(delta, 50) / 1000);
     if (this.paused || this.ended) return;
     const dt = Math.min(delta, 50) / 1000;
     this.timeLeft -= dt;
@@ -350,7 +362,7 @@ BO.NightScene = class extends Phaser.Scene {
     const btns = [];
     list.forEach((o, i) => {
       const lines = o.label.split('\n').length;
-      const h = lines > 1 ? 22 : 14;
+      const h = lines > 1 ? 28 : 16;
       const b = add(BO.button(this, this.W / 2, top + h / 2, 164, h, o.label, {
         fill: o.fill || 'w', shade: o.shade || 'L', color: o.color || 'k', depth: 710,
         onClick: () => { btns.forEach((x) => x.disableInteractive()); o.onPick(); },
@@ -464,7 +476,7 @@ BO.NightScene = class extends Phaser.Scene {
   intro() {
     const cam = this.cameras.main, W = this.W, H = this.H;
     this.paused = true;
-    cam.stopFollow();
+    this.camHizli = true;
     this.oklar.forEach((o) => { o.g.clear(); o.t.setVisible(false); });
     const yazi = BO.text(this, W / 2, H - 44, '', { color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 900 }).setScrollFactor(0);
     const adimlar = [
@@ -476,7 +488,7 @@ BO.NightScene = class extends Phaser.Scene {
     const bitir = () => {
       if (bitti) return; bitti = true;
       yazi.destroy(); this.input.off('pointerdown', bitir);
-      cam.startFollow(this.player, true, 0.12, 0.12);
+      this.camHedef = this.player; this.camHizli = false;
       this.paused = false;
       if (this.hint && this.hint.active) {
         this.hint.setVisible(true);
@@ -487,7 +499,7 @@ BO.NightScene = class extends Phaser.Scene {
       if (bitti) return;
       if (i >= adimlar.length) { bitir(); return; }
       const a = adimlar[i++];
-      cam.pan(a.x, a.y, 600, 'Sine.easeInOut');
+      this.camHedef = { x: a.x, y: a.y };
       yazi.setText(a.t);
       this.time.delayedCall(1700, sonraki);
     };
@@ -582,8 +594,8 @@ BO.NightScene = class extends Phaser.Scene {
     const top = Math.round(H * 0.3);
     add(this.add.rectangle(10, top, W - 20, 96, 0xf4f4f4).setOrigin(0));
     add(BO.text(this, W / 2, top + 8, 'VİDEO PAYLAŞILDI!', { color: P.k, ox: 0.5 }));
-    add(BO.text(this, W / 2, top + 26, izlenme + ' MİLYON\nİZLENME', { size: 8, color: P.r, ox: 0.5, align: 'center' }));
-    add(BO.text(this, W / 2, top + 52, R.kisa + ' İTİBAR -' + kayip, { color: P.b, ox: 0.5 }));
+    add(BO.text(this, W / 2, top + 22, izlenme + ' MİLYON\nİZLENME', { color: P.r, ox: 0.5, align: 'center' }));
+    add(BO.text(this, W / 2, top + 50, R.kisa + ' İTİBAR -' + kayip, { color: P.b, ox: 0.5 }));
     this.options([{ label: 'DEVAM', fill: 'y', shade: 'o', onPick: () => { this.closePanel(); this.rivalLeaves(); } }], top + 72);
   }
 

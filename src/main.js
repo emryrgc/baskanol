@@ -1,29 +1,37 @@
 // Oyunu başlatır. Genişlik sabit 180 piksel, yükseklik telefonun oranına göre.
 (function () {
   function start() {
-    // Pikseller eşit görünsün diye ekran TAM SAYI katıyla büyütülür (2x, 3x...)
+    // Oyun dünyası 180 piksel genişliğinde. Ekran bunun TAM SAYI katı (K) çözünürlükte çizilir:
+    // sprite pikselleri eşit boyda kalır, yazılar ise K kat detayla keskin çizilir.
     const W = 180;
-    const zoomFor = (h) => Math.max(1, Math.floor(Math.min(window.innerWidth / W, window.innerHeight / h)));
-    const k0 = Math.max(1, Math.floor(Math.min(window.innerWidth / W, window.innerHeight / 300)));
-    const H = Math.round(BO.clamp(Math.floor(window.innerHeight / k0), 300, 400));
+    const K = Math.max(1, Math.floor(Math.min(window.innerWidth / W, window.innerHeight / 300)));
+    const H = Math.round(BO.clamp(Math.floor(window.innerHeight / K), 300, 400));
+    BO.W = W; BO.H = H; BO.K = K;
+
+    const sahneler = [BO.BootScene, BO.TitleScene, BO.HubScene, BO.DayScene, BO.SummaryScene, BO.NightScene, BO.MorningScene,
+      BO.SkipScene, BO.PollScene, BO.DebateScene, BO.ElectionScene,
+      BO.NameScene, BO.LoadScene, BO.SettingsScene, BO.CreditsScene, BO.ByeScene,
+      BO.ShopScene, BO.RallyScene, BO.PosterScene];
+    // Her sahnenin kamerası K kat yakınlaştırılır (sol üst köşe sabit)
+    sahneler.forEach((S) => {
+      const orj = S.prototype.create;
+      S.prototype.create = function () {
+        this.cameras.main.setOrigin(0, 0).setZoom(K).setScroll(0, 0);
+        if (orj) return orj.apply(this, arguments);
+      };
+    });
+
     BO.game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: 'game',
-      width: W,
-      height: H,
+      width: W * K,
+      height: H * K,
       pixelArt: true,
       roundPixels: true,
       backgroundColor: '#1a1c2c',
-      scale: { mode: Phaser.Scale.NONE, zoom: zoomFor(H), autoCenter: Phaser.Scale.CENTER_BOTH },
+      scale: { mode: Phaser.Scale.NONE, autoCenter: Phaser.Scale.CENTER_BOTH },
       input: { activePointers: 2 },
-      scene: [BO.BootScene, BO.TitleScene, BO.HubScene, BO.DayScene, BO.SummaryScene, BO.NightScene, BO.MorningScene,
-        BO.SkipScene, BO.PollScene, BO.DebateScene, BO.ElectionScene,
-        BO.NameScene, BO.LoadScene, BO.SettingsScene, BO.CreditsScene, BO.ByeScene,
-        BO.ShopScene, BO.RallyScene, BO.PosterScene],
-    });
-    window.addEventListener('resize', () => {
-      const k = zoomFor(H);
-      if (BO.game.scale.zoom !== k) BO.game.scale.setZoom(k);
+      scene: sahneler,
     });
   }
 

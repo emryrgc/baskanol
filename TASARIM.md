@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.5 (görsel düzeltmeler, görevi oyun seçer)
+> Son güncelleme: v0.6 (büyük yazılar, yüksek çözünürlüklü çizim)
 
 ## 1. Özet
 
@@ -206,3 +206,11 @@ Her ekipmanın 3 seviyesi var:
 - **Ana sayfa:** Durum kutuları küçültüldü (46x20).
 - **Kaçış yön tuşları:** Kutu kaldırıldı, gölgeli büyük ok tuşları kullanılıyor.
 - **Klavye ve ana menü:** Harfler 2 kat büyük (16 piksel).
+
+## 12. v0.6
+- **Yüksek çözünürlüklü çizim:** Oyun dünyası hâlâ 180 piksel genişliğinde, ama ekran K kat çözünürlükte (telefonda genellikle 2) çizilir ve kamera K kat yakınlaştırılır (main.js). Sprite pikselleri eşit kalır, yazılar K kat detayla çizilir.
+- **Yazı boyutu:** Varsayılan yazı boyutu 12 (Tiny5'in 1,5 katı). K=2'de ekranda 3 kat net görünür. Ana menü ve klavye harfleri 16.
+- **Kamera:** Gece haritasında kamera elle takip eder (updateCam).
+- **Alt butonlar yukarı alındı:** Erzak butonu, kaçış okları, EVE DÖN ve ana sayfa butonları ekranın altından uzaklaştırıldı.
+- **Afiş baskını:** Afişler küçüldü (40x50), kılıklı aday ve polis 2 kat büyüdü.
+- **Ana sayfa:** Durum kutuları 54x26.

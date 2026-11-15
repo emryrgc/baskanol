@@ -7,7 +7,7 @@ BO.MorningScene = class extends Phaser.Scene {
   init(data) { this.log = (data && data.log) || []; }
 
   create() {
-    const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state, N = BO.NIGHT;
+    const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state, N = BO.NIGHT;
     const pick = (a) => Phaser.Utils.Array.GetRandom(a);
     const lines = [];
 
@@ -48,9 +48,9 @@ BO.MorningScene = class extends Phaser.Scene {
     const top = 10;
     this.add.rectangle(8, top, W - 16, 92, 0xf4f4f4).setOrigin(0);
     this.add.rectangle(8, top + 92, W - 16, 2, 0x94b0c2).setOrigin(0);
-    BO.text(this, W / 2, top + 6, 'SABAH GAZETESİ', { color: P.k, ox: 0.5 });
-    BO.text(this, W - 12, top + 82, 'GÜN ' + S.gun, { color: P.n, ox: 1 });
-    this.add.rectangle(14, top + 17, W - 28, 1, 0x1a1c2c).setOrigin(0);
+    BO.text(this, W / 2, top + 3, 'SABAH GAZETESİ', { color: P.k, ox: 0.5 });
+    BO.text(this, W - 12, top + 77, 'GÜN ' + S.gun, { color: P.n, ox: 1 });
+    this.add.rectangle(14, top + 18, W - 28, 1, 0x1a1c2c).setOrigin(0);
     BO.text(this, W / 2, top + 24, manset, { color: P.r, ox: 0.5, align: 'center', lineSpacing: 4 });
 
     let y = top + 106;
