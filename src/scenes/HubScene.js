@@ -26,7 +26,7 @@ BO.HubScene = class extends Phaser.Scene {
     const yeni = BO.GOREVLER.gunduz.concat(BO.GOREVLER.gece).filter((g) => g.gun === S.gun && g.gun > 1);
     if (yeni.length && !(S.duyuru || {})[S.gun]) {
       S.duyuru = S.duyuru || {}; S.duyuru[S.gun] = true; S.olayGun = S.gun;
-      this.time.delayedCall(450, () => this.modal('YENİ GÖREV!', yeni.map((g) => g.ad + '\n' + g.acik).join('\n\n') + '\n\nGÖREV SEÇ\nBUTONUNDAN OYNA!', [{ label: 'SÜPER!', onPick: (k) => k() }]));
+      this.time.delayedCall(450, () => this.modal('YENİ GÖREV!', yeni.map((g) => g.ad + '\n' + g.acik).join('\n\n') + '\n\nYENİ GÖREVLER ARTIK\nARA SIRA KARŞINA\nÇIKACAK!', [{ label: 'SÜPER!', onPick: (k) => k() }]));
     }
     // Sabah rastgele olay
     if (S.faz === 'sabah' && S.olayGun !== S.gun && S.gun > 1) {
@@ -88,27 +88,28 @@ BO.HubScene = class extends Phaser.Scene {
 
     // --- Göstergeler ---
     this.cards = {};
+    const CW = 46, CH = 20;
     const card = (key, x, y, label, value, color) => {
-      this.add.rectangle(x, y, 52, 28, C('k'), 0.85).setOrigin(0).setStrokeStyle(1, C('n'));
-      BO.text(this, x + 26, y + 4, label, { color: P.L, ox: 0.5 });
-      this.cards[key] = BO.text(this, x + 26, y + 16, value, { color: color, ox: 0.5 });
+      this.add.rectangle(x, y, CW, CH, C('k'), 0.85).setOrigin(0).setStrokeStyle(1, C('n'));
+      BO.text(this, x + CW / 2, y + 2, label, { color: P.L, ox: 0.5 });
+      this.cards[key] = BO.text(this, x + CW / 2, y + 11, value, { color: color, ox: 0.5 });
     };
-    const y1 = roomTop + 6, y2 = roomTop + 40;
-    card('oy', 4, y1, 'OY', '', P.l);
-    card('itibar', 4, y2, 'İTİBAR', '', P.w);
-    BO.text(this, 54, y2 - 3, '?', { color: P.y, ox: 0.5, stroke: 2 });
-    this.hotspot(4, y2, () => this.itibarInfo());
-    this.add.rectangle(10, y2 + 17, 40, 6, C('N')).setOrigin(0);
-    this.itibarBar = this.add.rectangle(10, y2 + 17, 0, 6, C('g')).setOrigin(0);
-    card('kasa', 124, y1, 'KASA +', '', P.y);
-    this.hotspot(124, y1, () => this.paraPanel());
+    const lx = 6, rx = W - 6 - CW;
+    const y1 = roomTop + 6, y2 = y1 + 24;
+    card('oy', lx, y1, 'OY', '', P.l);
+    card('itibar', lx, y2, 'İTİBAR ?', '', P.w);
+    this.hotspot(lx, y2, CW, CH, () => this.itibarInfo());
+    this.add.rectangle(lx + 6, y2 + 12, CW - 12, 4, C('N')).setOrigin(0);
+    this.itibarBar = this.add.rectangle(lx + 6, y2 + 12, 0, 4, C('g')).setOrigin(0);
+    this.itibarBarW = CW - 12;
+    card('kasa', rx, y1, 'KASA +', '', P.y);
+    this.hotspot(rx, y1, CW, CH, () => this.paraPanel());
     if (S.kasa < 2000) {
-      const uyari = this.add.rectangle(124, y1, 52, 28).setOrigin(0).setStrokeStyle(2, C('r'));
+      const uyari = this.add.rectangle(rx - 1, y1 - 1, CW + 2, CH + 2).setOrigin(0).setStrokeStyle(2, C('r'));
       this.tweens.add({ targets: uyari, alpha: 0.1, duration: 400, yoyo: true, repeat: -1 });
     }
-    card('erzak', 124, y2, 'ERZAK', '', P.w);
-    const dukkan = BO.button(this, 30, y2 + 42, 52, 14, 'DÜKKAN', { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.go('Shop'); } });
-    this.tweens.add({ targets: dukkan, angle: { from: -3, to: 3 }, duration: 700, yoyo: true, repeat: -1 });
+    card('erzak', rx, y2, 'ERZAK', '', P.w);
+    BO.button(this, lx + CW / 2, y2 + 34, CW, 14, 'DÜKKAN', { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.go('Shop'); } });
     this.refreshCards();
 
     // --- Anket ---
@@ -129,16 +130,20 @@ BO.HubScene = class extends Phaser.Scene {
 
     // --- Butonlar ---
     if (!aksam) {
-      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GÜNDÜZ: GÖREV SEÇ', { fill: 'y', shade: 'o', onClick: () => this.gorevSec('gunduz') });
-      this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
+      const g = BO.bugunGorev('gunduz');
+      BO.text(this, W / 2, H - 70, 'BUGÜNÜN GÖREVİ', { color: P.L, ox: 0.5 });
+      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GÜNDÜZ: ' + g.kisa, { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.goreveGit('gunduz', g); } });
+      BO.pulse(this, b);
       BO.button(this, 45, H - 18, 84, 16, 'GECEYE GEÇ', {
         fill: 'n', shade: 'N', color: 'w',
         onClick: () => { BO.gunduzAtla(); this.go('Hub'); },
       });
       BO.button(this, W - 45, H - 18, 84, 16, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
     } else {
-      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GECE: GÖREV SEÇ', { fill: 'p', shade: 'k', color: 'w', onClick: () => this.gorevSec('gece') });
-      this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
+      const g = BO.bugunGorev('gece');
+      BO.text(this, W / 2, H - 70, 'BU GECENİN GÖREVİ', { color: P.L, ox: 0.5 });
+      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GECE: ' + g.kisa, { fill: 'p', shade: 'k', color: 'w', onClick: () => { if (!this.modalAcik) this.goreveGit('gece', g); } });
+      BO.pulse(this, b, 'p');
       BO.button(this, W / 2, H - 18, 164, 16, 'GECEYİ ATLA', {
         fill: 'n', shade: 'N', color: 'w',
         onClick: () => this.go('Morning', { log: [] }),
@@ -148,8 +153,8 @@ BO.HubScene = class extends Phaser.Scene {
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
-  hotspot(x, y, fn) {
-    const z = this.add.zone(x, y, 52, 28).setOrigin(0).setInteractive({ useHandCursor: true });
+  hotspot(x, y, w, h, fn) {
+    const z = this.add.zone(x, y, w, h).setOrigin(0).setInteractive({ useHandCursor: true });
     z.on('pointerup', () => { if (!this.modalAcik) { BO.sfx.click(); fn(); } });
   }
 
@@ -181,21 +186,12 @@ BO.HubScene = class extends Phaser.Scene {
     return kapat;
   }
 
-  gorevSec(faz) {
+  goreveGit(faz, g) {
     const S = BO.state;
-    const list = BO.GOREVLER[faz].map((g) => {
-      const acik = S.gun >= g.gun;
-      return {
-        label: g.ad + '\n' + (acik ? g.acik : g.gun + '. GÜN AÇILIR'),
-        fill: acik ? (faz === 'gece' ? 'p' : 'y') : 'L', shade: acik ? (faz === 'gece' ? 'k' : 'o') : 'n',
-        color: acik && faz === 'gece' ? 'w' : 'k',
-        onPick: (kapat) => { if (!acik) return; kapat(); this.go(g.id); },
-      };
-    });
-    list.push({ label: 'VAZGEÇ', fill: 'n', shade: 'N', color: 'w', onPick: (kapat) => kapat() });
-    const kilitli = BO.GOREVLER[faz].filter((g) => S.gun < g.gun).length;
-    this.modal(faz === 'gece' ? 'GECE GÖREVİ' : 'GÜNDÜZ GÖREVİ',
-      'BUGÜN NE YAPALIM?' + (kilitli ? '\nYENİ GÖREVLER\nGÜNLER GEÇTİKÇE\nAÇILIR.' : ''), list);
+    S.sonGorev = S.sonGorev || {};
+    S.sonGorev[faz] = g.id;
+    BO.save();
+    this.go(g.id);
   }
 
   itibarInfo() {
@@ -245,7 +241,7 @@ BO.HubScene = class extends Phaser.Scene {
     const S = BO.state, C = this.C;
     this.cards.oy.setText('%' + S.oy.toFixed(1));
     this.cards.itibar.setText('');
-    this.itibarBar.width = Math.round(40 * S.itibar / 100);
+    this.itibarBar.width = Math.round(this.itibarBarW * S.itibar / 100);
     this.itibarBar.fillColor = C(S.itibar > 60 ? 'g' : S.itibar > 30 ? 'y' : 'r');
     this.cards.kasa.setText(S.kasa >= 100000 ? Math.round(S.kasa / 1000) + 'B' : BO.tl(S.kasa).replace(' TL', ''));
     this.cards.erzak.setText(String(S.erzak));

@@ -56,7 +56,7 @@ BO.SummaryScene = class extends Phaser.Scene {
       fill: 'y', shade: 'o',
       onClick: () => { S.faz = 'aksam'; this.go('Hub'); },
     });
-    this.tweens.add({ targets: devam, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });
+    BO.pulse(this, devam);
 
     this.cameras.main.fadeIn(400, 26, 28, 44);
   }

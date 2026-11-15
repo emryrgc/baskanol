@@ -31,12 +31,12 @@ BO.seviye = function (id) { return (BO.state.ekipman && BO.state.ekipman[id]) ||
 // ---------- Görevler (günler ilerledikçe açılır) ----------
 BO.GOREVLER = {
   gunduz: [
-    { id: 'Day', ad: 'SEÇİM OTOBÜSÜ', acik: 'ERZAK DAĞIT, KAÇ!', gun: 1 },
-    { id: 'Rally', ad: 'MİTİNG', acik: 'SLOGAN AT, COŞTUR!', gun: 3 },
+    { id: 'Day', ad: 'SEÇİM OTOBÜSÜ', kisa: 'SEÇİM OTOBÜSÜ', acik: 'ERZAK DAĞIT, KAÇ!', gun: 1 },
+    { id: 'Rally', ad: 'MİTİNG', kisa: 'MİTİNG', acik: 'SLOGAN AT, COŞTUR!', gun: 3 },
   ],
   gece: [
-    { id: 'Night', ad: 'GİZLİ OPERASYON', acik: 'GAZETE VE RAKİP', gun: 1 },
-    { id: 'Poster', ad: 'AFİŞ BASKINI', acik: 'AFİŞE BIYIK ÇİZ!', gun: 4 },
+    { id: 'Night', ad: 'GİZLİ OPERASYON', kisa: 'GİZLİ OPERASYON', acik: 'GAZETE VE RAKİP', gun: 1 },
+    { id: 'Poster', ad: 'AFİŞ BASKINI', kisa: 'AFİŞ BASKINI', acik: 'AFİŞE BIYIK ÇİZ!', gun: 4 },
   ],
 };
 
@@ -102,7 +102,7 @@ BO.tl = function (n) {
 
 // Ayarlanabilir oyun dengesi değerleri — oynanışı değiştirmek için buraya bak.
 BO.TUNE = {
-  gunSuresi: 70,          // bir günün toplam süresi (kovalamalar dahil), saniye
+  gunSuresi: 40,          // otobüs görevinin toplam süresi (kovalamalar dahil), saniye
   yolHizi: 28,            // dağıtım modunda yol akış hızı (px/sn)
   kacisYolHizi: 150,      // kovalama modunda yol akış hızı
   erzakFiyati: 500,       // 10 erzak kaç TL
@@ -111,8 +111,8 @@ BO.TUNE = {
   memnunOy: 0.06,         // memnun seçmen başına oy oranı artışı
   memnunItibar: 0.6,
   domatesItibar: -2,
-  kovalamaAraligi: [18, 30], // rastgele kovalama zamanlayıcısı (sn)
-  kacisSuresi: 15,        // kaç saniye dayanınca kurtulursun
+  kovalamaAraligi: [8, 14], // rastgele kovalama zamanlayıcısı (sn)
+  kacisSuresi: 12,        // kaç saniye dayanınca kurtulursun
   kazaMesafe: 26,         // çarpınca kovalayan ne kadar yaklaşır
   yakalanmaOy: -0.4,
   yakalanmaItibar: -6,

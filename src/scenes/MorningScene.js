@@ -80,7 +80,7 @@ BO.MorningScene = class extends Phaser.Scene {
         this.time.delayedCall(260, () => this.scene.start('Hub'));
       },
     });
-    this.tweens.add({ targets: b, scale: 1.05, duration: 500, yoyo: true, repeat: -1 });
+    BO.pulse(this, b);
     this.cameras.main.fadeIn(500, 26, 28, 44);
   }
 };

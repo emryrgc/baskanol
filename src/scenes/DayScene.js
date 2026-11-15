@@ -60,7 +60,7 @@ BO.DayScene = class extends Phaser.Scene {
 
     const hint = BO.text(this, W / 2, H * 0.42, 'SEÇMENLERE DOKUN\nERZAK FIRLAT!', { size: 8, color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 60 });
     this.tweens.add({ targets: hint, alpha: 0, delay: 2600, duration: 500, onComplete: () => hint.destroy() });
-    this.tweens.add({ targets: hint, scale: 1.08, duration: 300, yoyo: true, repeat: 4 });
+    this.tweens.add({ targets: hint, alpha: 0.3, duration: 300, yoyo: true, repeat: 3 });
 
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
@@ -109,9 +109,25 @@ BO.DayScene = class extends Phaser.Scene {
       fill: 'y', shade: 'o', depth: 70,
       onClick: () => this.buyErzak(),
     });
-    this.leftBtn = BO.button(this, 30, H - 28, 50, 36, null, { icon: 'ok_sol', fill: 'c', shade: 'b', depth: 70, onDown: () => this.changeLane(-1) });
-    this.rightBtn = BO.button(this, W - 30, H - 28, 50, 36, null, { icon: 'ok_sag', fill: 'c', shade: 'b', depth: 70, onDown: () => this.changeLane(1) });
+    this.leftBtn = this.yonTusu(28, H - 30, -1);
+    this.rightBtn = this.yonTusu(W - 28, H - 30, 1);
     this.leftBtn.setVisible(false); this.rightBtn.setVisible(false);
+  }
+
+  // Kutusuz ok tuşu: geniş görünmez dokunma alanı, basınca ok aşağı iner
+  yonTusu(x, y, dir) {
+    const c = this.add.container(x, y).setDepth(70);
+    const golge = this.add.image(2, 2, 'yon_ok').setScale(2).setTint(0x000000).setAlpha(0.45);
+    const ok = this.add.image(0, 0, 'yon_ok').setScale(2);
+    if (dir > 0) { golge.setFlipX(true); ok.setFlipX(true); }
+    c.add([golge, ok]);
+    c.setSize(56, 48).setInteractive();
+    const bas = () => { ok.setPosition(1, 2); ok.setTint(0xffcd75); this.changeLane(dir); };
+    const birak = () => { ok.setPosition(0, 0); ok.clearTint(); };
+    c.on('pointerdown', bas);
+    c.on('pointerup', birak);
+    c.on('pointerout', birak);
+    return c;
   }
 
   buyErzak() {
@@ -124,6 +140,7 @@ BO.DayScene = class extends Phaser.Scene {
     }
     S.kasa -= T.erzakFiyati;
     S.erzak += T.erzakPaketi;
+    if (this.erzakPulse) { this.erzakPulse.destroy(); this.erzakPulse = null; }
     this.stats.harcama += T.erzakFiyati;
     BO.sfx.coin();
     BO.floatText(this, this.W / 2, this.H - 40, '+' + T.erzakPaketi + ' ERZAK', BO.PAL.y);
@@ -190,7 +207,7 @@ BO.DayScene = class extends Phaser.Scene {
     const S = BO.state;
     if (S.erzak <= 0) {
       BO.floatText(this, this.bus.x, this.bus.y - 30, 'ERZAK BİTTİ!', BO.PAL.r);
-      this.tweens.add({ targets: this.erzakBtn, scale: 1.15, duration: 100, yoyo: true, repeat: 2 });
+      if (!this.erzakPulse) this.erzakPulse = BO.pulse(this, this.erzakBtn, 'r');
       return;
     }
     S.erzak--;

@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.4 (menü, aday adı, yeni görevler, dükkân)
+> Son güncelleme: v0.5 (görsel düzeltmeler, görevi oyun seçer)
 
 ## 1. Özet
 
@@ -146,7 +146,7 @@ Hedef oyun süresi: 30-45 dakika.
 - **Motor:** Phaser 3 (`lib/phaser.min.js`). Kütüphane depoda tutulur, internet gerekmez.
 - **Çözünürlük:** 180 piksel genişlik. Yükseklik telefona göre 300-400 piksel arasında ayarlanır ve görüntü büyütülerek gösterilir.
 - **Grafikler:** Şimdilik kodla çizilen pixel art (`src/sprites.js`). İleride gerçek çizimlerle değiştirilebilir.
-- **Font:** Press Start 2P (OFL lisanslı, Türkçe karakterleri destekler).
+- **Font:** Tiny5 (Gissio, OFL lisanslı), 8 piksel ızgaralı, Türkçe karakterli. Yazılar keskinleştirilir (BO.PixelText).
 - **Ses:** Kodla üretilen retro efektler (`src/sfx.js`).
 
 ## 10. v0.4 eklemeleri
@@ -159,15 +159,15 @@ Hedef oyun süresi: 30-45 dakika.
 - **Credits:** Kayan yazı.
 - **Çıkış:** Mağaza uygulamasında uygulamayı kapatır. Tarayıcıda oyunu kaydedip veda ekranı gösterir.
 
-### Görev seçme
-Ana sayfada "Gündüz: Görev seç" ve "Gece: Görev seç" butonları var. Kilitli görevlerin yanında kaçıncı günde açılacağı yazar. Yeni bir görev açıldığı gün sabah duyuru çıkar.
+### Günün görevi (v0.5: görevi oyun seçer)
+Oyuncu görev seçmez. Her gün için gündüz ve gece görevini oyun belirler: o gün yeni açılan görev varsa o gelir, yoksa açık görevlerden rastgele biri seçilir (mümkünse bir önceki görevle aynı olmaz). Ana sayfadaki buton görevin adını gösterir (örneğin "GÜNDÜZ: MİTİNG"). Yeni bir görev açıldığı gün sabah duyuru çıkar.
 
 | Görev | Zaman | Açılır | Nasıl oynanır |
 |---|---|---|---|
-| Seçim otobüsü | Gündüz | 1. gün | Erzak dağıt, KAÇ! |
-| **Miting** | Gündüz | 3. gün | 40 saniye sürer. Ok yeşil bölgedeyken "SLOGAN AT" butonuna bas, kombolar yap. Kalabalıkta "YUH!" diyenlere dokunup sustur, yoksa domates gelir. Sonunda ortalama coşkuya göre oy, itibar ve bağış kazanılır. |
+| Seçim otobüsü | Gündüz | 1. gün | 40 saniye sürer (kovalama dahil). Erzak dağıt, KAÇ! |
+| **Miting** | Gündüz | 3. gün | 35 saniye sürer. Ok yeşil bölgedeyken "SLOGAN AT" butonuna bas, kombolar yap. Kalabalıkta "YUH!" diyenlere dokunup sustur, yoksa domates gelir. Sonunda ortalama coşkuya göre oy, itibar ve bağış kazanılır. |
 | Gizli operasyon | Gece | 1. gün | Gazete ve rakip |
-| **Afiş baskını** | Gece | 4. gün | 45 saniye sürer. Afişe basılı tut, bıyık çiz (her afiş rakip itibarı -2). "AYAK SESİ!" uyarısından sonra polis geçer: fenerin altında çizersen yakalanırsın. |
+| **Afiş baskını** | Gece | 4. gün | 45 saniye sürer. 3 afiş vardır, her biri farklı rakibe aittir. Afişe basılı tut, 0,9 saniyede bıyık çizilir (her afiş rakip itibarı -2). "AYAK SESİ!" uyarısından sonra polis geçer: fenerin altında çizersen yakalanırsın. |
 
 ### Dükkân (ana sayfada DÜKKAN butonu)
 Her ekipmanın 3 seviyesi var:
@@ -197,3 +197,12 @@ Her ekipmanın 3 seviyesi var:
 - 4. rakip parti
 - Müzik
 - Mağaza hazırlığı (Capacitor)
+
+## 11. v0.5 görsel düzeltmeler
+- **Font:** Tiny5'e geçildi. Türkçe büyük İ doğru görünüyor.
+- **Tam sayı büyütme:** Oyun ekrana tam sayı katıyla (2x, 3x) büyütülür. Böylece bütün pikseller eşit boyda olur. Ekran oranı tutmazsa kenarlarda ince koyu boşluk kalabilir.
+- **Keskin yazı:** BO.PixelText, yazıların bulanık kenarlarını temizler.
+- **Hareketli butonlar:** Butonlar artık büyüyüp küçülmüyor ya da sallanmıyor. Yazı sabit kalıyor, sadece çevresindeki çerçeve parlıyor (BO.pulse).
+- **Ana sayfa:** Durum kutuları küçültüldü (46x20).
+- **Kaçış yön tuşları:** Kutu kaldırıldı, gölgeli büyük ok tuşları kullanılıyor.
+- **Klavye ve ana menü:** Harfler 2 kat büyük (16 piksel).

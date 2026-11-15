@@ -66,12 +66,13 @@ BO.TitleScene = class extends Phaser.Scene {
     const gap = Math.min(30, Math.floor((H - 120) / items.length));
     let y = 118 + Math.max(0, (H - 120 - gap * items.length) / 2);
     items.forEach((it, i) => {
-      const b = BO.button(this, W / 2, y + 10, 128, 20, it.label, { fill: it.fill, shade: it.shade, color: it.color || 'k', onClick: it.onClick });
-      b.setAlpha(0); b.x -= 30;
-      this.tweens.add({ targets: b, alpha: 1, x: W / 2, duration: 300, delay: 100 + i * 70, ease: 'Back.easeOut' });
+      const b = BO.button(this, W / 2, y + 10, 128, 20, it.label, { fill: it.fill, shade: it.shade, color: it.color || 'k', size: 16, onClick: it.onClick });
+      b.setAlpha(0);
+      this.tweens.add({ targets: b, alpha: 1, duration: 250, delay: 100 + i * 70 });
+      if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.4', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.5', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
@@ -124,7 +125,7 @@ BO.NameScene = class extends Phaser.Scene {
       let x = (W - total) / 2 + kw / 2;
       if (row.length < 8) x = (W - (8 * kw + 7 * gx)) / 2 + kw / 2;
       row.split('').forEach((ch) => {
-        BO.button(this, x, y, kw, kh, ch, { fill: 'w', shade: 'L', onDown: () => this.yaz(ch) });
+        BO.button(this, x, y, kw, kh, ch, { fill: 'w', shade: 'L', size: 16, onDown: () => this.yaz(ch) });
         x += kw + gx;
       });
       if (row.length < 8) {
@@ -268,7 +269,7 @@ BO.CreditsScene = class extends Phaser.Scene {
       ['OYUN FİKRİ VE', P.L], ['YÖNETMEN', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['KOD VE GRAFİK', P.L], ['CLAUDE', P.w], ['(ANTHROPIC)', P.w], ['', P.w],
       ['OYUN MOTORU', P.L], ['PHASER 3', P.w], ['', P.w],
-      ['YAZI TİPİ', P.L], ['PRESS START 2P', P.w], ['CODEMAN38 (OFL)', P.w], ['', P.w],
+      ['YAZI TİPİ', P.L], ['TINY5', P.w], ['GISSIO (OFL)', P.w], ['', P.w],
       ['RENK PALETİ', P.L], ['SWEETIE 16', P.w], ['GRAFXKID', P.w], ['', P.w],
       ['TEST EKİBİ', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['TEŞEKKÜRLER', P.L], ['TÜM KARARSIZ', P.w], ['SEÇMENLERE', P.w], ['', P.w], ['', P.w],

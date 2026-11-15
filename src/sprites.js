@@ -143,8 +143,6 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
   const KALP = ['.r.r.', 'rrrrr', 'rrrrr', '.rrr.', '..r..'];
   const LEKE = ['.r...r.', 'rrr.rr.', '.rrrrrr', 'rrrrrr.', '.rr.rrr', 'r..r...'];
   const ISARET = ['..k..', '.krk.', '.krk.', '.krk.', '..k..', '.krk.', '..k..'];
-  const OK_SOL = ['....k....', '...kw....', '..kwwkkkk', '.kwwwwwwk', 'kwwwwwwwk', '.kwwwwwwk', '..kwwkkkk', '...kw....', '....k....'];
-  const OK_SAG = OK_SOL.map(r => r.split('').reverse().join(''));
 
   BO.makeTextures = function (scene) {
     fromRows(scene, 'aday0', ADAY);
@@ -161,8 +159,6 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
     fromRows(scene, 'kalp_bos', KALP, { r: 'n' });
     fromRows(scene, 'leke', LEKE);
     fromRows(scene, 'isaret', ISARET);
-    fromRows(scene, 'ok_sol', OK_SOL);
-    fromRows(scene, 'ok_sag', OK_SAG);
 
     // Seçim otobüsü (üstten görünüş, üstü açık), 22x44
     draw(scene, 'otobus', 22, 44, (r) => {
@@ -433,6 +429,22 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
       r(0, 6, 5, 5, '#7a3a44'); r(6, 6, 11, 5, '#7a3a44'); r(18, 6, 6, 5, '#7a3a44');
       r(1, 1, 3, 1, '#8c4a52'); r(13, 1, 3, 1, '#8c4a52'); r(7, 7, 3, 1, '#8c4a52');
     });
+    // Kaçış yön tuşu: kutusuz, kalın kenarlı ok (sağa bakan hali çevrilerek kullanılır)
+    fromRows(scene, 'yon_ok', [
+      '......k........',
+      '.....kwk.......',
+      '....kwwk.......',
+      '...kwwwkkkkkkkk',
+      '..kwwwwwwwwwwwk',
+      '.kwwwwwwwwwwwwk',
+      'kwwwwwwwwwwwwwk',
+      '.kLwwwwwwwwwwwk',
+      '..kLLLLLLLLLLLk',
+      '...kLLLkkkkkkkk',
+      '....kLLk.......',
+      '.....kLk.......',
+      '......k........',
+    ]);
     // Mikrofon
     draw(scene, 'mikrofon', 3, 7, (r) => { r(0, 0, 3, 3, 'n'); r(1, 3, 1, 4, 'k'); });
 

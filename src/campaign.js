@@ -96,6 +96,24 @@ BO.otomatikGun = function () {
   return { gun, oyD, para, olaylar };
 };
 
+// Bugünün görevini oyun seçer (oyuncu seçmez). Yeni açılan görev o gün mutlaka gelir,
+// yoksa açık görevlerden rastgele biri; mümkünse dünküyle aynı olmaz.
+BO.bugunGorev = function (faz) {
+  const S = BO.state;
+  if (!S.gorevPlan || S.gorevPlan.gun !== S.gun) S.gorevPlan = { gun: S.gun };
+  const acik = BO.GOREVLER[faz].filter((g) => S.gun >= g.gun);
+  let g = acik.find((x) => x.id === S.gorevPlan[faz]);
+  if (!g) {
+    const yeni = acik.find((x) => x.gun === S.gun && x.gun > 1);
+    const son = (S.sonGorev || {})[faz];
+    const secenek = acik.length > 1 ? acik.filter((x) => x.id !== son) : acik;
+    g = yeni || Phaser.Utils.Array.GetRandom(secenek);
+    S.gorevPlan[faz] = g.id;
+    BO.save();
+  }
+  return g;
+};
+
 // Seçim sonucu: kararsızlar itibara göre dağılır
 BO.secimSonucu = function () {
   const S = BO.state;

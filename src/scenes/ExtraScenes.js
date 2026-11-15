@@ -50,7 +50,7 @@ BO.RallyScene = class extends Phaser.Scene {
   create() {
     const W = this.scale.width, H = this.scale.height, P = BO.PAL, S = BO.state;
     this.W = W; this.H = H;
-    this.sure = 40;
+    this.sure = 35;
     this.cosku = 40;
     this.toplam = 0;
     this.combo = 0;
@@ -203,7 +203,7 @@ BO.RallyScene = class extends Phaser.Scene {
     this.toplam += this.cosku * dt;
 
     // ok ileri geri
-    const hiz = Math.min(230, 95 + this.combo * 10 + (40 - this.sure) * 1.5);
+    const hiz = Math.min(230, 95 + this.combo * 10 + (35 - this.sure) * 1.5);
     this.ok.x += this.okDir * hiz * dt;
     if (this.ok.x > this.barX + this.barW) { this.ok.x = this.barX + this.barW; this.okDir = -1; }
     if (this.ok.x < this.barX) { this.ok.x = this.barX; this.okDir = 1; }
@@ -227,7 +227,7 @@ BO.RallyScene = class extends Phaser.Scene {
   bitir() {
     this.bitti = true;
     const S = BO.state, st = this.st;
-    const ort = this.toplam / 40;
+    const ort = this.toplam / 35;
     st.ortCosku = Math.round(ort);
     const oyD = (ort / 100) * 1.6 + st.mukemmel * 0.02;
     S.oy += oyD;
@@ -275,11 +275,11 @@ BO.PosterScene = class extends Phaser.Scene {
     // Afişler
     this.afisler = [];
     const top = 40, alt = this.kaldirimY - 6;
-    const ph = 60, pw = 50;
-    const satirlar = (alt - top) > 2 * ph + 16 ? 2 : 1;
-    const ys = satirlar === 2 ? [top + ph / 2 + 4, top + ph * 1.5 + 18] : [top + (alt - top) / 2];
-    ys.forEach((y) => [32, 90, 148].forEach((x) => {
-      const r = Phaser.Utils.Array.GetRandom(BO.RIVALS);
+    const ph = 64, pw = 52;
+    const ys = [top + (alt - top) / 2 - 6];   // tek sıra, 3 afiş
+    const sirali = Phaser.Utils.Array.Shuffle(BO.RIVALS.slice());   // her afiş farklı rakip
+    ys.forEach((y) => [32, 90, 148].forEach((x, i) => {
+      const r = sirali[i % sirali.length];
       const c = this.add.container(x, y);
       c.add(this.add.rectangle(0, 0, pw + 2, ph + 2, C('w')));
       c.add(this.add.rectangle(0, 0, pw - 2, ph - 2, C(r.renk)));
@@ -336,7 +336,7 @@ BO.PosterScene = class extends Phaser.Scene {
     const a = this.aktif;
     const ciziyor = a && !a.bitti && Math.abs(this.oyuncu.x - a.x) < 3;
     if (ciziyor) {
-      a.ilerleme += dt / 1.5;
+      a.ilerleme += dt / 0.9;
       a.bar.width = Math.round(a.w * Math.min(1, a.ilerleme));
       this.oyuncu.setTexture(Math.floor(t / 100) % 2 ? 'kilik0' : 'kilik1');
       if (a.ilerleme >= 1) {
