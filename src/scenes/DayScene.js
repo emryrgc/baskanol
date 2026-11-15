@@ -221,7 +221,7 @@ BO.DayScene = class extends Phaser.Scene {
     const r = Math.random();
     v.anims.stop();
     // İtibar yüksekse seçmen daha çok memnun kalır, düşükse domates/kovalama artar
-    const memnun = BO.clamp(T.tepki.memnun + (S.itibar - 50) * 0.004, 0.45, 0.9);
+    const memnun = BO.clamp(T.tepki.memnun + (S.itibar - 50) * 0.004 + 0.05 * BO.seviye('baklava'), 0.45, 0.93);
     const domates = (1 - memnun) * (T.tepki.domates / (1 - T.tepki.memnun));
     if (r < memnun) {
       // Memnun
@@ -341,7 +341,7 @@ BO.DayScene = class extends Phaser.Scene {
   updateChase(dt) {
     const T = BO.TUNE, P = BO.PAL;
     this.chaseTime += dt;
-    this.distance = Math.min(100, this.distance + 3.5 * dt);
+    this.distance = Math.min(100, this.distance + (3.5 + 1.5 * BO.seviye('motor')) * dt);
 
     // Trafik üret
     this.carTimer -= dt;
@@ -394,11 +394,12 @@ BO.DayScene = class extends Phaser.Scene {
   crash(c) {
     const S = BO.state;
     this.fling(c, c.x < this.bus.x ? -1 : (c.x > this.bus.x ? 1 : (Math.random() < 0.5 ? -1 : 1)));
-    this.distance -= BO.TUNE.kazaMesafe;
+    this.distance -= BO.TUNE.kazaMesafe * BO.zor().kaza * (1 - 0.15 * BO.seviye('motor'));
     S.itibar = BO.clamp(S.itibar - 1, 0, 100);
     this.stats.kaza++;
     this.invuln = 1;
     BO.sfx.crash();
+    BO.titret(120);
     this.cameras.main.shake(220, 0.02);
     this.tweens.add({ targets: this.bus, alpha: 0.3, duration: 80, yoyo: true, repeat: 5 });
     this.speed *= 0.6;
@@ -498,7 +499,7 @@ BO.DayScene = class extends Phaser.Scene {
       this.spawnTimer -= dt;
       if (this.spawnTimer <= 0) {
         this.spawnVoter();
-        this.spawnTimer = Phaser.Math.FloatBetween(T.secmenAraligi[0], T.secmenAraligi[1]);
+        this.spawnTimer = Phaser.Math.FloatBetween(T.secmenAraligi[0], T.secmenAraligi[1]) * (1 - 0.15 * BO.seviye('hoparlor'));
       }
       this.chaseTimer -= dt;
       if (this.chaseTimer <= 0 && this.dayTime > T.kacisSuresi + 6) {

@@ -15,7 +15,9 @@
       scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
       input: { activePointers: 2 },
       scene: [BO.BootScene, BO.TitleScene, BO.HubScene, BO.DayScene, BO.SummaryScene, BO.NightScene, BO.MorningScene,
-        BO.SkipScene, BO.PollScene, BO.DebateScene, BO.ElectionScene],
+        BO.SkipScene, BO.PollScene, BO.DebateScene, BO.ElectionScene,
+        BO.NameScene, BO.LoadScene, BO.SettingsScene, BO.CreditsScene, BO.ByeScene,
+        BO.ShopScene, BO.RallyScene, BO.PosterScene],
     });
   }
 

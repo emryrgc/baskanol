@@ -55,7 +55,11 @@ BO.NightScene = class extends Phaser.Scene {
     this.player = this.add.sprite(p0.x, p0.y, 'kilik0').setOrigin(0.5, 0.85);
 
     // Polisler
-    this.cops = N.polisler.map((wps) => {
+    // seçime yaklaştıkça daha çok polis
+    const polisler = N.polisler.slice();
+    if (BO.state.gun >= 20) polisler.push([[0, 18], [14, 18]]);
+    if (BO.state.gun >= 40) polisler.push([[1, 25], [1, 31]]);
+    this.cops = polisler.map((wps) => {
       const pts = wps.map(([c, r]) => this.tileCenter(c, r));
       const s = this.add.sprite(pts[0].x, pts[0].y, 'polis0').setOrigin(0.5, 0.85).play('polis_yuru');
       s.wps = pts; s.idx = 1; s.wait = 0; s.ang = 0; s.look = 0;
@@ -285,7 +289,7 @@ BO.NightScene = class extends Phaser.Scene {
       if (sees) seen = true;
     });
 
-    this.det = BO.clamp(this.det + (seen ? 1.1 : -0.45) * dt, 0, 1);
+    this.det = BO.clamp(this.det + (seen ? 1.1 * BO.zor().det * (1 - 0.2 * BO.seviye('biyik')) : -0.45) * dt, 0, 1);
     if (this.det >= 1) { this.caught(); return; }
 
     // derinlik: aşağıdaki önde
@@ -297,7 +301,7 @@ BO.NightScene = class extends Phaser.Scene {
     const pl = this.player;
     if (!this.path.length) { pl.anims.stop(); pl.setTexture('kilik0'); return; }
     const n = this.path[0];
-    const dx = n.x - pl.x, dy = n.y - pl.y, d = Math.hypot(dx, dy), step = 42 * dt;
+    const dx = n.x - pl.x, dy = n.y - pl.y, d = Math.hypot(dx, dy), step = 42 * (1 + 0.15 * BO.seviye('ayakkabi')) * dt;
     if (!pl.anims.isPlaying) pl.play('kilik_yuru');
     if (dx < -0.5) pl.setFlipX(true); else if (dx > 0.5) pl.setFlipX(false);
     if (d <= step) { pl.x = n.x; pl.y = n.y; this.path.shift(); }
@@ -589,7 +593,7 @@ BO.NightScene = class extends Phaser.Scene {
     this.paused = true;
     const W = this.W, H = this.H, P = BO.PAL;
     this.log.push({ tip: 'skandal' });
-    BO.sfx.lose();
+    BO.sfx.lose(); BO.titret(200);
     this.cameras.main.shake(300, 0.02);
     this.cameras.main.flash(250, 255, 255, 255);
     this.player.setTexture('aday0').setAlpha(1);   // kılık düştü!

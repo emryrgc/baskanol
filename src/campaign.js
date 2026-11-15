@@ -43,16 +43,17 @@ BO.yeniGun = function () {
 
   S.rakipler.forEach((r) => {
     r.itibar = BO.clamp(r.itibar + (60 - r.itibar) * 0.06, 0, 100);   // rakip itibarı yavaşça toparlanır
-    const g = S.kararsiz * 0.012 * (r.itibar / 60);                     // kararsızları toplar
+    const g = S.kararsiz * 0.012 * (r.itibar / 60) * BO.zor().rakip;                     // kararsızları toplar
     r.oy += g; S.kararsiz -= g;
   });
 
   const r = Math.random();
-  if (r < 0.15) {
+  const saldiri = (0.12 + S.gun * 0.002) * BO.zor().rakip;   // seçime yaklaştıkça rakipler sertleşir
+  if (r < saldiri) {
     const k = pick(BO.RIVALS);
     S.itibar = BO.clamp(S.itibar - 2, 0, 100);
     log.push({ yazi: k.kisa + ' SENİ ELEŞTİRDİ', etki: 'İTİBAR -2', renk: 'r' });
-  } else if (r < 0.25) {
+  } else if (r < saldiri + 0.1) {
     const [a, b] = Phaser.Utils.Array.Shuffle(BO.RIVALS.slice());
     BO.rakibeDarbe(b.id, 4);
     log.push({ yazi: a.kisa + ' İLE ' + b.kisa + ' KAVGA ETTİ', etki: b.kisa + ' -4', renk: 'l' });
@@ -98,7 +99,7 @@ BO.otomatikGun = function () {
 // Seçim sonucu: kararsızlar itibara göre dağılır
 BO.secimSonucu = function () {
   const S = BO.state;
-  const partiler = [{ id: 'biz', ad: 'BİZ', renk: 'o', oy: S.oy, itibar: S.itibar }]
+  const partiler = [{ id: 'biz', ad: BO.kisaAd(), renk: 'o', oy: S.oy, itibar: S.itibar }]
     .concat(BO.RIVALS.map((r) => {
       const st = BO.rakip(r.id);
       return { id: r.id, ad: r.kisa, renk: r.renk, oy: st.oy, itibar: st.itibar };

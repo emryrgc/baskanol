@@ -1,10 +1,57 @@
 // Oyunun kalıcı durumu (günler arasında korunur).
 window.BO = window.BO || {};
 
+// ---------- Ayarlar (oyundan bağımsız, cihazda saklanır) ----------
+BO.ayar = { ses: true, titresim: true, zorluk: 'normal' };
+try { Object.assign(BO.ayar, JSON.parse(localStorage.getItem('bo_ayar') || '{}')); } catch (e) {}
+BO.ayarKaydet = function () { try { localStorage.setItem('bo_ayar', JSON.stringify(BO.ayar)); } catch (e) {} };
+
+BO.ZORLUK = {
+  kolay: { ad: 'KOLAY', det: 0.7, rakip: 0.7, kaza: 0.7, kasa: 15000 },
+  normal: { ad: 'NORMAL', det: 1, rakip: 1, kaza: 1, kasa: 10000 },
+  zor: { ad: 'ZOR', det: 1.35, rakip: 1.3, kaza: 1.3, kasa: 7000 },
+};
+BO.zor = function () { return BO.ZORLUK[BO.ayar.zorluk] || BO.ZORLUK.normal; };
+
+BO.titret = function (ms) {
+  if (!BO.ayar.titresim) return;
+  try { if (navigator.vibrate) navigator.vibrate(ms || 60); } catch (e) {}
+};
+
+// ---------- Dükkân: ekipmanlar ----------
+BO.EKIPMAN = [
+  { id: 'motor', ad: 'TURBO MOTOR', acik: 'KAÇIŞ KOLAY', fiyat: [3000, 6000, 10000] },
+  { id: 'hoparlor', ad: 'DEV HOPARLÖR', acik: 'ÇOK SEÇMEN', fiyat: [2500, 5000, 9000] },
+  { id: 'baklava', ad: 'BAKLAVA ERZAK', acik: 'MUTLU SEÇMEN', fiyat: [3000, 6000, 10000] },
+  { id: 'biyik', ad: 'PRO TAKMA BIYIK', acik: 'GİZLİLİK +', fiyat: [2500, 5000, 9000] },
+  { id: 'ayakkabi', ad: 'SPOR AYAKKABI', acik: 'GECE HIZLI', fiyat: [2000, 4000, 7000] },
+];
+BO.seviye = function (id) { return (BO.state.ekipman && BO.state.ekipman[id]) || 0; };
+
+// ---------- Görevler (günler ilerledikçe açılır) ----------
+BO.GOREVLER = {
+  gunduz: [
+    { id: 'Day', ad: 'SEÇİM OTOBÜSÜ', acik: 'ERZAK DAĞIT, KAÇ!', gun: 1 },
+    { id: 'Rally', ad: 'MİTİNG', acik: 'SLOGAN AT, COŞTUR!', gun: 3 },
+  ],
+  gece: [
+    { id: 'Night', ad: 'GİZLİ OPERASYON', acik: 'GAZETE VE RAKİP', gun: 1 },
+    { id: 'Poster', ad: 'AFİŞ BASKINI', acik: 'AFİŞE BIYIK ÇİZ!', gun: 4 },
+  ],
+};
+
+BO.ADLAR = ['HASAN BEY', 'FADİME ABLA', 'KAZIM AĞA', 'NURAN HANIM', 'CEVDET USTA', 'HAYRİYE TEYZE', 'RAMİZ DAYI', 'ŞÜKRÜ BEY', 'ZEKİYE HANIM', 'İSMAİL ABİ'];
+BO.kisaAd = function () {
+  const ad = (BO.state && BO.state.adayAd) || 'BİZ';
+  return ad.split(' ')[0].slice(0, 8);
+};
+
 BO.newGameState = function () {
   return {
+    adayAd: 'ADAY',  // oyuncunun seçtiği aday adı
+    ekipman: {},     // dükkândan alınanlar: { motor: 1, ... }
     gun: 1,          // kampanya günü (1..60)
-    kasa: 10000,     // TL
+    kasa: BO.zor().kasa, // TL
     itibar: 50,      // 0..100
     oy: 12.0,        // oy oranı %
     erzak: 30,       // fırlatılabilir hediye sayısı

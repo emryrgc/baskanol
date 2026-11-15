@@ -27,13 +27,23 @@ BO.SummaryScene = class extends Phaser.Scene {
       y += 12;
     };
     BO.text(this, W / 2, y, 'GÜN ' + st.gun + ' RAPORU', { color: P.y, ox: 0.5 }); y += 14;
-    row('DAĞITILAN', st.dagitilan);
-    row('MEMNUN', st.memnun, P.l);
-    row('DOMATES', st.domates, P.r);
-    row('KOVALAMA', st.kovalama);
-    row('KAÇIŞ', st.kacis + '/' + st.kovalama, P.l);
-    row('ÇARPMA', st.kaza, P.o);
-    row('BAĞIŞ', '+' + BO.tl(st.bagis), P.y);
+    if (st.tur === 'miting') {
+      row('ORT. COŞKU', '%' + st.ortCosku, st.ortCosku > 60 ? P.l : P.o);
+      row('MÜKEMMEL', st.mukemmel, P.l);
+      row('İYİ', st.iyi, P.y);
+      row('KAÇAN', st.kacan, P.r);
+      row('SUSTURULAN', st.susturulan, P.l);
+      row('YUHALAMA', st.yuh, P.r);
+      row('BAĞIŞ', '+' + BO.tl(st.bagis), P.y);
+    } else {
+      row('DAĞITILAN', st.dagitilan);
+      row('MEMNUN', st.memnun, P.l);
+      row('DOMATES', st.domates, P.r);
+      row('KOVALAMA', st.kovalama);
+      row('KAÇIŞ', st.kacis + '/' + st.kovalama, P.l);
+      row('ÇARPMA', st.kaza, P.o);
+      row('BAĞIŞ', '+' + BO.tl(st.bagis), P.y);
+    }
     y += 4;
     this.add.rectangle(12, y, W - 24, 1, 0x566c86).setOrigin(0); y += 6;
     const dOy = S.oy - st.oyBas;
@@ -59,6 +69,12 @@ BO.SummaryScene = class extends Phaser.Scene {
   headline() {
     const st = this.st;
     const pick = (a) => Phaser.Utils.Array.GetRandom(a);
+    const ad = BO.kisaAd();
+    if (st.tur === 'miting') {
+      if (st.ortCosku >= 65) return pick(['MEYDANLAR DOLDU TAŞTI!', ad + ' MEYDANI SALLADI!']);
+      if (st.ortCosku >= 40) return pick(['MİTİNGE YOĞUN İLGİ!', ad + ' SLOGANLARI DİLLERDE!']);
+      return pick(['MİTİNGDE ESNEYENLER ÇOĞUNLUKTA!', ad + ' MİKROFONU YUTTU!']);
+    }
     if (st.yakalanma >= 2) return pick(['ADAYIN OTOBÜSÜ YİNE YAKALANDI!', 'SEÇMENLER OTOBÜSÜ SIKIŞTIRDI!']);
     if (st.domates >= 4) return pick(['ADAY DOMATES YAĞMURUNA TUTULDU!', 'MANAVLAR BU KAMPANYAYA BAYILDI!']);
     if (st.kaza >= 4) return 'TRAFİK POLİSİ ADAYI ARIYOR!';

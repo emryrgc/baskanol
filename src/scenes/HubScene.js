@@ -22,6 +22,12 @@ BO.HubScene = class extends Phaser.Scene {
     BO.save();
     this.draw();
 
+    // Yeni görev açıldı mı?
+    const yeni = BO.GOREVLER.gunduz.concat(BO.GOREVLER.gece).filter((g) => g.gun === S.gun && g.gun > 1);
+    if (yeni.length && !(S.duyuru || {})[S.gun]) {
+      S.duyuru = S.duyuru || {}; S.duyuru[S.gun] = true; S.olayGun = S.gun;
+      this.time.delayedCall(450, () => this.modal('YENİ GÖREV!', yeni.map((g) => g.ad + '\n' + g.acik).join('\n\n') + '\n\nGÖREV SEÇ\nBUTONUNDAN OYNA!', [{ label: 'SÜPER!', onPick: (k) => k() }]));
+    }
     // Sabah rastgele olay
     if (S.faz === 'sabah' && S.olayGun !== S.gun && S.gun > 1) {
       S.olayGun = S.gun;
@@ -70,7 +76,7 @@ BO.HubScene = class extends Phaser.Scene {
     }
     this.add.rectangle(wx + ww / 2 - 1, wy, 2, wh, C('k')).setOrigin(0);
     this.add.rectangle(wx - 8, wy + wh + 4, ww + 16, 13, C('o')).setOrigin(0);
-    BO.text(this, W / 2, wy + wh + 7, 'OY VER!', { color: P.k, ox: 0.5 });
+    BO.text(this, W / 2, wy + wh + 7, BO.kisaAd(), { color: P.k, ox: 0.5 });
     this.add.rectangle(0, roomBottom - 16, W, 16, C('m')).setOrigin(0);
     this.add.rectangle(0, roomBottom - 16, W, 1, C('k')).setOrigin(0);
     const podY = roomBottom - 22;
@@ -101,19 +107,21 @@ BO.HubScene = class extends Phaser.Scene {
       this.tweens.add({ targets: uyari, alpha: 0.1, duration: 400, yoyo: true, repeat: -1 });
     }
     card('erzak', 124, y2, 'ERZAK', '', P.w);
+    const dukkan = BO.button(this, 30, y2 + 42, 52, 14, 'DÜKKAN', { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.go('Shop'); } });
+    this.tweens.add({ targets: dukkan, angle: { from: -3, to: 3 }, duration: 700, yoyo: true, repeat: -1 });
     this.refreshCards();
 
     // --- Anket ---
     let y = roomBottom + 6;
     BO.text(this, 6, y, 'ANKET', { color: P.y });
     y += 13;
-    const rows = [{ ad: 'BİZ', renk: 'o', oy: S.oy }]
+    const rows = [{ ad: BO.kisaAd(), biz: true, renk: 'o', oy: S.oy }]
       .concat(BO.RIVALS.map((r) => ({ ad: r.kisa, renk: r.renk, oy: BO.rakip(r.id).oy })))
       .concat([{ ad: 'KARARSIZ', renk: 'n', oy: S.kararsiz }]);
     const max = Math.max.apply(null, rows.map((r) => r.oy));
     rows.forEach((r) => {
       this.add.rectangle(6, y + 1, 6, 6, C(r.renk)).setOrigin(0);
-      BO.text(this, 15, y, r.ad, { color: r.ad === 'BİZ' ? P.y : P.w });
+      BO.text(this, 15, y, r.ad, { color: r.biz ? P.y : P.w });
       this.add.rectangle(84, y + 1, Math.max(1, Math.round(48 * r.oy / max)), 6, C(r.renk)).setOrigin(0);
       BO.text(this, W - 6, y, '%' + r.oy.toFixed(1), { color: P.L, ox: 1 });
       y += 11;
@@ -121,7 +129,7 @@ BO.HubScene = class extends Phaser.Scene {
 
     // --- Butonlar ---
     if (!aksam) {
-      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GÜNDÜZ: SAHAYA İN', { fill: 'y', shade: 'o', onClick: () => this.go('Day') });
+      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GÜNDÜZ: GÖREV SEÇ', { fill: 'y', shade: 'o', onClick: () => this.gorevSec('gunduz') });
       this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
       BO.button(this, 45, H - 18, 84, 16, 'GECEYE GEÇ', {
         fill: 'n', shade: 'N', color: 'w',
@@ -129,7 +137,7 @@ BO.HubScene = class extends Phaser.Scene {
       });
       BO.button(this, W - 45, H - 18, 84, 16, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
     } else {
-      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GECE: OPERASYON', { fill: 'p', shade: 'k', color: 'w', onClick: () => this.go('Night') });
+      const b = BO.button(this, W / 2, H - 46, 164, 22, 'GECE: GÖREV SEÇ', { fill: 'p', shade: 'k', color: 'w', onClick: () => this.gorevSec('gece') });
       this.tweens.add({ targets: b, scale: 1.04, duration: 500, yoyo: true, repeat: -1 });
       BO.button(this, W / 2, H - 18, 164, 16, 'GECEYİ ATLA', {
         fill: 'n', shade: 'N', color: 'w',
@@ -171,6 +179,23 @@ BO.HubScene = class extends Phaser.Scene {
       by += h + 8;
     });
     return kapat;
+  }
+
+  gorevSec(faz) {
+    const S = BO.state;
+    const list = BO.GOREVLER[faz].map((g) => {
+      const acik = S.gun >= g.gun;
+      return {
+        label: g.ad + '\n' + (acik ? g.acik : g.gun + '. GÜN AÇILIR'),
+        fill: acik ? (faz === 'gece' ? 'p' : 'y') : 'L', shade: acik ? (faz === 'gece' ? 'k' : 'o') : 'n',
+        color: acik && faz === 'gece' ? 'w' : 'k',
+        onPick: (kapat) => { if (!acik) return; kapat(); this.go(g.id); },
+      };
+    });
+    list.push({ label: 'VAZGEÇ', fill: 'n', shade: 'N', color: 'w', onPick: (kapat) => kapat() });
+    const kilitli = BO.GOREVLER[faz].filter((g) => S.gun < g.gun).length;
+    this.modal(faz === 'gece' ? 'GECE GÖREVİ' : 'GÜNDÜZ GÖREVİ',
+      'BUGÜN NE YAPALIM?' + (kilitli ? '\nYENİ GÖREVLER\nGÜNLER GEÇTİKÇE\nAÇILIR.' : ''), list);
   }
 
   itibarInfo() {

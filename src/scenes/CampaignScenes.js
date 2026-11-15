@@ -9,7 +9,7 @@ BO.fadeTo = function (scene, key, data) {
 // Anket çubukları (Poll ve Election ortak kullanır)
 BO.partiListesi = function () {
   const S = BO.state;
-  return [{ id: 'biz', ad: 'BİZ', renk: 'o', oy: S.oy }]
+  return [{ id: 'biz', ad: BO.kisaAd(), renk: 'o', oy: S.oy }]
     .concat(BO.RIVALS.map((r) => ({ id: r.id, ad: r.kisa, renk: r.renk, oy: BO.rakip(r.id).oy })));
 };
 
@@ -138,7 +138,7 @@ BO.DebateScene = class extends Phaser.Scene {
     kursu(40, 'o');
     this.oSp = this.add.image(140, 96, 'rakip_' + lider.id).setOrigin(0.5, 1).setScale(2).setFlipX(true);
     kursu(140, lider.renk);
-    BO.text(this, 40, 106, 'BİZ', { color: P.k, ox: 0.5 });
+    BO.text(this, 40, 106, BO.kisaAd(), { color: P.k, ox: 0.5 });
     BO.text(this, 140, 106, lider.kisa, { color: P.w, ox: 0.5 });
     BO.text(this, W / 2, 22, 'VS', { size: 16, color: P.y, ox: 0.5 });
 

@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: Prototip 3, ilk tam oyun geri bildirimleri işlendi
+> Son güncelleme: v0.4 (menü, aday adı, yeni görevler, dükkân)
 
 ## 1. Özet
 
@@ -149,11 +149,46 @@ Hedef oyun süresi: 30-45 dakika.
 - **Font:** Press Start 2P (OFL lisanslı, Türkçe karakterleri destekler).
 - **Ses:** Kodla üretilen retro efektler (`src/sfx.js`).
 
+## 10. v0.4 eklemeleri
+
+### Açılış menüsü
+- **Yeni oyun:** Eski kayıt varsa onay sorulur. Ardından aday adı ekranı açılır: Türkçe pixel klavye (bilgisayar klavyesi de çalışır), en fazla 12 harf, "Rastgele ad" butonu var. Ad ana sayfadaki pankartta, ankette, mitingde ve münazarada kullanılır.
+- **Oyun yükle:** Kayıt kartı gösterilir (ad, gün, oy, kasa, itibar). Buradan yüklenir ya da silinir.
+- **Ayarlar:** Ses, titreşim, zorluk (Kolay / Normal / Zor) ve kayıtları silme.
+  - Zorluk etkileri: polisin fark etme hızı, rakiplerin büyüme ve saldırı hızı, kaza cezası ve başlangıç parası (15.000 / 10.000 / 7.000 TL).
+- **Credits:** Kayan yazı.
+- **Çıkış:** Mağaza uygulamasında uygulamayı kapatır. Tarayıcıda oyunu kaydedip veda ekranı gösterir.
+
+### Görev seçme
+Ana sayfada "Gündüz: Görev seç" ve "Gece: Görev seç" butonları var. Kilitli görevlerin yanında kaçıncı günde açılacağı yazar. Yeni bir görev açıldığı gün sabah duyuru çıkar.
+
+| Görev | Zaman | Açılır | Nasıl oynanır |
+|---|---|---|---|
+| Seçim otobüsü | Gündüz | 1. gün | Erzak dağıt, KAÇ! |
+| **Miting** | Gündüz | 3. gün | 40 saniye sürer. Ok yeşil bölgedeyken "SLOGAN AT" butonuna bas, kombolar yap. Kalabalıkta "YUH!" diyenlere dokunup sustur, yoksa domates gelir. Sonunda ortalama coşkuya göre oy, itibar ve bağış kazanılır. |
+| Gizli operasyon | Gece | 1. gün | Gazete ve rakip |
+| **Afiş baskını** | Gece | 4. gün | 45 saniye sürer. Afişe basılı tut, bıyık çiz (her afiş rakip itibarı -2). "AYAK SESİ!" uyarısından sonra polis geçer: fenerin altında çizersen yakalanırsın. |
+
+### Dükkân (ana sayfada DÜKKAN butonu)
+Her ekipmanın 3 seviyesi var:
+
+| Ekipman | Etkisi (seviye başına) |
+|---|---|
+| Turbo motor | Kaçışta kovalayandan daha hızlı uzaklaşırsın, kazada daha az yaklaşır |
+| Dev hoparlör | Seçmen daha sık gelir, mitingde coşku daha yavaş düşer |
+| Baklava erzak | Seçmen +%5 daha fazla memnun kalır |
+| Pro takma bıyık | Polis %20 daha geç fark eder, afişte tolerans artar |
+| Spor ayakkabı | Gece %15 daha hızlı yürürsün |
+
+### Zorluk artışı
+- 20. günden sonra gece haritasında 4. polis, 40. günden sonra 5. polis çıkar.
+- Rakiplerin seni eleştirme ihtimali seçime yaklaştıkça artar.
+
 ## 9. Fikir havuzu (sıradaki işler)
 
 **Görev çeşitliliği** (oyun sahibinin isteği: tekrar eden görevler sıkıcı olmasın):
-- Gündüz: miting kürsüsü (doğru anda alkış topla), kapı kapı gezme, pazar yerinde tezgâh, bebek öpme ve esnaf ziyareti mini oyunları.
-- Gece: rakibin afişlerini değiştirme, rakip kampanya ofisine gizlice girip belge fotoğraflama, rakip otobüsünün lastiğini indirme, sahte anket şirketi.
+- Gündüz: ~~miting kürsüsü~~ (yapıldı), kapı kapı gezme, pazar yerinde tezgâh, bebek öpme ve esnaf ziyareti mini oyunları.
+- Gece: ~~rakibin afişlerini değiştirme~~ (yapıldı), rakip kampanya ofisine gizlice girip belge fotoğraflama, rakip otobüsünün lastiğini indirme, sahte anket şirketi.
 - Her gün farklı bir mahalle ve seçmen profili.
 - Görevlerin günlere göre açılması: ilk günlerde basit, ilerledikçe yenileri.
 

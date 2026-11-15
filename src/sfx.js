@@ -3,8 +3,7 @@ window.BO = window.BO || {};
 
 BO.sfx = (function () {
   let ctx = null;
-  let muted = false;
-  try { muted = localStorage.getItem('bo_muted') === '1'; } catch (e) {}
+  let muted = BO.ayar ? !BO.ayar.ses : false;
 
   function ac() {
     if (!ctx) {
@@ -56,7 +55,7 @@ BO.sfx = (function () {
     isMuted: () => muted,
     toggle() {
       muted = !muted;
-      try { localStorage.setItem('bo_muted', muted ? '1' : '0'); } catch (e) {}
+      BO.ayar.ses = !muted; BO.ayarKaydet();
       return muted;
     },
     throw: () => tone(500, 0.12, { to: 900, vol: 0.05 }),

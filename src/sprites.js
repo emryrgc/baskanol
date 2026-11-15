@@ -409,6 +409,33 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
       r(kx * TS + 3, ky * TS + 4, 6, 8, '#8b5a3c'); r(kx * TS + 7, ky * TS + 8, 1, 1, '#ffcd75');
     });
 
+    // Arkadan görünen seçmen (miting kalabalığı)
+    fromRows(scene, 'secmen_arka', [
+      '..mmmmm..',
+      '.mmmmmmm.',
+      '.mmmmmmm.',
+      '.mmmmmmm.',
+      '.emmmmme.',
+      '..eeeee..',
+      '.ggggggg.',
+      'eggggggge',
+      'e.ggggg.e',
+      'e.ggggg.e',
+      '..NNNNN..',
+      '..NN.NN..',
+      '..N...N..',
+      '.kk...kk.',
+    ]);
+    // Tuğla duvar (afiş baskını), 24x12 döşenebilir
+    draw(scene, 'tugla', 24, 12, (r) => {
+      r(0, 0, 24, 12, '#5a2a35');
+      r(0, 0, 11, 5, '#7a3a44'); r(12, 0, 12, 5, '#7a3a44');
+      r(0, 6, 5, 5, '#7a3a44'); r(6, 6, 11, 5, '#7a3a44'); r(18, 6, 6, 5, '#7a3a44');
+      r(1, 1, 3, 1, '#8c4a52'); r(13, 1, 3, 1, '#8c4a52'); r(7, 7, 3, 1, '#8c4a52');
+    });
+    // Mikrofon
+    draw(scene, 'mikrofon', 3, 7, (r) => { r(0, 0, 3, 3, 'n'); r(1, 3, 1, 4, 'k'); });
+
     // Animasyonlar
     scene.anims.create({ key: 'yuru', frames: [{ key: 'secmen0' }, { key: 'secmen1' }], frameRate: 4, repeat: -1 });
     scene.anims.create({ key: 'kilik_yuru', frames: [{ key: 'kilik0' }, { key: 'kilik1' }], frameRate: 6, repeat: -1 });
