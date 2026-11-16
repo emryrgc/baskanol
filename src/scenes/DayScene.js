@@ -105,10 +105,13 @@ BO.DayScene = class extends Phaser.Scene {
   // ================= Kontroller =================
   buildControls() {
     const W = this.W, H = this.H, T = BO.TUNE;
-    this.erzakBtn = BO.button(this, W / 2, H - BO.ALT - 42, 150, 20, '+' + T.erzakPaketi + ' ERZAK ' + T.erzakFiyati + 'TL', {
-      fill: 'y', shade: 'o', depth: 70,
-      onClick: () => this.buyErzak(),
+    // Dükkân butonu (erzak buradan alınır)
+    this.erzakBtn = BO.button(this, W / 2, H - BO.ALT - 42, 100, 20, 'DÜKKAN', {
+      fill: 'y', depth: 70,
+      onClick: () => this.dukkanAc(),
     });
+    this.dukkanUyari = BO.text(this, W / 2, H - BO.ALT - 66, 'DÜKKANDAN ERZAK SATIN AL!', { color: BO.PAL.y, ox: 0.5, oy: 0.5, stroke: 3, depth: 71 }).setVisible(false);
+    this.tweens.add({ targets: this.dukkanUyari, alpha: 0.25, duration: 350, yoyo: true, repeat: -1 });
     this.leftBtn = this.yonTusu(28, H - BO.ALT - 58, -1);
     this.rightBtn = this.yonTusu(W - 28, H - BO.ALT - 58, 1);
     this.leftBtn.setVisible(false); this.rightBtn.setVisible(false);
@@ -130,20 +133,43 @@ BO.DayScene = class extends Phaser.Scene {
     return c;
   }
 
-  buyErzak() {
-    const S = BO.state, T = BO.TUNE;
+  // ---------- Otobüs içi dükkân (oyun duraklar) ----------
+  dukkanAc() {
     if (this.mode !== 'day') return;
-    if (S.kasa < T.erzakFiyati) {
-      BO.floatText(this, this.W / 2, this.H - 40, 'KASADA PARA YOK!', BO.PAL.r);
-      this.cameras.main.shake(120, 0.01);
-      return;
-    }
-    S.kasa -= T.erzakFiyati;
-    S.erzak += T.erzakPaketi;
-    if (this.erzakPulse) { this.erzakPulse.destroy(); this.erzakPulse = null; }
-    this.stats.harcama += T.erzakFiyati;
-    BO.sfx.coin();
-    BO.floatText(this, this.W / 2, this.H - 40, '+' + T.erzakPaketi + ' ERZAK', BO.PAL.y);
+    this.mode = 'dukkan';
+    this.dukkanCiz();
+  }
+
+  dukkanCiz() {
+    (this.dukkanUi || []).forEach((o) => o.destroy());
+    const W = this.W, H = this.H, P = BO.PAL, S = BO.state;
+    const ui = this.dukkanUi = [];
+    const add = (o) => { o.setDepth(200); ui.push(o); return o; };
+    add(this.add.rectangle(0, 0, W, H, 0x000000, 0.6).setOrigin(0).setInteractive());
+    const top = Math.round(H * 0.22);
+    add(this.add.rectangle(10, top, W - 20, 150, 0x1a1c2c).setOrigin(0).setStrokeStyle(1, 0x566c86));
+    add(this.add.rectangle(10, top, W - 20, 16, 0x29366f).setOrigin(0));
+    add(BO.text(this, W / 2, top + 8, 'DÜKKAN', { color: P.y, ox: 0.5, oy: 0.5 }));
+    add(BO.text(this, W / 2, top + 26, 'ERZAK: ' + S.erzak + '   KASA: ' + BO.tl(S.kasa), { color: P.w, ox: 0.5, oy: 0.5 }));
+    let y = top + 48;
+    BO.ERZAK_PAKET.forEach((pk) => {
+      const yetmez = S.kasa < pk.fiyat;
+      add(BO.button(this, W / 2, y, 140, 18, '+' + pk.adet + ' ERZAK   ' + BO.tl(pk.fiyat), {
+        fill: yetmez ? 'L' : 'y', depth: 210,
+        onClick: () => {
+          if (yetmez) { BO.floatText(this, W / 2, y - 12, 'KASADA PARA YOK!', P.r); return; }
+          S.kasa -= pk.fiyat; S.erzak += pk.adet;
+          this.stats.harcama += pk.fiyat;
+          BO.sfx.coin();
+          this.dukkanCiz();
+        },
+      }));
+      y += 26;
+    });
+    add(BO.button(this, W / 2, top + 134, 100, 16, 'KAPAT', {
+      fill: 'n', depth: 210,
+      onClick: () => { ui.forEach((o) => o.destroy()); this.dukkanUi = []; this.mode = 'day'; },
+    }));
   }
 
   // ================= Seçmenler =================
@@ -158,7 +184,7 @@ BO.DayScene = class extends Phaser.Scene {
       ok = this.voters.every((o) => Math.abs(o.x - x) > 11 || Math.abs(o.y - y) > 17);
     }
     if (!ok) return;
-    const v = this.add.sprite(x, y, 'secmen0_c').setDepth(10).setScale(1.05);
+    const v = this.add.sprite(x, y, 'secmen0_c').setDepth(10).setScale(1.05 * BO.CERCEVE_OLCEK);
     v.play({ key: 'yuru_c', startFrame: Phaser.Math.Between(0, 1) });   // çerçeve: henüz erzak almadı
     v.setFlipX(sideLeft ? Math.random() < 0.3 : Math.random() < 0.7);
     v.dy = Phaser.Math.FloatBetween(-8, 6);   // kendi yürüme hızı
@@ -207,7 +233,6 @@ BO.DayScene = class extends Phaser.Scene {
     const S = BO.state;
     if (S.erzak <= 0) {
       BO.floatText(this, this.bus.x, this.bus.y - 30, 'ERZAK BİTTİ!', BO.PAL.r);
-      if (!this.erzakPulse) this.erzakPulse = BO.pulse(this, this.erzakBtn, 'r');
       return;
     }
     S.erzak--;
@@ -242,7 +267,7 @@ BO.DayScene = class extends Phaser.Scene {
     const domates = (1 - memnun) * (T.tepki.domates / (1 - T.tepki.memnun));
     if (r < memnun) {
       // Memnun
-      v.setTexture('secmen_mutlu');
+      v.setTexture('secmen_mutlu').setScale(1.05);
       S.oy += T.memnunOy;
       S.itibar = BO.clamp(S.itibar + T.memnunItibar, 0, 100);
       this.stats.memnun++;
@@ -253,12 +278,12 @@ BO.DayScene = class extends Phaser.Scene {
       this.tweens.add({ targets: v, scaleY: 1.25, duration: 90, yoyo: true, repeat: 1 });
     } else if (r < memnun + domates) {
       // Domates fırlatır
-      v.setTexture('secmen_kizgin');
+      v.setTexture('secmen_kizgin').setScale(1.05);
       this.stats.domates++;
       this.throwTomato(v);
     } else {
       // Kızar ve kovalama başlar
-      v.setTexture('secmen_kizgin');
+      v.setTexture('secmen_kizgin').setScale(1.05);
       BO.sfx.angry();
       const ex = this.add.image(v.x, v.y - 12, 'isaret').setDepth(40);
       this.tweens.add({ targets: ex, y: ex.y - 4, duration: 100, yoyo: true, repeat: 3, onComplete: () => ex.destroy() });
@@ -310,7 +335,7 @@ BO.DayScene = class extends Phaser.Scene {
     this.tweens.add({ targets: kac, alpha: 0, scale: 1.6, delay: 1200, duration: 300, onComplete: () => kac.destroy() });
 
     // Herkes kızgın bakar
-    this.voters.forEach((v) => { if (v.active && !v.served) { v.anims.stop(); v.setTexture('secmen_kizgin'); } });
+    this.voters.forEach((v) => { if (v.active && !v.served) { v.anims.stop(); v.setTexture('secmen_kizgin').setScale(1.05); } });
 
     this.time.delayedCall(1200, () => this.startChaseRun());
   }
@@ -493,6 +518,13 @@ BO.DayScene = class extends Phaser.Scene {
   update(time, delta) {
     const dt = Math.min(delta, 50) / 1000;
     const S = BO.state, T = BO.TUNE;
+    if (this.mode === 'dukkan') { this.updateHud(); return; }   // dükkân açıkken oyun durur
+
+    // Erzak bitince dükkân butonu yanıp söner
+    const bitti = S.erzak <= 0 && this.mode === 'day';
+    this.dukkanUyari.setVisible(bitti);
+    if (bitti && !this.erzakPulse) this.erzakPulse = BO.pulse(this, this.erzakBtn, 'r');
+    if (!bitti && this.erzakPulse) { this.erzakPulse.destroy(); this.erzakPulse = null; }
     this.bg.tilePositionY -= this.speed * dt;
 
     // Seçmenler yolla birlikte aşağı akar

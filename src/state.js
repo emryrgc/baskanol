@@ -26,6 +26,8 @@ BO.EKIPMAN = [
   { id: 'biyik', ad: 'PRO TAKMA BIYIK', acik: 'GİZLİLİK +', fiyat: [2500, 5000, 9000] },
   { id: 'ayakkabi', ad: 'SPOR AYAKKABI', acik: 'GECE HIZLI', fiyat: [2000, 4000, 7000] },
 ];
+// Erzak paketleri (otobüs görevindeki dükkân)
+BO.ERZAK_PAKET = [{ adet: 10, fiyat: 500 }, { adet: 25, fiyat: 1100 }, { adet: 50, fiyat: 2000 }];
 BO.seviye = function (id) { return (BO.state.ekipman && BO.state.ekipman[id]) || 0; };
 
 // ---------- Görevler (günler ilerledikçe açılır) ----------
@@ -105,7 +107,7 @@ BO.TUNE = {
   gunSuresi: 40,          // otobüs görevinin toplam süresi (kovalamalar dahil), saniye
   yolHizi: 28,            // dağıtım modunda yol akış hızı (px/sn)
   kacisYolHizi: 150,      // kovalama modunda yol akış hızı
-  erzakFiyati: 500,       // 10 erzak kaç TL
+  erzakFiyati: 500,       // 10 erzak kaç TL (ana sayfa dükkânı)
   erzakPaketi: 10,
   tepki: { memnun: 0.70, domates: 0.20 },   // itibar 50'deki oranlar; itibar arttıkça memnun artar
   memnunOy: 0.06,         // memnun seçmen başına oy oranı artışı

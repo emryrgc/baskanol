@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.9 (tek yazı tipi, çerçeveli seçmenler)
+> Son güncelleme: v0.10 (net yazılar, otobüs dükkânı, ince çerçeve)
 
 ## 1. Özet
 
@@ -231,3 +231,9 @@ Her ekipmanın 3 seviyesi var:
 - **Tek yazı tipi:** Piksel yazı seçeneği kaldırıldı. Bütün yazılarda Rubik kullanılıyor.
 - **Çerçeveli seçmenler:** Otobüs görevinde henüz erzak almamış seçmenlerin etrafında 1 piksellik beyaz çerçeve var, böylece kaldırımla karışmıyorlar. Erzak ulaşıp tepki verdikleri anda çerçeve kalkar.
 - Seçmenler %5 daha büyük çizilir.
+
+## 16. v0.10
+- **Net yazılar:** Oyun telefonun gerçek piksel yoğunluğunda çizilir (en fazla 4 kat: dünya pikseli × ekran yoğunluğu). Yazılar artık telefonun büyütmesiyle bulanıklaşmıyor.
+- **İnce çerçeve:** Seçmen çerçeveleri yarım piksel kalınlığında (çerçeveli kopya 2 kat detaylı üretilip 0,5 ölçekle gösterilir).
+- **Otobüs dükkânı:** Otobüs görevinde alttaki buton artık DÜKKAN. Açılınca oyun durur ve erzak paketleri satın alınır: +10 / 500 TL, +25 / 1.100 TL, +50 / 2.000 TL. Erzak bitince "DÜKKANDAN ERZAK SATIN AL!" yazısı çıkar ve buton kırmızı çerçeveyle yanıp söner.
+- Ana sayfadaki dükkâna da "Erzak paketi" satırı eklendi (+10 / 500 TL).

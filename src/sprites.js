@@ -144,21 +144,24 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
   const LEKE = ['.r...r.', 'rrr.rr.', '.rrrrrr', 'rrrrrr.', '.rr.rrr', 'r..r...'];
   const ISARET = ['..k..', '.krk.', '.krk.', '.krk.', '..k..', '.krk.', '..k..'];
 
-  // Bir sprite'ın etrafına 1 piksellik renkli çerçeve çizilmiş kopyasını üretir
+  // Bir sprite'ın etrafına İNCE (yarım piksel) renkli çerçeve çizilmiş kopyasını üretir.
+  // Kopya 2 kat detaylı çizilir; oyunda 0.5 ölçekle gösterilir (BO.CERCEVE_OLCEK).
+  BO.CERCEVE_OLCEK = 0.5;
   BO.cerceveli = function (scene, kaynak, hedef, renk) {
     const src = scene.textures.get(kaynak).getSourceImage();
-    const w = src.width, h = src.height;
-    const sctx = src.getContext('2d');
-    const d = sctx.getImageData(0, 0, w, h).data;
-    const dolu = (x, y) => x >= 0 && y >= 0 && x < w && y < h && d[(y * w + x) * 4 + 3] > 0;
-    const tex = scene.textures.createCanvas(hedef, w + 2, h + 2);
+    const w = src.width, h = src.height, k = 2;
+    const d = src.getContext('2d').getImageData(0, 0, w, h).data;
+    const W2 = w * k, H2 = h * k;
+    const dolu = (x, y) => x >= 0 && y >= 0 && x < W2 && y < H2 && d[(Math.floor(y / k) * w + Math.floor(x / k)) * 4 + 3] > 0;
+    const tex = scene.textures.createCanvas(hedef, W2 + 2, H2 + 2);
     const ctx = tex.getContext();
+    ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = renk;
-    for (let y = -1; y <= h; y++) for (let x = -1; x <= w; x++) {
+    for (let y = -1; y <= H2; y++) for (let x = -1; x <= W2; x++) {
       if (dolu(x, y)) continue;
       if (dolu(x - 1, y) || dolu(x + 1, y) || dolu(x, y - 1) || dolu(x, y + 1)) ctx.fillRect(x + 1, y + 1, 1, 1);
     }
-    ctx.drawImage(src, 1, 1);
+    ctx.drawImage(src, 1, 1, W2, H2);
     tex.refresh();
   };
 

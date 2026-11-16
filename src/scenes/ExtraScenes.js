@@ -11,17 +11,30 @@ BO.ShopScene = class extends Phaser.Scene {
     this.add.rectangle(0, 0, W, 30, 0x29366f).setOrigin(0);
     BO.text(this, W / 2, 7, 'DÜKKAN', { size: 16, color: P.y, ox: 0.5 });
     this.kasaT = BO.text(this, W / 2, 36, '', { color: P.y, ox: 0.5 });
-    let y = 54;
+    let y = 52;
+    // Erzak paketi
+    this.add.rectangle(4, y - 4, W - 8, 30, 0x262b44).setOrigin(0);
+    BO.text(this, 8, y - 1, 'ERZAK PAKETİ', { color: P.w });
+    BO.text(this, 8, y + 12, 'ELDE: ' + S.erzak, { color: P.L });
+    const ep = BO.ERZAK_PAKET[0], eYetmez = S.kasa < ep.fiyat;
+    BO.button(this, W - 36, y + 15, 58, 12, '+' + ep.adet + ': ' + ep.fiyat, {
+      fill: eYetmez ? 'L' : 'y',
+      onClick: () => {
+        if (eYetmez) { BO.floatText(this, W / 2, y + 8, 'PARA YETMİYOR!', P.r); return; }
+        S.kasa -= ep.fiyat; S.erzak += ep.adet; BO.save(); BO.sfx.coin(); this.scene.restart();
+      },
+    });
+    y += 33;
     BO.EKIPMAN.forEach((e) => {
       const lv = BO.seviye(e.id);
-      this.add.rectangle(4, y - 4, W - 8, 32, 0x262b44).setOrigin(0);
-      BO.text(this, 8, y, e.ad, { color: P.w });
+      this.add.rectangle(4, y - 4, W - 8, 30, 0x262b44).setOrigin(0);
+      BO.text(this, 8, y - 1, e.ad, { color: P.w });
       for (let i = 0; i < 3; i++) this.add.rectangle(W - 26 + i * 7, y + 1, 5, 5, i < lv ? 0xffcd75 : 0x566c86).setOrigin(0);
-      BO.text(this, 8, y + 13, e.acik, { color: P.L });
+      BO.text(this, 8, y + 12, e.acik, { color: P.L });
       const max = lv >= 3;
       const fiyat = max ? 0 : e.fiyat[lv];
       const yetmez = !max && S.kasa < fiyat;
-      BO.button(this, W - 36, y + 17, 58, 12, max ? 'MAX' : BO.tl(fiyat).replace(' TL', ''), {
+      BO.button(this, W - 36, y + 15, 58, 12, max ? 'MAX' : BO.tl(fiyat).replace(' TL', ''), {
         fill: max ? 'n' : yetmez ? 'L' : 'y', shade: max ? 'N' : yetmez ? 'n' : 'o', color: max ? 'w' : 'k',
         onClick: () => {
           if (max) return;
@@ -33,9 +46,9 @@ BO.ShopScene = class extends Phaser.Scene {
           this.scene.restart();
         },
       });
-      y += 36;
+      y += 33;
     });
-    BO.text(this, W / 2, y + 2, 'HER SEVİYE ETKİYİ\nARTIRIR.', { color: P.n, ox: 0.5, align: 'center' });
+    if (y + 30 < H - BO.ALT - 30) BO.text(this, W / 2, y + 2, 'HER SEVİYE ETKİYİ\nARTIRIR.', { color: P.n, ox: 0.5, align: 'center' });
     BO.button(this, W / 2, H - BO.ALT - 20, 120, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Hub') });
     this.kasaT.setText('KASA: ' + BO.tl(S.kasa));
     this.cameras.main.fadeIn(200, 26, 28, 44);

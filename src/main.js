@@ -16,7 +16,11 @@
       K = 2;
       H = Math.round(BO.clamp(W * vh / vw, 300, 400));
     }
-    BO.W = W; BO.H = H; BO.K = K;
+    // Ekranın GERÇEK piksel yoğunluğunda çiz (telefonlarda 2-3 kat): yazılar netleşir.
+    // R = çizim katı. Sprite pikselleri R x R gerçek piksel olur, yazılar tam çözünürlükte.
+    const dpr = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+    const R = Math.max(K, Math.min(4, Math.round(K * dpr)));   // performans için en fazla 4 kat
+    BO.W = W; BO.H = H; BO.K = R;
     // alttaki butonlar ekranın dibine yapışmasın diye boşluk (kısa ekranda daha az)
     BO.ALT = Math.round(BO.clamp(H - 296, 6, 20));
 
@@ -28,7 +32,7 @@
     sahneler.forEach((S) => {
       const orj = S.prototype.create;
       S.prototype.create = function () {
-        this.cameras.main.setOrigin(0, 0).setZoom(K).setScroll(0, 0);
+        this.cameras.main.setOrigin(0, 0).setZoom(R).setScroll(0, 0);
         if (orj) return orj.apply(this, arguments);
       };
     });
@@ -36,8 +40,8 @@
     BO.game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: 'game',
-      width: W * K,
-      height: H * K,
+      width: W * R,
+      height: H * R,
       pixelArt: true,
       roundPixels: true,
       backgroundColor: '#1a1c2c',
