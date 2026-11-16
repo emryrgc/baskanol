@@ -26,7 +26,7 @@ BO.DayScene = class extends Phaser.Scene {
     this.bg = this.add.tileSprite(0, 0, W, H, 'yol').setOrigin(0).setDepth(0);
 
     // --- Otobüs ---
-    this.busDayY = H - 100;
+    this.busDayY = H - BO.ALT - 104;
     this.busChaseY = Math.round(H * 0.5);
     this.lane = 1;
     this.bus = this.add.container(BO.LANE_X[1], this.busDayY).setDepth(20);
@@ -105,12 +105,12 @@ BO.DayScene = class extends Phaser.Scene {
   // ================= Kontroller =================
   buildControls() {
     const W = this.W, H = this.H, T = BO.TUNE;
-    this.erzakBtn = BO.button(this, W / 2, H - 42, 150, 20, '+' + T.erzakPaketi + ' ERZAK ' + T.erzakFiyati + 'TL', {
+    this.erzakBtn = BO.button(this, W / 2, H - BO.ALT - 42, 150, 20, '+' + T.erzakPaketi + ' ERZAK ' + T.erzakFiyati + 'TL', {
       fill: 'y', shade: 'o', depth: 70,
       onClick: () => this.buyErzak(),
     });
-    this.leftBtn = this.yonTusu(28, H - 60, -1);
-    this.rightBtn = this.yonTusu(W - 28, H - 60, 1);
+    this.leftBtn = this.yonTusu(28, H - BO.ALT - 58, -1);
+    this.rightBtn = this.yonTusu(W - 28, H - BO.ALT - 58, 1);
     this.leftBtn.setVisible(false); this.rightBtn.setVisible(false);
   }
 

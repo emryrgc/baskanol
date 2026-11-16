@@ -60,8 +60,8 @@ BO.HubScene = class extends Phaser.Scene {
     }
 
     // --- Oda ---
-    const roomTop = 36, roomBottom = H - 170;
-    this.add.rectangle(0, roomTop, W, roomBottom - roomTop, C(aksam ? '#1f2547' : '#3b5dc9')).setOrigin(0);
+    const roomTop = 36, roomBottom = H - BO.ALT - 170;
+    this.add.rectangle(0, roomTop, W, roomBottom - roomTop, C(aksam ? '#1f2547' : '#2f3f73')).setOrigin(0);
     const wx = 62, wy = roomTop + 6, ww = 56, wh = 30;
     this.add.rectangle(wx - 2, wy - 2, ww + 4, wh + 4, C('k')).setOrigin(0);
     this.add.rectangle(wx, wy, ww, wh, C(aksam ? 'B' : 't')).setOrigin(0);
@@ -131,20 +131,20 @@ BO.HubScene = class extends Phaser.Scene {
     // --- Butonlar ---
     if (!aksam) {
       const g = BO.bugunGorev('gunduz');
-      BO.text(this, W / 2, H - 86, 'BUGÜNÜN GÖREVİ', { color: P.L, ox: 0.5 });
-      const b = BO.button(this, W / 2, H - 60, 164, 22, 'GÜNDÜZ: ' + g.kisa, { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.goreveGit('gunduz', g); } });
+      BO.text(this, W / 2, H - BO.ALT - 86, 'BUGÜNÜN GÖREVİ', { color: P.L, ox: 0.5 });
+      const b = BO.button(this, W / 2, H - BO.ALT - 60, 164, 22, 'GÜNDÜZ: ' + g.kisa, { fill: 'y', shade: 'o', onClick: () => { if (!this.modalAcik) this.goreveGit('gunduz', g); } });
       BO.pulse(this, b);
-      BO.button(this, 45, H - 30, 84, 18, 'GECEYE GEÇ', {
+      BO.button(this, 45, H - BO.ALT - 30, 84, 18, 'GECEYE GEÇ', {
         fill: 'n', shade: 'N', color: 'w',
         onClick: () => { BO.gunduzAtla(); this.go('Hub'); },
       });
-      BO.button(this, W - 45, H - 30, 84, 18, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
+      BO.button(this, W - 45, H - BO.ALT - 30, 84, 18, 'HAFTA ATLA', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.skip(7) });
     } else {
       const g = BO.bugunGorev('gece');
-      BO.text(this, W / 2, H - 86, 'BU GECENİN GÖREVİ', { color: P.L, ox: 0.5 });
-      const b = BO.button(this, W / 2, H - 60, 164, 22, 'GECE: ' + g.kisa, { fill: 'p', shade: 'k', color: 'w', onClick: () => { if (!this.modalAcik) this.goreveGit('gece', g); } });
+      BO.text(this, W / 2, H - BO.ALT - 86, 'BU GECENİN GÖREVİ', { color: P.L, ox: 0.5 });
+      const b = BO.button(this, W / 2, H - BO.ALT - 60, 164, 22, 'GECE: ' + g.kisa, { fill: 'p', shade: 'k', color: 'w', onClick: () => { if (!this.modalAcik) this.goreveGit('gece', g); } });
       BO.pulse(this, b, 'p');
-      BO.button(this, W / 2, H - 30, 164, 18, 'GECEYİ ATLA', {
+      BO.button(this, W / 2, H - BO.ALT - 30, 164, 18, 'GECEYİ ATLA', {
         fill: 'n', shade: 'N', color: 'w',
         onClick: () => this.go('Morning', { log: [] }),
       });
@@ -173,7 +173,7 @@ BO.HubScene = class extends Phaser.Scene {
     const top = Math.max(4, Math.round((H - ph) / 2));
     add(this.add.rectangle(8, top, W - 16, ph, 0xf4f4f4).setOrigin(0));
     add(this.add.rectangle(8, top, W - 16, 16, 0x29366f).setOrigin(0));
-    add(BO.text(this, W / 2, top + 1, baslik, { color: P.w, ox: 0.5 })).setDepth(505);
+    add(BO.text(this, W / 2, top + 1, baslik, { color: P.y, ox: 0.5 })).setDepth(505);
     add(m).setDepth(505); m.y = top + 20;
     let by = top + 26 + m.height;
     secenekler.forEach((o) => {
@@ -272,8 +272,8 @@ BO.HubScene = class extends Phaser.Scene {
     add(this.add.rectangle(0, 0, W, H, 0x000000, 0.6).setOrigin(0).setInteractive());
     const top = Math.round(H * 0.18);
     add(this.add.rectangle(8, top, W - 16, 178, 0xf4f4f4).setOrigin(0));
-    add(this.add.rectangle(8, top, W - 16, 16, 0xb13e53).setOrigin(0));
-    add(BO.text(this, W / 2, top + 1, 'OLAY!', { color: P.w, ox: 0.5 }));
+    add(this.add.rectangle(8, top, W - 16, 16, 0x29366f).setOrigin(0));
+    add(BO.text(this, W / 2, top + 1, 'OLAY!', { color: P.y, ox: 0.5 }));
     add(BO.text(this, W / 2, top + 20, ev.baslik, { color: P.k, ox: 0.5 }));
     const metin = add(BO.text(this, W / 2, top + 36, ev.metin, { color: P.n, ox: 0.5, align: 'center' }));
     let by = top + 80;

@@ -160,7 +160,7 @@ BO.NightScene = class extends Phaser.Scene {
       k, g: fix(this.add.graphics()),
       t: fix(BO.text(this, 0, 0, k === 'gazete' ? 'GAZETE' : this.rivalInfo.kisa, { color: P.y, ox: 0.5, oy: 0.5, stroke: 2 })),
     }));
-    this.eveBtn = BO.button(this, W - 34, H - 26, 60, 16, 'EVE DÖN', {
+    this.eveBtn = BO.button(this, W - 34, H - BO.ALT - 26, 60, 16, 'EVE DÖN', {
       fill: 'p', shade: 'k', color: 'w', depth: 600, onClick: () => this.endNight(),
     });
     this.eveBtn.setScrollFactor(0);
@@ -478,7 +478,7 @@ BO.NightScene = class extends Phaser.Scene {
     this.paused = true;
     this.camHizli = true;
     this.oklar.forEach((o) => { o.g.clear(); o.t.setVisible(false); });
-    const yazi = BO.text(this, W / 2, H - 44, '', { color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 900 }).setScrollFactor(0);
+    const yazi = BO.text(this, W / 2, H - BO.ALT - 50, '', { color: BO.PAL.y, ox: 0.5, oy: 0.5, align: 'center', stroke: 3, depth: 900 }).setScrollFactor(0);
     const adimlar = [
       { x: this.doorPos.x, y: this.doorPos.y, t: 'GAZETE: PARA VER,\nRAKİBE MANŞET ATSIN!' },
       { x: this.rival.x, y: this.rival.y, t: this.rivalInfo.kisa + ': LAF SOK,\nKIZINCA VİDEOYA ÇEK!' },

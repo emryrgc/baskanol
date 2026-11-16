@@ -58,7 +58,7 @@ BO.TitleScene = class extends Phaser.Scene {
     const kayit = BO.load();
     const items = [
       { label: 'YENİ OYUN', fill: 'y', shade: 'o', onClick: () => this.yeniOyun(kayit) },
-      { label: 'OYUN YÜKLE', fill: kayit ? 'o' : 'L', shade: kayit ? 'r' : 'n', onClick: () => this.go('Load') },
+      { label: 'OYUN YÜKLE', fill: kayit ? 'n' : 'L', shade: kayit ? 'N' : 'n', onClick: () => this.go('Load') },
       { label: 'AYARLAR', fill: 'c', shade: 'b', onClick: () => this.go('Settings') },
       { label: 'CREDITS', fill: 'c', shade: 'b', onClick: () => this.go('Credits') },
       { label: 'ÇIKIŞ', fill: 'n', shade: 'N', color: 'w', onClick: () => this.cikis() },
@@ -72,7 +72,7 @@ BO.TitleScene = class extends Phaser.Scene {
       if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.6', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.7', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
@@ -83,8 +83,8 @@ BO.TitleScene = class extends Phaser.Scene {
   }
 
   yeniOyun(kayit) {
-    if (kayit) BO.onayKutusu(this, 'ESKİ KAYIT\nSİLİNECEK.\nEMİN MİSİN?', () => this.go('Name'));
-    else this.go('Name');
+    if (kayit) BO.onayKutusu(this, 'ESKİ KAYIT\nSİLİNECEK.\nEMİN MİSİN?', () => this.go('Intro'));
+    else this.go('Intro');
   }
 
   cikis() {
@@ -138,7 +138,7 @@ BO.NameScene = class extends Phaser.Scene {
     BO.button(this, 114, y + 8, 116, 18, 'RASTGELE AD', {
       fill: 'c', shade: 'b', onClick: () => { this.ad = Phaser.Utils.Array.GetRandom(BO.ADLAR); this.guncelle(); },
     });
-    this.tamam = BO.button(this, W / 2, Math.max(y + 42, H - 26), 160, 20, 'KAMPANYAYI BAŞLAT', {
+    this.tamam = BO.button(this, W / 2, Math.max(y + 42, H - BO.ALT - 26), 160, 20, 'KAMPANYAYI BAŞLAT', {
       fill: 'y', shade: 'o', onClick: () => this.basla(),
     });
     // Bilgisayar klavyesi de çalışsın
@@ -222,7 +222,7 @@ BO.LoadScene = class extends Phaser.Scene {
         onClick: () => BO.onayKutusu(this, 'KAYIT SİLİNECEK.\nEMİN MİSİN?', () => { BO.clearSave(); this.scene.restart(); }),
       });
     }
-    BO.button(this, W / 2, H - 20, 100, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Title') });
+    BO.button(this, W / 2, H - BO.ALT - 20, 100, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Title') });
   }
   update(t, d) { BO.menuArkaPlanGuncelle(this, d); }
 };
@@ -253,7 +253,7 @@ BO.SettingsScene = class extends Phaser.Scene {
       fill: 'r', shade: 'k', color: 'w',
       onClick: () => BO.onayKutusu(this, 'TÜM KAYITLAR\nSİLİNECEK!', () => { BO.clearSave(); BO.floatText(this, W / 2, y - 14, 'SİLİNDİ', P.l); }),
     });
-    BO.button(this, W / 2, H - 20, 100, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Title') });
+    BO.button(this, W / 2, H - BO.ALT - 20, 100, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Title') });
   }
   update(t, d) { BO.menuArkaPlanGuncelle(this, d); }
 };
@@ -298,7 +298,7 @@ BO.ByeScene = class extends Phaser.Scene {
     this.add.rectangle(0, 0, W, H, 0x000000).setOrigin(0);
     BO.text(this, W / 2, H / 2 - 30, 'GÖRÜŞÜRÜZ\nBAŞKANIM!', { size: 16, color: P.y, ox: 0.5, align: 'center' });
     BO.text(this, W / 2, H / 2 + 14, 'OYUN KAYDEDİLDİ.\nSEKMEYİ\nKAPATABİLİRSİN.', { color: P.L, ox: 0.5, align: 'center' });
-    const t = BO.text(this, W / 2, H - 30, 'MENÜYE DÖNMEK\nİÇİN DOKUN', { color: P.n, ox: 0.5, align: 'center' });
+    const t = BO.text(this, W / 2, H - BO.ALT - 30, 'MENÜYE DÖNMEK\nİÇİN DOKUN', { color: P.n, ox: 0.5, align: 'center' });
     this.tweens.add({ targets: t, alpha: 0.2, duration: 600, yoyo: true, repeat: -1 });
     this.time.delayedCall(500, () => this.input.once('pointerdown', () => this.scene.start('Title')));
   }

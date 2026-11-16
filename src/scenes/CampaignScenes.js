@@ -60,7 +60,7 @@ BO.SkipScene = class extends Phaser.Scene {
       this.tweens.add({ targets: t, alpha: 0.3, duration: 400, yoyo: true, repeat: -1 });
       y += 14;
     }
-    BO.button(this, W / 2, Math.max(y + 16, H - 22), 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
+    BO.button(this, W / 2, Math.max(y + 16, H - BO.ALT - 22), 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 };
@@ -104,7 +104,7 @@ BO.PollScene = class extends Phaser.Scene {
     list.forEach((p) => { S.sonAnket[p.id] = p.oy; });
     BO.save();
 
-    BO.button(this, W / 2, H - 22, 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
+    BO.button(this, W / 2, H - BO.ALT - 22, 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 };
@@ -211,7 +211,7 @@ BO.DebateScene = class extends Phaser.Scene {
     if (kazandi) BO.sfx.win(); else BO.sfx.lose();
     this.soruT.setText(kazandi ? 'MÜNAZARAYI\nKAZANDIN!' : 'MÜNAZARAYI\nKAYBETTİN...').setColor(kazandi ? P.l : P.r);
     BO.text(this, W / 2, 182, 'OY ' + (oyD >= 0 ? '+' : '') + oyD.toFixed(1) + '   İTİBAR ' + (kazandi ? '+5' : '-3'), { color: P.y, ox: 0.5 });
-    BO.button(this, W / 2, Math.max(214, H - 24), 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
+    BO.button(this, W / 2, Math.max(214, H - BO.ALT - 24), 120, 18, 'DEVAM', { fill: 'y', shade: 'o', onClick: () => BO.fadeTo(this, 'Hub') });
   }
 };
 
@@ -260,7 +260,7 @@ BO.ElectionScene = class extends Phaser.Scene {
       bas.setScale(0.3);
       this.tweens.add({ targets: bas, scale: 1, duration: 300, ease: 'Back.easeOut' });
       BO.text(this, W / 2, y + 32, biz ? 'BAŞKAN SENSİN!' : kazanan.ad + ' KAZANDI.\nBİR DAHAKİNE!', { color: P.w, ox: 0.5, align: 'center' });
-      BO.button(this, W / 2, Math.max(y + 70, H - 22), 140, 18, 'YENİDEN OYNA', {
+      BO.button(this, W / 2, Math.max(y + 70, H - BO.ALT - 22), 140, 18, 'YENİDEN OYNA', {
         fill: 'y', shade: 'o',
         onClick: () => { BO.state = BO.newGameState(); BO.fadeTo(this, 'Title'); },
       });

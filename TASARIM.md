@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.6 (büyük yazılar, yüksek çözünürlüklü çizim)
+> Son güncelleme: v0.7 (açılış hikayesi, renk teması, ekran ölçekleme)
 
 ## 1. Özet
 
@@ -214,3 +214,10 @@ Her ekipmanın 3 seviyesi var:
 - **Alt butonlar yukarı alındı:** Erzak butonu, kaçış okları, EVE DÖN ve ana sayfa butonları ekranın altından uzaklaştırıldı.
 - **Afiş baskını:** Afişler küçüldü (40x50), kılıklı aday ve polis 2 kat büyüdü.
 - **Ana sayfa:** Durum kutuları 54x26.
+
+## 13. v0.7
+- **Açılış hikayesi (IntroScene):** "Yeni oyun"dan sonra 8 sahnelik kısa bir sinematik oynar. Sırasıyla şehir, üç aday, Vedat, Selin, Ulvi, "ve sen", gündüz/gece ve sandık gösterilir. Yazılar daktilo efektiyle çıkar. Dokununca sonraki sahneye geçilir, GEÇ ile hikaye atlanır. Hikaye bitince aday adı ekranı açılır.
+- **Renk teması (BO.TEMA):** Butonlar 5 türdedir: ana (sarı), ikinci (lacivert), tehlike (kırmızı), pasif (soluk) ve kağıt (beyaz seçenekler ve klavye). Pencere başlık bantları lacivert, başlıklar sarıdır.
+- **Ekran ölçekleme:** Uygulama içindeki küçük pencerelerde oyun artık 1 kata düşmüyor. 2x çizilip pencereye sığacak kadar küçültülüyor. Büyük ekranlarda tam sayı katı korunuyor (Phaser FIT + max).
+- **Alt boşluk (BO.ALT):** Alttaki butonlar ekranın dibinden 6-20 piksel ek boşlukla yukarıda duruyor. Kısa ekranlarda boşluk küçülüyor.
+- **Yazı boyutu:** 11.

@@ -8,7 +8,7 @@ BO.ShopScene = class extends Phaser.Scene {
     const W = BO.W, H = BO.H, P = BO.PAL, S = BO.state;
     S.ekipman = S.ekipman || {};
     this.add.rectangle(0, 0, W, H, 0x1a1c2c).setOrigin(0);
-    this.add.rectangle(0, 0, W, 30, 0x5d275d).setOrigin(0);
+    this.add.rectangle(0, 0, W, 30, 0x29366f).setOrigin(0);
     BO.text(this, W / 2, 7, 'DÜKKAN', { size: 16, color: P.y, ox: 0.5 });
     this.kasaT = BO.text(this, W / 2, 36, '', { color: P.y, ox: 0.5 });
     let y = 54;
@@ -36,7 +36,7 @@ BO.ShopScene = class extends Phaser.Scene {
       y += 36;
     });
     BO.text(this, W / 2, y + 2, 'HER SEVİYE ETKİYİ\nARTIRIR.', { color: P.n, ox: 0.5, align: 'center' });
-    BO.button(this, W / 2, H - 18, 120, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Hub') });
+    BO.button(this, W / 2, H - BO.ALT - 20, 120, 16, 'GERİ', { fill: 'n', shade: 'N', color: 'w', onClick: () => this.scene.start('Hub') });
     this.kasaT.setText('KASA: ' + BO.tl(S.kasa));
     this.cameras.main.fadeIn(200, 26, 28, 44);
   }
@@ -78,7 +78,7 @@ BO.RallyScene = class extends Phaser.Scene {
 
     // Kalabalık (arkadan)
     this.kalabalik = [];
-    const crowdBottom = H - 74;
+    const crowdBottom = H - BO.ALT - 78;
     for (let y = 122; y < crowdBottom; y += 15) {
       for (let x = 12; x < W - 6; x += 19) {
         const s = this.add.image(x + Phaser.Math.Between(-3, 3), y + Phaser.Math.Between(-2, 2), 'secmen_arka');
@@ -98,7 +98,7 @@ BO.RallyScene = class extends Phaser.Scene {
     this.coskuBar = this.add.rectangle(48, 20, 0, 6, C('o')).setOrigin(0).setDepth(502);
 
     // Zamanlama çubuğu
-    const by = H - 58;
+    const by = H - BO.ALT - 62;
     this.barX = 15; this.barW = W - 30;
     this.add.rectangle(this.barX - 1, by - 1, this.barW + 2, 10, C('k')).setOrigin(0).setDepth(500);
     this.add.rectangle(this.barX, by, this.barW, 8, C('r')).setOrigin(0).setDepth(500);
@@ -106,7 +106,7 @@ BO.RallyScene = class extends Phaser.Scene {
     this.add.rectangle(W / 2 - 7, by, 14, 8, C('l')).setOrigin(0).setDepth(500);
     this.ok = this.add.rectangle(this.barX, by - 3, 3, 14, C('w')).setOrigin(0.5, 0).setDepth(501);
     this.okDir = 1;
-    BO.button(this, W / 2, H - 26, 150, 22, 'SLOGAN AT!', { fill: 'y', shade: 'o', size: 16, depth: 510, onDown: () => this.slogan() });
+    BO.button(this, W / 2, H - BO.ALT - 28, 150, 24, 'SLOGAN AT!', { fill: 'y', shade: 'o', size: 16, depth: 510, onDown: () => this.slogan() });
 
     this.balon = BO.text(this, W / 2, 56, '', { color: P.w, ox: 0.5, oy: 0.5, stroke: 3, depth: 520 });
 
@@ -263,12 +263,12 @@ BO.PosterScene = class extends Phaser.Scene {
     this.polisTimer = 4;
     const C = (k) => Phaser.Display.Color.HexStringToColor(P[k] || k).color;
 
-    this.add.tileSprite(0, 0, W, H - 80, 'tugla').setOrigin(0);
+    this.add.tileSprite(0, 0, W, H - BO.ALT - 80, 'tugla').setOrigin(0);
     this.add.rectangle(0, 0, W, H, 0x000000, 0.35).setOrigin(0);
-    this.kaldirimY = H - 80;
+    this.kaldirimY = H - BO.ALT - 80;
     this.add.rectangle(0, this.kaldirimY, W, 34, C('n')).setOrigin(0);
     this.add.rectangle(0, this.kaldirimY, W, 2, C('L')).setOrigin(0);
-    this.add.rectangle(0, this.kaldirimY + 34, W, 46, C('#1e2236')).setOrigin(0);
+    this.add.rectangle(0, this.kaldirimY + 34, W, 46 + BO.ALT, C('#1e2236')).setOrigin(0);
     for (let x = 4; x < W; x += 24) this.add.rectangle(x, H - 18, 12, 2, C('L')).setOrigin(0);
     this.add.image(W - 14, 40, 'isik').setScale(0.8);
 
@@ -301,7 +301,7 @@ BO.PosterScene = class extends Phaser.Scene {
     this.saatT = BO.text(this, W - 4, 2, '', { color: P.w, ox: 1, depth: 501 });
     this.sayacT = BO.text(this, 4, 16, '', { color: P.l, depth: 501 });
     this.uyariT = BO.text(this, W - 4, 16, '', { color: P.r, ox: 1, depth: 501 });
-    BO.button(this, W - 34, H - 24, 60, 16, 'EVE DÖN', { fill: 'p', shade: 'k', color: 'w', depth: 510, onClick: () => this.bitir(false) });
+    BO.button(this, W - 34, H - BO.ALT - 24, 60, 16, 'EVE DÖN', { fill: 'p', shade: 'k', color: 'w', depth: 510, onClick: () => this.bitir(false) });
 
     this.input.on('pointerdown', (p, over) => {
       if (this.bitti || (over && over.length)) return;

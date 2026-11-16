@@ -73,7 +73,7 @@ BO.MorningScene = class extends Phaser.Scene {
     BO.text(this, 12, y, 'İTİBAR', { color: P.L });
     BO.text(this, W - 12, y, Math.round(S.itibar) + '/100', { color: P.w, ox: 1 }); y += 12;
 
-    const b = BO.button(this, W / 2, Math.max(y + 18, H - 30), 140, 20, 'YENİ GÜN', {
+    const b = BO.button(this, W / 2, Math.max(y + 18, H - BO.ALT - 30), 140, 20, 'YENİ GÜN', {
       fill: 'y', shade: 'o',
       onClick: () => {
         this.cameras.main.fadeOut(250, 26, 28, 44);

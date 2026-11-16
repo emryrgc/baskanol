@@ -39,7 +39,7 @@ BO.text = function (scene, x, y, str, opts) {
   opts = opts || {};
   const t = new BO.PixelText(scene, Math.round(x), Math.round(y), str, {
     fontFamily: BO.FONT,
-    fontSize: (opts.size || 12) + 'px',
+    fontSize: (opts.size || 11) + 'px',
     color: opts.color || BO.PAL.w,
     align: opts.align || 'left',
     lineSpacing: opts.lineSpacing == null ? -1 : opts.lineSpacing,
@@ -53,14 +53,33 @@ BO.text = function (scene, x, y, str, opts) {
   return t;
 };
 
+// ---------- Renk teması ----------
+// Bütün butonlar 5 türden birine girer; böylece her ekranda aynı renk dili kullanılır.
+BO.TEMA = {
+  ana: { fill: '#ffcd75', shade: '#ef7d57', yazi: '#1a1c2c' },     // ana eylem (sarı)
+  ikinci: { fill: '#3b4a70', shade: '#232b45', yazi: '#f4f4f4' },  // diğer eylemler (lacivert)
+  tehlike: { fill: '#b13e53', shade: '#5a1f2e', yazi: '#f4f4f4' }, // riskli/silme (kırmızı)
+  pasif: { fill: '#2a3048', shade: '#1a1c2c', yazi: '#566c86' },   // kullanılamaz
+  kagit: { fill: '#f4f4f4', shade: '#94b0c2', yazi: '#1a1c2c' },   // seçenekler, klavye
+  baslik: '#29366f',                                               // pencere/ekran başlık bandı
+};
+BO.temaSec = function (fill) {
+  if (fill === 'y' || fill === 'o') return BO.TEMA.ana;
+  if (fill === 'r') return BO.TEMA.tehlike;
+  if (fill === 'L') return BO.TEMA.pasif;
+  if (fill === 'w') return BO.TEMA.kagit;
+  return BO.TEMA.ikinci;
+};
+
 // Pixel tarzı buton. onDown: basıldığı an (oyun kontrolleri), onClick: bırakınca (menüler)
 BO.button = function (scene, x, y, w, h, label, opts) {
   opts = opts || {};
   const P = BO.PAL;
+  const tema = BO.temaSec(opts.fill || 'y');
   const c = scene.add.container(Math.round(x), Math.round(y));
   const g = scene.add.graphics();
-  const fill = Phaser.Display.Color.HexStringToColor(P[opts.fill || 'o']).color;
-  const dark = Phaser.Display.Color.HexStringToColor(P[opts.shade || 'r']).color;
+  const fill = Phaser.Display.Color.HexStringToColor(tema.fill).color;
+  const dark = Phaser.Display.Color.HexStringToColor(tema.shade).color;
   const kk = Phaser.Display.Color.HexStringToColor(P.k).color;
   function paint(pressed) {
     g.clear();
@@ -74,7 +93,7 @@ BO.button = function (scene, x, y, w, h, label, opts) {
   c.add(g);
   let inner = null;
   if (label) {
-    inner = BO.text(scene, 0, 0, label, { size: opts.size || 12, color: P[opts.color || 'k'], ox: 0.5, oy: 0.5, align: 'center' });
+    inner = BO.text(scene, 0, 0, label, { size: opts.size || 11, color: tema.yazi, ox: 0.5, oy: 0.5, align: 'center' });
   } else if (opts.icon) {
     inner = scene.add.image(0, 0, opts.icon);
   }
@@ -112,7 +131,7 @@ BO.pulse = function (scene, btn, color) {
 // Yukarı süzülüp kaybolan yazı ("+OY" gibi)
 BO.floatText = function (scene, x, y, str, color, opts) {
   opts = opts || {};
-  const t = BO.text(scene, x, y, str, { size: opts.size || 12, color: color, ox: 0.5, oy: 0.5, stroke: 2, depth: 50 });
+  const t = BO.text(scene, x, y, str, { size: opts.size || 11, color: color, ox: 0.5, oy: 0.5, stroke: 2, depth: 50 });
   // ekran dışına taşmasın
   const half = t.width / 2;
   t.x = Math.round(BO.clamp(t.x, half + 2, BO.W - half - 2));
