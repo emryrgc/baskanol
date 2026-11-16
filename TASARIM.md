@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.7 (açılış hikayesi, renk teması, ekran ölçekleme)
+> Son güncelleme: v0.8 (yazı tipi seçeneği)
 
 ## 1. Özet
 
@@ -221,3 +221,8 @@ Her ekipmanın 3 seviyesi var:
 - **Ekran ölçekleme:** Uygulama içindeki küçük pencerelerde oyun artık 1 kata düşmüyor. 2x çizilip pencereye sığacak kadar küçültülüyor. Büyük ekranlarda tam sayı katı korunuyor (Phaser FIT + max).
 - **Alt boşluk (BO.ALT):** Alttaki butonlar ekranın dibinden 6-20 piksel ek boşlukla yukarıda duruyor. Kısa ekranlarda boşluk küçülüyor.
 - **Yazı boyutu:** 11.
+
+## 14. v0.8
+- **Yazı tipi seçeneği:** Ayarlar ekranında YAZI TİPİ ile **Normal** (Rubik, OFL) ve **Piksel** (Tiny5) arasında geçilir. Varsayılan Normal'dir. Piksel modunda yazılar keskinleştirilir, Normal modunda yumuşak kenarlı kalır.
+- **İsim konumu:** Aday adı, ad yazma kutusunda ve ana sayfa pankartında dikeyde ortalandı. Pankart pencerenin üstüne taşındı, böylece adayın başı ismi kapatmıyor.
+- **Açılış hikayesi:** Kalan sahneleri gösteren noktalar kaldırıldı.

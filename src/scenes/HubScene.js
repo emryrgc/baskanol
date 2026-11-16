@@ -62,7 +62,7 @@ BO.HubScene = class extends Phaser.Scene {
     // --- Oda ---
     const roomTop = 36, roomBottom = H - BO.ALT - 170;
     this.add.rectangle(0, roomTop, W, roomBottom - roomTop, C(aksam ? '#1f2547' : '#2f3f73')).setOrigin(0);
-    const wx = 62, wy = roomTop + 6, ww = 56, wh = 30;
+    const wx = 62, wy = roomTop + 22, ww = 56, wh = 24;   // pencere; isim pankartı üstünde
     this.add.rectangle(wx - 2, wy - 2, ww + 4, wh + 4, C('k')).setOrigin(0);
     this.add.rectangle(wx, wy, ww, wh, C(aksam ? 'B' : 't')).setOrigin(0);
     if (aksam) {
@@ -75,8 +75,8 @@ BO.HubScene = class extends Phaser.Scene {
       this.add.rectangle(wx + 10, wy + 10, 8, 2, C('w')).setOrigin(0);
     }
     this.add.rectangle(wx + ww / 2 - 1, wy, 2, wh, C('k')).setOrigin(0);
-    this.add.rectangle(wx - 8, wy + wh + 4, ww + 16, 13, C('o')).setOrigin(0);
-    BO.text(this, W / 2, wy + wh + 7, BO.kisaAd(), { color: P.k, ox: 0.5 });
+    this.add.rectangle(wx - 8, roomTop + 4, ww + 16, 14, C('o')).setOrigin(0).setStrokeStyle(1, C('k'));
+    BO.text(this, W / 2, roomTop + 11, BO.kisaAd(), { color: P.k, ox: 0.5, oy: 0.5 });
     this.add.rectangle(0, roomBottom - 16, W, 16, C('m')).setOrigin(0);
     this.add.rectangle(0, roomBottom - 16, W, 1, C('k')).setOrigin(0);
     const podY = roomBottom - 22;

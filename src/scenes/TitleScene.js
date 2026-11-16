@@ -72,7 +72,7 @@ BO.TitleScene = class extends Phaser.Scene {
       if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.7', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.8', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
@@ -112,8 +112,8 @@ BO.NameScene = class extends Phaser.Scene {
     BO.text(this, W / 2, 8, 'ADAYIN ADI NE?', { color: P.y, ox: 0.5 });
     this.aday = this.add.sprite(W / 2, 64, 'aday0').setOrigin(0.5, 1).setScale(3).play('el_salla');
     this.add.rectangle(10, 70, W - 20, 18, 0xf4f4f4).setOrigin(0);
-    this.adT = BO.text(this, W / 2, 75, '', { color: P.k, ox: 0.5 });
-    this.imlec = this.add.rectangle(0, 76, 6, 8, 0x1a1c2c).setOrigin(0);
+    this.adT = BO.text(this, W / 2, 79, '', { color: P.k, ox: 0.5, oy: 0.5 });
+    this.imlec = this.add.rectangle(0, 75, 5, 8, 0x1a1c2c).setOrigin(0);
     this.tweens.add({ targets: this.imlec, alpha: 0, duration: 400, yoyo: true, repeat: -1 });
 
     // Türkçe pixel klavye
@@ -238,7 +238,7 @@ BO.SettingsScene = class extends Phaser.Scene {
     const satir = (label, deger, fn) => {
       BO.text(this, 12, y - 4, label, { color: P.w });
       const b = BO.button(this, W - 44, y, 72, 16, deger(), { fill: 'c', shade: 'b', onClick: () => { fn(); b.label.setText(deger()); BO.ayarKaydet(); } });
-      y += 30;
+      y += 26;
       return b;
     };
     satir('SES', () => (A.ses ? 'AÇIK' : 'KAPALI'), () => { BO.sfx.toggle(); BO.sfx.unlock(); BO.sfx.click(); });
@@ -246,6 +246,11 @@ BO.SettingsScene = class extends Phaser.Scene {
     satir('ZORLUK', () => BO.zor().ad, () => {
       const sira = ['kolay', 'normal', 'zor'];
       A.zorluk = sira[(sira.indexOf(A.zorluk) + 1) % 3];
+    });
+    satir('YAZI TİPİ', () => (A.yazi === 'normal' ? 'NORMAL' : 'PİKSEL'), () => {
+      A.yazi = A.yazi === 'normal' ? 'piksel' : 'normal';
+      BO.ayarKaydet();
+      this.time.delayedCall(50, () => this.scene.restart());   // yeni yazı tipiyle yeniden çiz
     });
     BO.text(this, W / 2, y - 10, 'KOLAY: POLİS YAVAŞ,\nRAKİPLER YUMUŞAK.\nZOR: TAM TERSİ.\nBAŞLANGIÇ PARASI\nDA DEĞİŞİR.', { color: P.L, ox: 0.5, align: 'center', lineSpacing: 3 });
     y += 90;
@@ -269,7 +274,7 @@ BO.CreditsScene = class extends Phaser.Scene {
       ['OYUN FİKRİ VE', P.L], ['YÖNETMEN', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['KOD VE GRAFİK', P.L], ['CLAUDE', P.w], ['(ANTHROPIC)', P.w], ['', P.w],
       ['OYUN MOTORU', P.L], ['PHASER 3', P.w], ['', P.w],
-      ['YAZI TİPİ', P.L], ['TINY5', P.w], ['GISSIO (OFL)', P.w], ['', P.w],
+      ['YAZI TİPLERİ', P.L], ['RUBIK (OFL)', P.w], ['TINY5 - GISSIO (OFL)', P.w], ['', P.w],
       ['RENK PALETİ', P.L], ['SWEETIE 16', P.w], ['GRAFXKID', P.w], ['', P.w],
       ['TEST EKİBİ', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['TEŞEKKÜRLER', P.L], ['TÜM KARARSIZ', P.w], ['SEÇMENLERE', P.w], ['', P.w], ['', P.w],

@@ -1,13 +1,16 @@
 // Ortak arayüz yardımcıları: yazı, buton, uçan yazı.
 window.BO = window.BO || {};
 
-BO.FONT = '"PX", "Courier New", monospace';
+// Yazı tipi ayarlardan seçilir: 'piksel' (Tiny5) ya da 'normal' (Rubik)
+BO.font = function () { return BO.ayar && BO.ayar.yazi === 'normal' ? '"RB", Arial, sans-serif' : '"PX", "Courier New", monospace'; };
+BO.pikselYazi = function () { return !(BO.ayar && BO.ayar.yazi === 'normal'); };
 
 // Keskin pixel yazı: tarayıcının yazıya eklediği bulanık kenarları temizler.
 // Her piksel ya tam dolu ya tam boş olur; konturlu yazıda renkler iki renge yuvarlanır.
 BO.PixelText = class extends Phaser.GameObjects.Text {
   updateText() {
     super.updateText();
+    if (!this.piksel) return this;   // normal yazı tipinde yumuşak kenarlar kalır
     const c = this.canvas;
     if (!c || !c.width || !c.height) return this;
     const ctx = this.context;
@@ -38,7 +41,7 @@ BO.PixelText = class extends Phaser.GameObjects.Text {
 BO.text = function (scene, x, y, str, opts) {
   opts = opts || {};
   const t = new BO.PixelText(scene, Math.round(x), Math.round(y), str, {
-    fontFamily: BO.FONT,
+    fontFamily: BO.font(),
     fontSize: (opts.size || 11) + 'px',
     color: opts.color || BO.PAL.w,
     align: opts.align || 'left',
@@ -46,6 +49,8 @@ BO.text = function (scene, x, y, str, opts) {
     resolution: BO.K || 1,
     wordWrap: opts.wrap ? { width: opts.wrap } : undefined,
   });
+  t.piksel = BO.pikselYazi();
+  if (t.piksel) t.updateText();
   scene.add.existing(t);
   if (opts.stroke) t.setStroke(BO.PAL.k, opts.stroke);
   t.setOrigin(opts.ox == null ? 0 : opts.ox, opts.oy == null ? 0 : opts.oy);

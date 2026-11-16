@@ -16,8 +16,9 @@ html = (ROOT / "index.html").read_text(encoding="utf-8")
 
 title = re.search(r"<title>.*?</title>", html, re.S).group(0)
 style = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
-font = base64.b64encode((ROOT / "assets/fonts/Tiny5.ttf").read_bytes()).decode()
-style = style.replace('url("assets/fonts/Tiny5.ttf")', f'url("data:font/ttf;base64,{font}")')
+for m in set(re.findall(r'url\("(assets/fonts/[^"]+\.ttf)"\)', style)):
+    font = base64.b64encode((ROOT / m).read_bytes()).decode()
+    style = style.replace(f'url("{m}")', f'url("data:font/ttf;base64,{font}")')
 
 body = re.search(r"<body>(.*?)</body>", html, re.S).group(1)
 

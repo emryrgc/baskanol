@@ -22,10 +22,6 @@ BO.IntroScene = class extends Phaser.Scene {
     this.yazi = BO.text(this, 12, by + 6, '', { color: P.w, wrap: W - 24, depth: 101 });
     this.devamT = BO.text(this, W - 12, by + 72, 'DOKUN ›', { color: P.n, ox: 1, depth: 101 });
     this.tweens.add({ targets: this.devamT, alpha: 0.2, duration: 500, yoyo: true, repeat: -1 });
-    this.noktalar = [];
-    for (let k = 0; k < this.slaytlar().length; k++) {
-      this.noktalar.push(this.add.rectangle(W / 2 - 28 + k * 8, by - 6, 4, 4, C('N')).setDepth(100));
-    }
     BO.button(this, W - 24, 10, 40, 14, 'GEÇ', { fill: 'n', depth: 120, onClick: () => this.bitir() });
 
     this.input.on('pointerdown', (p, over) => {
@@ -55,7 +51,6 @@ BO.IntroScene = class extends Phaser.Scene {
     this.i++;
     if (this.i >= list.length) { this.bitir(); return; }
     const sl = list[this.i];
-    this.noktalar.forEach((n, k) => n.setFillStyle(k <= this.i ? 0xffcd75 : 0x333c57));
     if (this.sahne) {
       const eski = this.sahne;
       this.tweens.add({ targets: eski, alpha: 0, duration: 200, onComplete: () => eski.destroy() });

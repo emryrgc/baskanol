@@ -50,7 +50,7 @@
 
   // Pixel fontun (Türkçe harfler dahil) yüklenmesini bekle, en fazla 2 sn.
   const fontReady = document.fonts && document.fonts.load
-    ? document.fonts.load('8px "PX"', 'BAŞKAN İĞÜÇÖ').catch(() => {})
+    ? Promise.all([document.fonts.load('8px "PX"', 'BAŞKAN İĞÜÇÖ'), document.fonts.load('11px "RB"', 'BAŞKAN İĞÜÇÖ')]).catch(() => {})
     : Promise.resolve();
   Promise.race([fontReady, new Promise((r) => setTimeout(r, 2000))]).then(start);
 })();
