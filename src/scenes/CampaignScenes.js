@@ -260,10 +260,11 @@ BO.ElectionScene = class extends Phaser.Scene {
       bas.setScale(0.3);
       this.tweens.add({ targets: bas, scale: 1, duration: 300, ease: 'Back.easeOut' });
       BO.text(this, W / 2, y + 32, biz ? 'BAŞKAN SENSİN!' : kazanan.ad + ' KAZANDI.\nBİR DAHAKİNE!', { color: P.w, ox: 0.5, align: 'center' });
-      BO.button(this, W / 2, Math.max(y + 70, H - BO.ALT - 22), 140, 18, 'YENİDEN OYNA', {
-        fill: 'y', shade: 'o',
-        onClick: () => { BO.state = BO.newGameState(); BO.fadeTo(this, 'Title'); },
+      const son = BO.sonBelirle(sonuc);
+      const b = BO.button(this, W / 2, Math.max(y + 70, H - BO.ALT - 22), 140, 18, 'DEVAM', {
+        fill: 'y', onClick: () => BO.fadeTo(this, 'Ending', { id: son, sonuc }),
       });
+      BO.pulse(this, b);
     });
     this.cameras.main.fadeIn(400, 26, 28, 44);
   }

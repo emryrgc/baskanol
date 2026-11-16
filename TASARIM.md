@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.14 (iki yeni görev, daha çok seçmen)
+> Son güncelleme: v0.15 (farklı sonlar)
 
 ## 1. Özet
 
@@ -274,3 +274,19 @@ Her ekipmanın 3 seviyesi var:
   - Bekçi köpeği uyur (Zzz), kıpırdar (?) ve uyanır (!!). İlerleyen günlerde daha az uyur.
   - Köpek uyanıkken dokunursan şüphe +34 olur (bıyık bunu azaltır). Şüphe 100'e ulaşırsa köpek havlar ve yakalanırsın.
   - Bütün lastikleri inen otobüsün rakibi ertesi sabah "yolda kalır" ve itibarı -4 olur.
+
+## 21. v0.15 Farklı sonlar
+Seçim sayımından sonra "DEVAM" ile sonun sinematiği oynar (3 sahne, daktilo yazısı), ardından son kartı gelir. Sonlar sırayla şöyle kontrol edilir:
+
+| Son | Koşul |
+|---|---|
+| Halkın Başkanı | 1. oldun ve itibar 85 ve üstü |
+| Efsane Başkan | 1. oldun, fark 10 puan ve üstü ya da oy %40 ve üstü |
+| Kıl Payı Başkan | 1. oldun, fark 2 puandan az |
+| Başkan | Diğer zaferler |
+| Kaçak Aday | Kaybettin ve itibar 20'nin altında |
+| Başkan Yardımcısı | 2. oldun, birinciyle fark 3 puandan az |
+| Simitçi | Diğer kayıplar (kazanan rakibe özel bir cümle de içerir) |
+
+- Son kartında aday adı, seçim sonucu, sıra, itibar, zorluk ve "AÇILAN SONLAR x/7" gösterilir.
+- Açılan sonlar cihazda saklanır (localStorage: bo_sonlar). Ana menünün sol altında "SONLAR: x/7" yazar.
