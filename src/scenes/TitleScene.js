@@ -72,7 +72,7 @@ BO.TitleScene = class extends Phaser.Scene {
       if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.8', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.9', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 
@@ -247,11 +247,6 @@ BO.SettingsScene = class extends Phaser.Scene {
       const sira = ['kolay', 'normal', 'zor'];
       A.zorluk = sira[(sira.indexOf(A.zorluk) + 1) % 3];
     });
-    satir('YAZI TİPİ', () => (A.yazi === 'normal' ? 'NORMAL' : 'PİKSEL'), () => {
-      A.yazi = A.yazi === 'normal' ? 'piksel' : 'normal';
-      BO.ayarKaydet();
-      this.time.delayedCall(50, () => this.scene.restart());   // yeni yazı tipiyle yeniden çiz
-    });
     BO.text(this, W / 2, y - 10, 'KOLAY: POLİS YAVAŞ,\nRAKİPLER YUMUŞAK.\nZOR: TAM TERSİ.\nBAŞLANGIÇ PARASI\nDA DEĞİŞİR.', { color: P.L, ox: 0.5, align: 'center', lineSpacing: 3 });
     y += 90;
     BO.button(this, W / 2, y, 140, 16, 'KAYITLARI SİL', {
@@ -274,7 +269,7 @@ BO.CreditsScene = class extends Phaser.Scene {
       ['OYUN FİKRİ VE', P.L], ['YÖNETMEN', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['KOD VE GRAFİK', P.L], ['CLAUDE', P.w], ['(ANTHROPIC)', P.w], ['', P.w],
       ['OYUN MOTORU', P.L], ['PHASER 3', P.w], ['', P.w],
-      ['YAZI TİPLERİ', P.L], ['RUBIK (OFL)', P.w], ['TINY5 - GISSIO (OFL)', P.w], ['', P.w],
+      ['YAZI TİPİ', P.L], ['RUBIK (OFL)', P.w], ['', P.w],
       ['RENK PALETİ', P.L], ['SWEETIE 16', P.w], ['GRAFXKID', P.w], ['', P.w],
       ['TEST EKİBİ', P.L], ['EMRYRGC', P.w], ['', P.w],
       ['TEŞEKKÜRLER', P.L], ['TÜM KARARSIZ', P.w], ['SEÇMENLERE', P.w], ['', P.w], ['', P.w],

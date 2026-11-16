@@ -13,6 +13,6 @@ Pixel art, dikey ekranlı, komik bir seçim kampanyası oyunu (HTML5 + Phaser 3)
 | `src/` | Oyun kodu (`scenes/` içinde ekranlar) |
 | `src/sprites.js` | Kodla çizilen pixel art grafikler |
 | `src/state.js` | Oyun durumu ve denge ayarları (`BO.TUNE`) |
-| `assets/fonts/` | Rubik ve Tiny5 fontları (SIL Open Font License) |
+| `assets/fonts/` | Rubik yazı tipi (SIL Open Font License) |
 | `lib/` | Phaser 3.80.1 |
 | `tools/` | Yardımcı betikler |

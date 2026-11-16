@@ -144,6 +144,24 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
   const LEKE = ['.r...r.', 'rrr.rr.', '.rrrrrr', 'rrrrrr.', '.rr.rrr', 'r..r...'];
   const ISARET = ['..k..', '.krk.', '.krk.', '.krk.', '..k..', '.krk.', '..k..'];
 
+  // Bir sprite'ın etrafına 1 piksellik renkli çerçeve çizilmiş kopyasını üretir
+  BO.cerceveli = function (scene, kaynak, hedef, renk) {
+    const src = scene.textures.get(kaynak).getSourceImage();
+    const w = src.width, h = src.height;
+    const sctx = src.getContext('2d');
+    const d = sctx.getImageData(0, 0, w, h).data;
+    const dolu = (x, y) => x >= 0 && y >= 0 && x < w && y < h && d[(y * w + x) * 4 + 3] > 0;
+    const tex = scene.textures.createCanvas(hedef, w + 2, h + 2);
+    const ctx = tex.getContext();
+    ctx.fillStyle = renk;
+    for (let y = -1; y <= h; y++) for (let x = -1; x <= w; x++) {
+      if (dolu(x, y)) continue;
+      if (dolu(x - 1, y) || dolu(x + 1, y) || dolu(x, y - 1) || dolu(x, y + 1)) ctx.fillRect(x + 1, y + 1, 1, 1);
+    }
+    ctx.drawImage(src, 1, 1);
+    tex.refresh();
+  };
+
   BO.makeTextures = function (scene) {
     fromRows(scene, 'aday0', ADAY);
     fromRows(scene, 'aday1', ADAY_EL);
@@ -449,7 +467,11 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
     draw(scene, 'mikrofon', 3, 7, (r) => { r(0, 0, 3, 3, 'n'); r(1, 3, 1, 4, 'k'); });
 
     // Animasyonlar
+    // Erzak bekleyen seçmenler beyaz çerçeveli görünsün (kaldırımla karışmasın)
+    BO.cerceveli(scene, 'secmen0', 'secmen0_c', '#f4f4f4');
+    BO.cerceveli(scene, 'secmen1', 'secmen1_c', '#f4f4f4');
     scene.anims.create({ key: 'yuru', frames: [{ key: 'secmen0' }, { key: 'secmen1' }], frameRate: 4, repeat: -1 });
+    scene.anims.create({ key: 'yuru_c', frames: [{ key: 'secmen0_c' }, { key: 'secmen1_c' }], frameRate: 4, repeat: -1 });
     scene.anims.create({ key: 'kilik_yuru', frames: [{ key: 'kilik0' }, { key: 'kilik1' }], frameRate: 6, repeat: -1 });
     scene.anims.create({ key: 'polis_yuru', frames: [{ key: 'polis0' }, { key: 'polis1' }], frameRate: 4, repeat: -1 });
     scene.anims.create({ key: 'el_salla', frames: [{ key: 'aday0' }, { key: 'aday1' }], frameRate: 3, repeat: -1 });

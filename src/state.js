@@ -2,7 +2,7 @@
 window.BO = window.BO || {};
 
 // ---------- Ayarlar (oyundan bağımsız, cihazda saklanır) ----------
-BO.ayar = { ses: true, titresim: true, zorluk: 'normal', yazi: 'normal' };
+BO.ayar = { ses: true, titresim: true, zorluk: 'normal' };
 try { Object.assign(BO.ayar, JSON.parse(localStorage.getItem('bo_ayar') || '{}')); } catch (e) {}
 BO.ayarKaydet = function () { try { localStorage.setItem('bo_ayar', JSON.stringify(BO.ayar)); } catch (e) {} };
 

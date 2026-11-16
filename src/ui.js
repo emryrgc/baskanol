@@ -1,47 +1,12 @@
 // Ortak arayüz yardımcıları: yazı, buton, uçan yazı.
 window.BO = window.BO || {};
 
-// Yazı tipi ayarlardan seçilir: 'piksel' (Tiny5) ya da 'normal' (Rubik)
-BO.font = function () { return BO.ayar && BO.ayar.yazi === 'normal' ? '"RB", Arial, sans-serif' : '"PX", "Courier New", monospace'; };
-BO.pikselYazi = function () { return !(BO.ayar && BO.ayar.yazi === 'normal'); };
-
-// Keskin pixel yazı: tarayıcının yazıya eklediği bulanık kenarları temizler.
-// Her piksel ya tam dolu ya tam boş olur; konturlu yazıda renkler iki renge yuvarlanır.
-BO.PixelText = class extends Phaser.GameObjects.Text {
-  updateText() {
-    super.updateText();
-    if (!this.piksel) return this;   // normal yazı tipinde yumuşak kenarlar kalır
-    const c = this.canvas;
-    if (!c || !c.width || !c.height) return this;
-    const ctx = this.context;
-    const img = ctx.getImageData(0, 0, c.width, c.height), d = img.data;
-    const fill = Phaser.Display.Color.HexStringToColor(this.style.color || '#ffffff');
-    const hasStroke = this.style.strokeThickness > 0;
-    const st = hasStroke ? Phaser.Display.Color.HexStringToColor(this.style.stroke) : null;
-    for (let i = 0; i < d.length; i += 4) {
-      if (d[i + 3] < 110) { d[i + 3] = 0; continue; }
-      d[i + 3] = 255;
-      if (hasStroke) {
-        const df = Math.abs(d[i] - fill.r) + Math.abs(d[i + 1] - fill.g) + Math.abs(d[i + 2] - fill.b);
-        const ds = Math.abs(d[i] - st.r) + Math.abs(d[i + 1] - st.g) + Math.abs(d[i + 2] - st.b);
-        const k = df <= ds ? fill : st;
-        d[i] = k.r; d[i + 1] = k.g; d[i + 2] = k.b;
-      } else {
-        d[i] = fill.r; d[i + 1] = fill.g; d[i + 2] = fill.b;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    if (this.renderer && this.renderer.gl) {
-      this.frame.source.glTexture = this.renderer.canvasToTexture(c, this.frame.source.glTexture, true);
-    }
-    return this;
-  }
-};
+BO.FONT = '"RB", Arial, sans-serif';   // Rubik (OFL)
 
 BO.text = function (scene, x, y, str, opts) {
   opts = opts || {};
-  const t = new BO.PixelText(scene, Math.round(x), Math.round(y), str, {
-    fontFamily: BO.font(),
+  const t = scene.add.text(Math.round(x), Math.round(y), str, {
+    fontFamily: BO.FONT,
     fontSize: (opts.size || 11) + 'px',
     color: opts.color || BO.PAL.w,
     align: opts.align || 'left',
@@ -49,9 +14,6 @@ BO.text = function (scene, x, y, str, opts) {
     resolution: BO.K || 1,
     wordWrap: opts.wrap ? { width: opts.wrap } : undefined,
   });
-  t.piksel = BO.pikselYazi();
-  if (t.piksel) t.updateText();
-  scene.add.existing(t);
   if (opts.stroke) t.setStroke(BO.PAL.k, opts.stroke);
   t.setOrigin(opts.ox == null ? 0 : opts.ox, opts.oy == null ? 0 : opts.oy);
   if (opts.depth != null) t.setDepth(opts.depth);

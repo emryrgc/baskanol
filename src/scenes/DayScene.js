@@ -158,8 +158,8 @@ BO.DayScene = class extends Phaser.Scene {
       ok = this.voters.every((o) => Math.abs(o.x - x) > 11 || Math.abs(o.y - y) > 17);
     }
     if (!ok) return;
-    const v = this.add.sprite(x, y, 'secmen0').setDepth(10);
-    v.play({ key: 'yuru', startFrame: Phaser.Math.Between(0, 1) });
+    const v = this.add.sprite(x, y, 'secmen0_c').setDepth(10).setScale(1.05);
+    v.play({ key: 'yuru_c', startFrame: Phaser.Math.Between(0, 1) });   // çerçeve: henüz erzak almadı
     v.setFlipX(sideLeft ? Math.random() < 0.3 : Math.random() < 0.7);
     v.dy = Phaser.Math.FloatBetween(-8, 6);   // kendi yürüme hızı
     v.served = false;

@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.8 (yazı tipi seçeneği)
+> Son güncelleme: v0.9 (tek yazı tipi, çerçeveli seçmenler)
 
 ## 1. Özet
 
@@ -146,7 +146,7 @@ Hedef oyun süresi: 30-45 dakika.
 - **Motor:** Phaser 3 (`lib/phaser.min.js`). Kütüphane depoda tutulur, internet gerekmez.
 - **Çözünürlük:** 180 piksel genişlik. Yükseklik telefona göre 300-400 piksel arasında ayarlanır ve görüntü büyütülerek gösterilir.
 - **Grafikler:** Şimdilik kodla çizilen pixel art (`src/sprites.js`). İleride gerçek çizimlerle değiştirilebilir.
-- **Font:** Tiny5 (Gissio, OFL lisanslı), 8 piksel ızgaralı, Türkçe karakterli. Yazılar keskinleştirilir (BO.PixelText).
+- **Font:** Rubik (OFL lisanslı). Oyunun tek yazı tipidir (v0.9'da piksel font seçeneği kaldırıldı).
 - **Ses:** Kodla üretilen retro efektler (`src/sfx.js`).
 
 ## 10. v0.4 eklemeleri
@@ -226,3 +226,8 @@ Her ekipmanın 3 seviyesi var:
 - **Yazı tipi seçeneği:** Ayarlar ekranında YAZI TİPİ ile **Normal** (Rubik, OFL) ve **Piksel** (Tiny5) arasında geçilir. Varsayılan Normal'dir. Piksel modunda yazılar keskinleştirilir, Normal modunda yumuşak kenarlı kalır.
 - **İsim konumu:** Aday adı, ad yazma kutusunda ve ana sayfa pankartında dikeyde ortalandı. Pankart pencerenin üstüne taşındı, böylece adayın başı ismi kapatmıyor.
 - **Açılış hikayesi:** Kalan sahneleri gösteren noktalar kaldırıldı.
+
+## 15. v0.9
+- **Tek yazı tipi:** Piksel yazı seçeneği kaldırıldı. Bütün yazılarda Rubik kullanılıyor.
+- **Çerçeveli seçmenler:** Otobüs görevinde henüz erzak almamış seçmenlerin etrafında 1 piksellik beyaz çerçeve var, böylece kaldırımla karışmıyorlar. Erzak ulaşıp tepki verdikleri anda çerçeve kalkar.
+- Seçmenler %5 daha büyük çizilir.
