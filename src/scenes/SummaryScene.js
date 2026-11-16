@@ -42,6 +42,7 @@ BO.SummaryScene = class extends Phaser.Scene {
       row('KOVALAMA', st.kovalama);
       row('KAÇIŞ', st.kacis + '/' + st.kovalama, P.l);
       row('ÇARPMA', st.kaza, P.o);
+      row('RAKİP KAPTI', st.rakipKapti || 0, P.r);
       row('BAĞIŞ', '+' + BO.tl(st.bagis), P.y);
     }
     y += 4;
@@ -79,6 +80,8 @@ BO.SummaryScene = class extends Phaser.Scene {
     if (st.domates >= 4) return pick(['ADAY DOMATES YAĞMURUNA TUTULDU!', 'MANAVLAR BU KAMPANYAYA BAYILDI!']);
     if (st.kaza >= 4) return 'TRAFİK POLİSİ ADAYI ARIYOR!';
     if (st.kacis >= 2) return pick(['OTOBÜS FORMULA 1\'E HAZIR!', 'ADAY MAKAS ATMANIN USTASI!']);
+    if ((st.rakibeDomates || 0) >= 1) return pick(['RAKİP OTOBÜSÜNE DOMATES YAĞDI!', 'OTOBÜS SAVAŞLARI BAŞLADI!']);
+    if ((st.rakipKapti || 0) >= 4) return pick(['RAKİP OTOBÜSÜ SEÇMENLERİ KAPTI!', ad + ' GERİDE KALDI!']);
     if (st.memnun >= 15) return pick(['SİMİTLER BİTTİ, OYLAR ARTTI!', 'MAHALLE ADAYI SEVDİ!']);
     if (st.dagitilan < 5) return 'ADAY BUGÜN PEK GÖRÜNMEDİ...';
     return pick(['KAMPANYA OTOBÜSÜ ŞEHRİ SALLADI!', 'ADAY ÇAY DAĞITTI, GÜNDEM OLDU!']);

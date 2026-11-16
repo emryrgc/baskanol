@@ -18,7 +18,7 @@ BO.DayScene = class extends Phaser.Scene {
     this.voters = [];
     this.cars = [];
     this.stats = {
-      gun: S.gun, dagitilan: 0, memnun: 0, domates: 0, kovalama: 0,
+      gun: S.gun, dagitilan: 0, memnun: 0, domates: 0, kovalama: 0, rakipKapti: 0, rakibeDomates: 0,
       kacis: 0, yakalanma: 0, kaza: 0, bagis: 0, harcama: 0,
       oyBas: S.oy, itibarBas: S.itibar,
     };
@@ -220,6 +220,9 @@ BO.DayScene = class extends Phaser.Scene {
 
   tapAt(x, y) {
     if (this.mode !== 'day') return;
+    // rakip otobüsüne dokunduysan domates at
+    const rb = this.rakipBus;
+    if (rb && !rb.kaciyor && Math.abs(x - rb.x) < 16 && Math.abs(y - rb.y) < 26) { this.rakibeDomates(); return; }
     let best = null, bestD = 24;
     this.voters.forEach((v) => {
       if (v.served || !v.active) return;
@@ -340,8 +343,91 @@ BO.DayScene = class extends Phaser.Scene {
     this.time.delayedCall(1200, () => this.startChaseRun());
   }
 
+  // ================= Rakip otobüsü =================
+  // Yandaki şeritten geçer, kaldırımdaki seçmenleri kendi hediyeleriyle kapar.
+  rakipOtobusu() {
+    const P = BO.PAL;
+    const r = Phaser.Utils.Array.GetRandom(BO.RIVALS);
+    const serit = Math.random() < 0.5 ? 0 : 2;
+    const c = this.add.container(BO.LANE_X[serit], -30).setDepth(19);
+    c.add(this.add.image(0, 0, 'otobus_' + r.id));
+    const lider = this.add.image(0, -4, 'rakip_' + r.id);
+    c.add(lider);
+    this.tweens.add({ targets: lider, y: -6, duration: 220, yoyo: true, repeat: -1 });
+    c.rakip = r; c.vy = 38; c.atis = 0.8; c.bagir = 0.3; c.kaciyor = false;
+    c.renk = Phaser.Display.Color.HexStringToColor(P[r.renk]).color;
+    c.solTaraf = serit === 0;
+    this.rakipBus = c;
+    BO.floatText(this, this.W / 2, 60, r.kisa + ' GELİYOR!', P[r.renk === 'b' ? 'c' : r.renk], { duration: 1400 });
+    BO.sfx.angry();
+  }
+
+  rakipGuncelle(dt) {
+    const c = this.rakipBus;
+    if (!c) return;
+    c.y += c.vy * dt;
+    if (c.y > this.H + 40) { c.destroy(); this.rakipBus = null; return; }
+    if (c.kaciyor || this.mode !== 'day') return;
+    // slogan
+    c.bagir -= dt;
+    if (c.bagir <= 0) {
+      c.bagir = 2.2;
+      const s = { vedat: ['OY VEDAT\'A!', 'METRO GELİYOR!'], selin: ['SELİN\'E OY!', 'SELFİ ÇEKELİM!'], ulvi: ['ULVİ... YARIN!', 'ESNEEE...'] }[c.rakip.id];
+      BO.floatText(this, c.x, c.y - 30, Phaser.Utils.Array.GetRandom(s), BO.PAL.w, { duration: 1000 });
+    }
+    // seçmen kap
+    c.atis -= dt;
+    if (c.atis > 0) return;
+    c.atis = 0.7;
+    const hedef = this.voters.find((v) => v.active && !v.served && (v.x < 90) === c.solTaraf && Math.abs(v.y - c.y) < 40);
+    if (!hedef) return;
+    hedef.served = true;
+    const g = this.add.rectangle(c.x, c.y - 6, 4, 4, c.renk).setDepth(30).setStrokeStyle(1, 0x1a1c2c);
+    const sx = g.x, sy = g.y;
+    this.tweens.addCounter({
+      from: 0, to: 1, duration: 320,
+      onUpdate: (tw) => {
+        const k = tw.getValue();
+        g.x = sx + (hedef.x - sx) * k;
+        g.y = sy + (hedef.y - sy) * k - Math.sin(Math.PI * k) * 16;
+      },
+      onComplete: () => {
+        g.destroy();
+        if (!hedef.active) return;
+        hedef.anims.stop();
+        hedef.setTexture('secmen_mutlu').setScale(1.05).setTint(c.renk);
+        BO.rakip(c.rakip.id).oy += 0.05;
+        this.stats.rakipKapti++;
+        BO.floatText(this, hedef.x, hedef.y - 16, c.rakip.kisa + ' +OY', BO.PAL.r);
+      },
+    });
+  }
+
+  rakibeDomates() {
+    const c = this.rakipBus, S = BO.state;
+    c.kaciyor = true;
+    this.stats.rakibeDomates++;
+    const t = this.add.image(this.bus.x, this.bus.y - 10, 'domates').setDepth(30);
+    BO.sfx.throw();
+    this.tweens.add({
+      targets: t, x: c.x, y: c.y, angle: 400, duration: 300,
+      onComplete: () => {
+        t.destroy();
+        if (!c.active) return;
+        BO.sfx.splat();
+        c.add(this.add.image(Phaser.Math.Between(-4, 4), Phaser.Math.Between(-10, 6), 'leke'));
+        BO.rakibeDarbe(c.rakip.id, 2);
+        S.itibar = BO.clamp(S.itibar - 1, 0, 100);
+        BO.floatText(this, c.x, c.y - 28, c.rakip.kisa + ' KAÇIYOR!', BO.PAL.y);
+        BO.floatText(this, this.bus.x, this.bus.y + 34, 'İTİBAR -1', BO.PAL.r, { delay: 300 });
+        this.tweens.add({ targets: c, vy: 140, duration: 400 });
+      },
+    });
+  }
+
   startChaseRun() {
     const H = this.H;
+    if (this.rakipBus) { const rb = this.rakipBus; this.rakipBus = null; this.tweens.add({ targets: rb, alpha: 0, duration: 300, onComplete: () => rb.destroy() }); }
     this.mode = 'chase';
     this.chaseTime = 0;
     this.distance = 55;
@@ -543,6 +629,7 @@ BO.DayScene = class extends Phaser.Scene {
     }
 
     if (this.mode !== 'end') this.dayTime -= dt;   // süre kovalamada da akar
+    this.rakipGuncelle(dt);
 
     if (this.mode === 'day') {
       this.spawnTimer -= dt;
@@ -556,6 +643,10 @@ BO.DayScene = class extends Phaser.Scene {
         this.triggerChase();
       }
       // Bağış: itibar yüksekse para gelir
+      // rakip otobüsü ara sıra geçer
+      if (this.rakipZaman == null) this.rakipZaman = Phaser.Math.FloatBetween(6, 12);
+      this.rakipZaman -= dt;
+      if (this.rakipZaman <= 0 && !this.rakipBus && this.dayTime > 10) { this.rakipOtobusu(); this.rakipZaman = Phaser.Math.FloatBetween(14, 22); }
       this.donateTimer -= dt;
       if (this.donateTimer <= 0) {
         this.donateTimer = 4;

@@ -182,20 +182,25 @@ BO.WALK = { left: [24, 46], right: [134, 156] }; // kaldırımda yürünebilir x
     fromRows(scene, 'isaret', ISARET);
 
     // Seçim otobüsü (üstten görünüş, üstü açık), 22x44
-    draw(scene, 'otobus', 22, 44, (r) => {
+    // Kampanya otobüsü (bizim: turuncu; rakipler kendi parti renginde)
+    const otobusCiz = (key, govde, serit) => draw(scene, key, 22, 44, (r) => {
       r(1, 0, 20, 44, 'k');
-      r(2, 1, 18, 42, 'o');
+      r(2, 1, 18, 42, govde);
       r(3, 2, 16, 5, 'c'); r(3, 2, 16, 1, 't');           // ön cam
-      r(2, 8, 18, 1, 'y');                                 // şerit
+      r(2, 8, 18, 1, serit);                               // şerit
       r(3, 10, 16, 28, 'N'); r(4, 11, 14, 26, 'n');        // açık güverte
       for (let y = 13; y < 35; y += 5) { r(5, y, 3, 2, 'r'); r(14, y, 3, 2, 'r'); } // koltuklar
-      r(2, 39, 18, 1, 'y');
+      r(2, 39, 18, 1, serit);
       r(3, 41, 16, 1, 'r');                                // arka stop
       r(0, 5, 1, 7, 'k'); r(21, 5, 1, 7, 'k');             // tekerler
       r(0, 31, 1, 7, 'k'); r(21, 31, 1, 7, 'k');
       r(0, 3, 1, 1, 'L'); r(21, 3, 1, 1, 'L');             // aynalar
       r(10, 38, 2, 5, 'w');                                // bayrak direği gölgesi
     });
+    otobusCiz('otobus', 'o', 'y');
+    otobusCiz('otobus_vedat', 'b', 't');
+    otobusCiz('otobus_selin', 'r', 'y');
+    otobusCiz('otobus_ulvi', 'g', 'l');
 
     // Kovalayan kamyonet (kızgın seçmenler kasada), 22x34
     draw(scene, 'kamyonet', 22, 34, (r) => {

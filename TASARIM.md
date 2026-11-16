@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.12 (canlı rakipler)
+> Son güncelleme: v0.13 (rakip otobüsü)
 
 ## 1. Özet
 
@@ -195,7 +195,6 @@ Her ekipmanın 3 seviyesi var:
 **Diğer:**
 - Karakter ve seçmen tasarımları (oyun sahibi çizecek)
 - 4. rakip parti
-- Rakiplerin gündüz görevlerinde görünmesi (ör. rakip otobüsü seçmen kapar)
 - Müzik
 - Mağaza hazırlığı (Capacitor)
 
@@ -256,3 +255,11 @@ Her ekipmanın 3 seviyesi var:
 - **SON DAKİKA bandı:** Ana sayfada zeminin altında kayan haber bandı var. Gecenin olaylarını ve bir rakip demecini gösterir.
 - **Rakiplere özel olaylar:** Ulvi mitingde uyudu, Vedat'ın sahte metro temeli, Selin'in canlı yayın daveti, rakipler birleşti. Seçeneklerde rakibin itibarını düşürmek de var (etki.rakip).
 - Gece rakip operasyonu olduysa ve daha büyük bir haber yoksa sabah gazetesinin manşeti o olur.
+
+## 19. v0.13 Rakip otobüsü (seçim otobüsü görevi)
+- Görev başladıktan 6-12 saniye sonra, sonra da 14-22 saniyede bir, rastgele bir rakibin kampanya otobüsü (parti renginde, üstünde lider) soldaki ya da sağdaki şeritten geçer.
+- Geçerken kendi tarafındaki kaldırımda erzak almamış seçmenlere 0,7 saniyede bir hediye atar. Kapılan seçmen rakibin rengine boyanır, artık sana oy vermez ve rakibe +0,05 oy gider.
+- Slogan atar ("OY VEDAT'A!", "SELİN'E OY!", "ULVİ... YARIN!").
+- **Karşı hamle:** Rakip otobüsüne dokunursan domates atarsın. Otobüs hızla kaçar, rakibin itibarı -2 olur, senin itibarın -1 olur.
+- Kovalama başlayınca rakip otobüsü kaybolur.
+- Gün raporunda "RAKİP KAPTI" satırı var. Manşetler: "OTOBÜS SAVAŞLARI BAŞLADI!", "RAKİP OTOBÜSÜ SEÇMENLERİ KAPTI!".
