@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.10 (net yazılar, otobüs dükkânı, ince çerçeve)
+> Son güncelleme: v0.11 (miting zorlaştı)
 
 ## 1. Özet
 
@@ -237,3 +237,9 @@ Her ekipmanın 3 seviyesi var:
 - **İnce çerçeve:** Seçmen çerçeveleri yarım piksel kalınlığında (çerçeveli kopya 2 kat detaylı üretilip 0,5 ölçekle gösterilir).
 - **Otobüs dükkânı:** Otobüs görevinde alttaki buton artık DÜKKAN. Açılınca oyun durur ve erzak paketleri satın alınır: +10 / 500 TL, +25 / 1.100 TL, +50 / 2.000 TL. Erzak bitince "DÜKKANDAN ERZAK SATIN AL!" yazısı çıkar ve buton kırmızı çerçeveyle yanıp söner.
 - Ana sayfadaki dükkâna da "Erzak paketi" satırı eklendi (+10 / 500 TL).
+
+## 17. v0.11 Miting zorluğu
+- Yeşil bölge 14'ten 10 piksele, sarı bölge 44'ten 34 piksele daraldı.
+- Mükemmel +8 (eskiden +12), iyi +4 (eskiden +6), kaçan -8.
+- Coşku saniyede 3,5 düşer (eskiden 2,5; hoparlör bunu azaltır).
+- Yuhalayanlar 2-4 saniyede bir çıkar. Kaçırılan yuhalayan -12, susturulan +3.

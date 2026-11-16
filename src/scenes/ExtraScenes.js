@@ -115,8 +115,8 @@ BO.RallyScene = class extends Phaser.Scene {
     this.barX = 15; this.barW = W - 30;
     this.add.rectangle(this.barX - 1, by - 1, this.barW + 2, 10, C('k')).setOrigin(0).setDepth(500);
     this.add.rectangle(this.barX, by, this.barW, 8, C('r')).setOrigin(0).setDepth(500);
-    this.add.rectangle(W / 2 - 22, by, 44, 8, C('y')).setOrigin(0).setDepth(500);
-    this.add.rectangle(W / 2 - 7, by, 14, 8, C('l')).setOrigin(0).setDepth(500);
+    this.add.rectangle(W / 2 - 17, by, 34, 8, C('y')).setOrigin(0).setDepth(500);
+    this.add.rectangle(W / 2 - 5, by, 10, 8, C('l')).setOrigin(0).setDepth(500);
     this.ok = this.add.rectangle(this.barX, by - 3, 3, 14, C('w')).setOrigin(0.5, 0).setDepth(501);
     this.okDir = 1;
     BO.button(this, W / 2, H - BO.ALT - 28, 150, 24, 'SLOGAN AT!', { fill: 'y', shade: 'o', size: 16, depth: 510, onDown: () => this.slogan() });
@@ -139,8 +139,8 @@ BO.RallyScene = class extends Phaser.Scene {
     const ad = BO.kisaAd();
     const sloganlar = [ad + ' BAŞKAN!', 'SİMİT HERKESE!', 'YOLLAR ASFALT!', 'ÇAY BEDAVA!', 'GELİYOR ' + ad + '!', 'DEĞİŞİM ŞART!'];
     let puan, yazi, renk;
-    if (d <= 7) { puan = 12; yazi = 'MÜKEMMEL!'; renk = P.l; this.st.mukemmel++; this.combo++; }
-    else if (d <= 22) { puan = 6; yazi = 'İYİ!'; renk = P.y; this.st.iyi++; this.combo++; }
+    if (d <= 5) { puan = 8; yazi = 'MÜKEMMEL!'; renk = P.l; this.st.mukemmel++; this.combo++; }
+    else if (d <= 17) { puan = 4; yazi = 'İYİ!'; renk = P.y; this.st.iyi++; this.combo++; }
     else { puan = -8; yazi = 'IHHH...'; renk = P.r; this.st.kacan++; this.combo = 0; }
     this.cosku = BO.clamp(this.cosku + puan, 0, 100);
     this.balon.setText(puan > 0 ? Phaser.Utils.Array.GetRandom(sloganlar) : 'EEE... ŞEY...');
@@ -183,14 +183,14 @@ BO.RallyScene = class extends Phaser.Scene {
     const P = BO.PAL;
     if (susturuldu) {
       this.st.susturulan++;
-      this.cosku = BO.clamp(this.cosku + 4, 0, 100);
+      this.cosku = BO.clamp(this.cosku + 3, 0, 100);
       s.setTexture('secmen_mutlu');
       BO.floatText(this, s.x, s.y - 14, Phaser.Utils.Array.GetRandom(['TAMAM ABİ!', 'HAKLISIN!', 'PEKİ...']), P.l);
       BO.sfx.coin();
       this.time.delayedCall(900, () => s.setTexture('secmen_arka'));
     } else {
       this.st.yuh++;
-      this.cosku = BO.clamp(this.cosku - 10, 0, 100);
+      this.cosku = BO.clamp(this.cosku - 12, 0, 100);
       BO.titret(80);
       // domates sahneye uçar
       const t = this.add.image(s.x, s.y - 6, 'domates').setDepth(450);
@@ -211,7 +211,7 @@ BO.RallyScene = class extends Phaser.Scene {
     const dt = Math.min(delta, 50) / 1000;
     this.sure -= dt;
     this.bekleme -= dt;
-    const azalma = 2.5 * (1 - 0.2 * BO.seviye('hoparlor'));
+    const azalma = 3.5 * (1 - 0.2 * BO.seviye('hoparlor'));   // coşku her saniye bu kadar düşer
     this.cosku = BO.clamp(this.cosku - azalma * dt, 0, 100);
     this.toplam += this.cosku * dt;
 
@@ -223,7 +223,7 @@ BO.RallyScene = class extends Phaser.Scene {
 
     // yuhalayanlar
     this.yuhTimer -= dt;
-    if (this.yuhTimer <= 0) { this.yuhBaslat(); this.yuhTimer = Phaser.Math.FloatBetween(2.5, 5); }
+    if (this.yuhTimer <= 0) { this.yuhBaslat(); this.yuhTimer = Phaser.Math.FloatBetween(2, 4); }
     this.kalabalik.forEach((s) => {
       if (!s.yuh) return;
       s.kalan -= dt;
