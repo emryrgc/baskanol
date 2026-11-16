@@ -34,11 +34,13 @@ BO.seviye = function (id) { return (BO.state.ekipman && BO.state.ekipman[id]) ||
 BO.GOREVLER = {
   gunduz: [
     { id: 'Day', ad: 'SEÇİM OTOBÜSÜ', kisa: 'SEÇİM OTOBÜSÜ', acik: 'ERZAK DAĞIT, KAÇ!', gun: 1 },
+    { id: 'Market', ad: 'PAZAR TEZGÂHI', kisa: 'PAZAR TEZGÂHI', acik: 'NE İSTİYORSA VER!', gun: 6 },
     { id: 'Rally', ad: 'MİTİNG', kisa: 'MİTİNG', acik: 'SLOGAN AT, COŞTUR!', gun: 3 },
   ],
   gece: [
     { id: 'Night', ad: 'GİZLİ OPERASYON', kisa: 'GİZLİ OPERASYON', acik: 'GAZETE VE RAKİP', gun: 1 },
     { id: 'Poster', ad: 'AFİŞ BASKINI', kisa: 'AFİŞ BASKINI', acik: 'AFİŞE BIYIK ÇİZ!', gun: 4 },
+    { id: 'Tire', ad: 'LASTİK OPERASYONU', kisa: 'LASTİK OPERASYONU', acik: 'KÖPEĞE DİKKAT!', gun: 8 },
   ],
 };
 
@@ -56,7 +58,7 @@ BO.newGameState = function () {
     kasa: BO.zor().kasa, // TL
     itibar: 50,      // 0..100
     oy: 12.0,        // oy oranı %
-    erzak: 30,       // fırlatılabilir hediye sayısı
+    erzak: 40,       // fırlatılabilir hediye sayısı
     faz: 'sabah',    // sabah: gündüze çıkılabilir, aksam: geceye çıkılabilir
     rakipler: BO.RIVALS.map((r) => ({ id: r.id, oy: r.oy, itibar: r.itibar })),
     kararsiz: 18,    // kararsız seçmen %
@@ -120,5 +122,5 @@ BO.TUNE = {
   yakalanmaItibar: -6,
   yakalanmaErzak: 5,
   firlatmaSuresi: 300,    // hediyenin havada kalma süresi (ms)
-  secmenAraligi: [0.45, 0.95], // yeni seçmen gelme aralığı (sn)
+  secmenAraligi: [0.2, 0.45], // yeni seçmen gelme aralığı (sn)
 };

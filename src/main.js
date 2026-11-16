@@ -27,7 +27,7 @@
     const sahneler = [BO.BootScene, BO.TitleScene, BO.HubScene, BO.DayScene, BO.SummaryScene, BO.NightScene, BO.MorningScene,
       BO.SkipScene, BO.PollScene, BO.DebateScene, BO.ElectionScene,
       BO.NameScene, BO.IntroScene, BO.LoadScene, BO.SettingsScene, BO.CreditsScene, BO.ByeScene,
-      BO.ShopScene, BO.RallyScene, BO.PosterScene];
+      BO.ShopScene, BO.RallyScene, BO.PosterScene, BO.MarketScene, BO.TireScene];
     // Her sahnenin kamerası K kat yakınlaştırılır (sol üst köşe sabit)
     sahneler.forEach((S) => {
       const orj = S.prototype.create;

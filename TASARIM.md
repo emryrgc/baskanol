@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.13 (rakip otobüsü)
+> Son güncelleme: v0.14 (iki yeni görev, daha çok seçmen)
 
 ## 1. Özet
 
@@ -263,3 +263,14 @@ Her ekipmanın 3 seviyesi var:
 - **Karşı hamle:** Rakip otobüsüne dokunursan domates atarsın. Otobüs hızla kaçar, rakibin itibarı -2 olur, senin itibarın -1 olur.
 - Kovalama başlayınca rakip otobüsü kaybolur.
 - Gün raporunda "RAKİP KAPTI" satırı var. Manşetler: "OTOBÜS SAVAŞLARI BAŞLADI!", "RAKİP OTOBÜSÜ SEÇMENLERİ KAPTI!".
+
+## 20. v0.14 Yeni görevler ve daha çok seçmen
+- **Seçim otobüsü:** Seçmenler yaklaşık 2 kat sık geliyor (0,2-0,45 saniyede bir). Ekranda aynı anda 20-25 seçmen olabiliyor. Başlangıç erzağı 40.
+- **Pazar tezgâhı (gündüz, 6. günde açılır, 35 sn):** Seçmenler tezgâhın önünde kuyruk olur. Sıradaki seçmen balonla ne istediğini gösterir (simit, çay ya da makarna). Alttaki 3 büyük ürün butonundan doğrusuna basılır.
+  - Sabır süresi 3,2 saniyeden 1,6 saniyeye iner, gelişler hızlanır.
+  - Doğru ürün oy kazandırır ve seriyi büyütür. Yanlış ürün ya da sabrın bitmesi seriyi bozar.
+  - Ödül: oy = doğru × 0,06 + en iyi seri × 0,02. İtibar ve bağış de doğru sayısına bağlı.
+- **Lastik operasyonu (gece, 8. günde açılır, 40 sn):** Otoparkta 3 rakip otobüsü durur. Her otobüsün 4 lastiği var, her lastiğe 5 kez dokunulunca havası iner.
+  - Bekçi köpeği uyur (Zzz), kıpırdar (?) ve uyanır (!!). İlerleyen günlerde daha az uyur.
+  - Köpek uyanıkken dokunursan şüphe +34 olur (bıyık bunu azaltır). Şüphe 100'e ulaşırsa köpek havlar ve yakalanırsın.
+  - Bütün lastikleri inen otobüsün rakibi ertesi sabah "yolda kalır" ve itibarı -4 olur.

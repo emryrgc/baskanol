@@ -14,7 +14,10 @@ BO.MorningScene = class extends Phaser.Scene {
     // Etkileri uygula (video etkisi gece uygulandı)
     let manset = null;
     this.log.forEach((e) => {
-      if (e.tip === 'afis') {
+      if (e.tip === 'lastik') {
+        BO.rakibeDarbe(e.id, 4);
+        lines.push([BO.rakipBilgi(e.id).kisa + ' YOLDA KALDI', '-4', P.l]);
+      } else if (e.tip === 'afis') {
         BO.rakibeDarbe(e.id, 2 * e.sayi);
         lines.push([BO.rakipBilgi(e.id).kisa + ' AFİŞ x' + e.sayi, '-' + 2 * e.sayi, P.l]);
       } else if (e.tip === 'gazete') {
@@ -40,6 +43,7 @@ BO.MorningScene = class extends Phaser.Scene {
     else if (geceOlaylari.some((o) => o.skandal)) manset = 'ADAYIN DIŞ GÜÇ\nBAĞLANTISI\nORTAYA ÇIKTI!';
     else if (has('video')) manset = pick(BO.MANSET.video).replace('{AD}', BO.rakipBilgi(has('video').id).kisa);
     else if (has('gazete')) manset = pick(BO.MANSET.gazete[has('gazete').id]);
+    else if (has('lastik')) manset = BO.rakipBilgi(has('lastik').id).kisa + "'IN OTOBÜSÜ\nSABAH YOLDA\nKALDI!";
     else if (has('afis')) manset = pick(['AFİŞLERE GECE\nYARISI BIYIK\nÇİZİLDİ!', BO.rakipBilgi(has('afis').id).kisa + ' AFİŞLERİ\nTANINMAZ\nHALDE!']);
     else if (geceOlaylari.find((o) => o.rakipOp)) manset = geceOlaylari.find((o) => o.rakipOp).yazi + '!';
     else manset = pick(BO.MANSET.sakin);

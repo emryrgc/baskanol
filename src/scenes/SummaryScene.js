@@ -27,7 +27,13 @@ BO.SummaryScene = class extends Phaser.Scene {
       y += 12;
     };
     BO.text(this, W / 2, y, 'GÜN ' + st.gun + ' RAPORU', { color: P.y, ox: 0.5 }); y += 14;
-    if (st.tur === 'miting') {
+    if (st.tur === 'pazar') {
+      row('DOĞRU ÜRÜN', st.dogru, P.l);
+      row('YANLIŞ ÜRÜN', st.yanlis, P.r);
+      row('SIKILAN', st.kacan, P.r);
+      row('EN İYİ SERİ', 'x' + st.seri, P.y);
+      row('BAĞIŞ', '+' + BO.tl(st.bagis), P.y);
+    } else if (st.tur === 'miting') {
       row('ORT. COŞKU', '%' + st.ortCosku, st.ortCosku > 60 ? P.l : P.o);
       row('MÜKEMMEL', st.mukemmel, P.l);
       row('İYİ', st.iyi, P.y);
@@ -71,6 +77,11 @@ BO.SummaryScene = class extends Phaser.Scene {
     const st = this.st;
     const pick = (a) => Phaser.Utils.Array.GetRandom(a);
     const ad = BO.kisaAd();
+    if (st.tur === 'pazar') {
+      if (st.dogru >= 15) return pick(['PAZARIN YILDIZI ' + ad + '!', 'TEZGÂHTA KUYRUK OLUŞTU!']);
+      if (st.yanlis + st.kacan > st.dogru) return pick(['ÇAY İSTEDİ, MAKARNA ALDI!', 'PAZARDA KARIŞIKLIK!']);
+      return pick(['ADAY PAZARA İNDİ!', ad + ' TEZGÂH AÇTI!']);
+    }
     if (st.tur === 'miting') {
       if (st.ortCosku >= 65) return pick(['MEYDANLAR DOLDU TAŞTI!', ad + ' MEYDANI SALLADI!']);
       if (st.ortCosku >= 40) return pick(['MİTİNGE YOĞUN İLGİ!', ad + ' SLOGANLARI DİLLERDE!']);
