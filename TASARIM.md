@@ -1,7 +1,7 @@
 # BAŞKAN OL — Oyun Tasarım Dokümanı
 
 > Bu dosya oyunun "anayasası"dır. Kararlar değiştikçe güncellenir.
-> Son güncelleme: v0.11 (miting zorlaştı)
+> Son güncelleme: v0.12 (canlı rakipler)
 
 ## 1. Özet
 
@@ -195,6 +195,7 @@ Her ekipmanın 3 seviyesi var:
 **Diğer:**
 - Karakter ve seçmen tasarımları (oyun sahibi çizecek)
 - 4. rakip parti
+- Rakiplerin gündüz görevlerinde görünmesi (ör. rakip otobüsü seçmen kapar)
 - Müzik
 - Mağaza hazırlığı (Capacitor)
 
@@ -243,3 +244,15 @@ Her ekipmanın 3 seviyesi var:
 - Mükemmel +8 (eskiden +12), iyi +4 (eskiden +6), kaçan -8.
 - Coşku saniyede 3,5 düşer (eskiden 2,5; hoparlör bunu azaltır).
 - Yuhalayanlar 2-4 saniyede bir çıkar. Kaçırılan yuhalayan -12, susturulan +3.
+
+## 18. v0.12 Canlı rakipler
+- **Rakip gece operasyonları (BO.RAKIP_OPS):** Her gece yarısı rakiplerden biri sana sabotaj yapabilir. Her rakibin kendine özgü 3 operasyonu var:
+  - Vedat: afiş söktürür, seçmenine metro sözü verir, erzakını çaldırır.
+  - Selin: canlı yayında ti'ye alır, caps paylaşır, seçmenlerinle selfi çeker.
+  - Ulvi: otobüsünün lastiğini indirir, eleştirecekken uyuyakalır, kapına "yarın gel" yazar.
+  - İhtimal: %25 + günde %0,3, ilk 2'deysen +%15 (zorlukla çarpılır).
+  - İtibarın 70 ve üstündeyse operasyon %40 ihtimalle "kimse inanmadı" olur, etkisiz kalır.
+- **Rakip demeçleri (BO.DEMEC):** Rakip sana yakınsa (4 puan içinde ya da önündeysen) seni hedef alan cümleler kurar ("{AD} BENİ KORKUTMUYOR!"), değilse kendi vaatlerinden bahseder.
+- **SON DAKİKA bandı:** Ana sayfada zeminin altında kayan haber bandı var. Gecenin olaylarını ve bir rakip demecini gösterir.
+- **Rakiplere özel olaylar:** Ulvi mitingde uyudu, Vedat'ın sahte metro temeli, Selin'in canlı yayın daveti, rakipler birleşti. Seçeneklerde rakibin itibarını düşürmek de var (etki.rakip).
+- Gece rakip operasyonu olduysa ve daha büyük bir haber yoksa sabah gazetesinin manşeti o olur.

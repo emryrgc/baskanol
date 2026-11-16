@@ -160,3 +160,65 @@ BO.MUNAZARA = [
     ciddi: 'ÇÜNKÜ ÇOK\nÇALIŞACAĞIM.', populist: 'SEÇİM GÜNÜ\nSİMİT BEDAVA!', saldirgan: 'ONLAR DAHA\nKÖTÜ DE ONDAN!' } },
 ];
 BO.MUNAZARA_RAKIP = ['BEN DAHA İYİSİNİ\nSÖYLERDİM!', 'BU KONUDA DA\nVAADİM VAR!', 'ŞEY... EVET.\nAYNEN.', 'SORUYU\nDUYAMADIM?', 'BENİM DE BİR\nKUZENİM VAR!'];
+
+// ---------- Canlı rakipler ----------
+// Gece operasyonları: her rakip kendi tarzında sana sabotaj yapar.
+// etki: itibar / oy / erzak / kasa (eksi = kayıp)
+BO.RAKIP_OPS = {
+  vedat: [
+    { yazi: 'VEDAT AFİŞLERİNİ SÖKTÜRDÜ', etki: { itibar: -2 } },
+    { yazi: 'VEDAT SEÇMENLERİNE METRO SÖZÜ VERDİ', etki: { oy: -0.3 } },
+    { yazi: "VEDAT'IN ADAMLARI ERZAKINI ÇALDI", etki: { erzak: -8 } },
+  ],
+  selin: [
+    { yazi: 'SELİN SENİ CANLI YAYINDA Tİ\'YE ALDI', etki: { itibar: -3 } },
+    { yazi: 'SELİN HAKKINDA CAPS PAYLAŞTI', etki: { itibar: -2 } },
+    { yazi: 'SELİN SEÇMENLERİNLE SELFİ ÇEKTİ', etki: { oy: -0.3 } },
+  ],
+  ulvi: [
+    { yazi: 'ULVİ OTOBÜSÜNÜN LASTİĞİNİ İNDİRDİ', etki: { kasa: -800 } },
+    { yazi: 'ULVİ SENİ ELEŞTİRECEKTİ, UYUYAKALDI', etki: {} },
+    { yazi: 'ULVİ KAPINA "YARIN GEL" YAZDI', etki: { itibar: -1 } },
+  ],
+};
+
+// Demeçler: sıralamaya göre değişir. {AD} = senin adın
+BO.DEMEC = {
+  vedat: {
+    genel: ['SEÇİLİRSEM HER EVE İKİ METRO!', 'KÖPRÜ DE YAPACAĞIM, DENİZ DE!', 'VAAT MI? BENDE ÇOK!'],
+    rakip: ['{AD} MI? DUYMADIM.', '{AD} BENİ KORKUTMUYOR!', '{AD} DA KİMMİŞ?'],
+  },
+  selin: {
+    genel: ['BUGÜN 400 SELFİ ÇEKTİM, REKOR!', 'PROGRAMIM HAZIR: YENİ FİLTRE!', 'BENİ TAKİP ETMEYİ UNUTMAYIN!'],
+    rakip: ['{AD} İLE SELFİ ÇEKMEM!', '{AD} FİLTRESİZ ÇOK KÖTÜ!', '{AD} TREND OLAMAZ!'],
+  },
+  ulvi: {
+    genel: ['YARIN AÇIKLAMA YAPACAĞIM.', 'ÖNCE BİR ÇAY İÇELİM...', 'ACELEYE GEREK YOK.'],
+    rakip: ['{AD} ÇOK KOŞUYOR, YORULACAK.', '{AD} MI? YARIN BAKARIM.', '{AD} BENİ UYANDIRDI!'],
+  },
+};
+
+// Rakiplere özel olaylar (sabah olay havuzuna eklenir). etki.rakip: rakibin itibarı düşer.
+BO.OLAYLAR = BO.OLAYLAR.concat([
+  { baslik: 'ULVİ MİTİNGDE UYUDU!', metin: 'ELİNDE VİDEOSU\nVAR. NE YAPALIM?',
+    secenek: [
+      { label: 'VİDEOYU PAYLAŞ', etki: { itibar: -1, rakip: { id: 'ulvi', kayip: 6 } }, sonuc: 'TÜRKİYE ULVİ\'NİN\nHORLAMASINI\nKONUŞUYOR!' },
+      { label: 'ÜSTÜNÜ ÖRT', etki: { itibar: 3 }, sonuc: 'CENTİLMEN ADAY\nDEDİLER!' },
+    ] },
+  { baslik: 'SAHTE METRO TEMELİ', metin: 'VEDAT BOŞ ARSAYA\nMETRO TEMELİ\nATTI!',
+    secenek: [
+      { label: 'YALANLA\n1.000 TL', etki: { kasa: -1000, rakip: { id: 'vedat', kayip: 6 } }, sonuc: 'ARSANIN OTOPARK\nOLDUĞU ÇIKTI!' },
+      { label: 'SEN DE TEMEL AT\n2.000 TL', etki: { kasa: -2000, oy: 0.6 }, sonuc: 'İKİ TEMEL,\nSIFIR METRO.\nAMA ALKIŞ ALDIN.' },
+    ] },
+  { baslik: 'SELİN CANLI YAYINDA', metin: 'SELİN SENİ\nYAYINA DAVET\nETTİ!',
+    secenek: [
+      { label: 'YAYINA KATIL', etki: { oy: 0.5 }, sonuc: 'SELİN\'İN TAKİPÇİLERİ\nSENİ SEVDİ!',
+        risk: { etki: { itibar: -3 }, sonuc: 'FİLTRE YÜZÜNE\nKEDİ BIYIĞI\nEKLEDİ...' } },
+      { label: 'REDDET', etki: { itibar: -1, rakip: { id: 'selin', kayip: 2 } }, sonuc: 'SELİN "KORKTU"\nDİYE PAYLAŞTI.' },
+    ] },
+  { baslik: 'RAKİPLER BİRLEŞTİ!', metin: 'VEDAT VE SELİN\nSENE KARŞI\nORTAK AÇIKLAMA\nYAPTI!',
+    secenek: [
+      { label: 'BASIN TOPLANTISI\n800 TL', etki: { kasa: -800, itibar: 2 }, sonuc: '"BENDEN\nKORKUYORLAR!"\nDEDİN. ALKIŞ!' },
+      { label: 'SUS', etki: { itibar: -4 }, sonuc: 'SESSİZLİĞİN\nYANLIŞ ANLAŞILDI.' },
+    ] },
+]);

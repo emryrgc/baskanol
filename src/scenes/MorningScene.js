@@ -41,6 +41,7 @@ BO.MorningScene = class extends Phaser.Scene {
     else if (has('video')) manset = pick(BO.MANSET.video).replace('{AD}', BO.rakipBilgi(has('video').id).kisa);
     else if (has('gazete')) manset = pick(BO.MANSET.gazete[has('gazete').id]);
     else if (has('afis')) manset = pick(['AFİŞLERE GECE\nYARISI BIYIK\nÇİZİLDİ!', BO.rakipBilgi(has('afis').id).kisa + ' AFİŞLERİ\nTANINMAZ\nHALDE!']);
+    else if (geceOlaylari.find((o) => o.rakipOp)) manset = geceOlaylari.find((o) => o.rakipOp).yazi + '!';
     else manset = pick(BO.MANSET.sakin);
 
     // Çizim
@@ -51,15 +52,15 @@ BO.MorningScene = class extends Phaser.Scene {
     BO.text(this, W / 2, top + 3, 'SABAH GAZETESİ', { color: P.k, ox: 0.5 });
     BO.text(this, W - 12, top + 77, 'GÜN ' + S.gun, { color: P.n, ox: 1 });
     this.add.rectangle(14, top + 18, W - 28, 1, 0x1a1c2c).setOrigin(0);
-    BO.text(this, W / 2, top + 24, manset, { color: P.r, ox: 0.5, align: 'center', lineSpacing: 4 });
+    BO.text(this, W / 2, top + 24, manset, { color: P.r, ox: 0.5, align: 'center', lineSpacing: 4, wrap: W - 32 });
 
     let y = top + 106;
     BO.text(this, W / 2, y, 'GECENİN SONUCU', { color: P.y, ox: 0.5 }); y += 16;
     if (!lines.length) { BO.text(this, W / 2, y, 'HİÇBİR ŞEY OLMADI', { color: P.L, ox: 0.5 }); y += 12; }
     lines.forEach(([a, b, c]) => {
-      if (a.length + b.length > 18) {   // uzun satırı ikiye böl
-        BO.text(this, 12, y, a, { color: P.L }); y += 11;
-        BO.text(this, W - 12, y, b, { color: c, ox: 1 }); y += 12;
+      if (a.length + b.length > 22) {   // uzun satır: açıklama üstte (gerekirse kayar), etki altta
+        const t = BO.text(this, 12, y, a, { color: P.L, wrap: W - 24 }); y += t.height - 1;
+        BO.text(this, W - 12, y, b, { color: c, ox: 1 }); y += 13;
         return;
       }
       BO.text(this, 12, y, a, { color: P.L });

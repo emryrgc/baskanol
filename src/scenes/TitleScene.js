@@ -72,7 +72,7 @@ BO.TitleScene = class extends Phaser.Scene {
       if (i === 0) BO.pulse(this, b);
       y += gap;
     });
-    BO.text(this, W - 3, H - 10, 'v0.11', { color: P.n, ox: 1 });
+    BO.text(this, W - 3, H - 10, 'v0.12', { color: P.n, ox: 1 });
     this.cameras.main.fadeIn(300, 26, 28, 44);
   }
 

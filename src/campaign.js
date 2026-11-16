@@ -47,17 +47,31 @@ BO.yeniGun = function () {
     r.oy += g; S.kararsiz -= g;
   });
 
-  const r = Math.random();
-  const saldiri = (0.12 + S.gun * 0.002) * BO.zor().rakip;   // seçime yaklaştıkça rakipler sertleşir
-  if (r < saldiri) {
+  // RAKİP GECE OPERASYONU: seçime yaklaştıkça ve sen yükseldikçe sana daha çok saldırırlar
+  const sira = BO.siram();
+  const saldiri = (0.25 + S.gun * 0.003 + (sira <= 2 ? 0.15 : 0)) * BO.zor().rakip;
+  if (Math.random() < saldiri) {
     const k = pick(BO.RIVALS);
-    S.itibar = BO.clamp(S.itibar - 2, 0, 100);
-    log.push({ yazi: k.kisa + ' SENİ ELEŞTİRDİ', etki: 'İTİBAR -2', renk: 'r' });
-  } else if (r < saldiri + 0.1) {
+    const op = pick(BO.RAKIP_OPS[k.id]);
+    if (S.itibar >= 70 && Math.random() < 0.4) {
+      log.push({ yazi: op.yazi, etki: 'KİMSE İNANMADI', renk: 'l', rakipOp: true });
+    } else {
+      const e = op.etki;
+      if (e.itibar) S.itibar = BO.clamp(S.itibar + e.itibar, 0, 100);
+      if (e.oy) S.oy = Math.max(0, S.oy + e.oy);
+      if (e.erzak) S.erzak = Math.max(0, S.erzak + e.erzak);
+      if (e.kasa) S.kasa = Math.max(0, S.kasa + e.kasa);
+      log.push({ yazi: op.yazi, etki: BO.etkiYazi(e), renk: 'r', rakipOp: true });
+    }
+  }
+  // rakipler bazen birbirleriyle kavga eder
+  if (Math.random() < 0.12) {
     const [a, b] = Phaser.Utils.Array.Shuffle(BO.RIVALS.slice());
     BO.rakibeDarbe(b.id, 4);
     log.push({ yazi: a.kisa + ' İLE ' + b.kisa + ' KAVGA ETTİ', etki: b.kisa + ' -4', renk: 'l' });
   }
+  // son dakika bandı için sakla
+  S.sonHaberler = log.filter((o) => o.tip !== 'itibar').map((o) => o.yazi + (o.etki === 'KİMSE İNANMADI' ? ' AMA KİMSE İNANMADI' : ''));
 
   if (S.itibar >= 50) {
     const bagis = Math.round(S.itibar * 4 / 50) * 50;
@@ -69,6 +83,33 @@ BO.yeniGun = function () {
   BO.normalizeOy();
   BO.save();
   return log;
+};
+
+// Bizim sıramız (1 = birinci)
+BO.siram = function () {
+  const S = BO.state;
+  return 1 + S.rakipler.filter((r) => r.oy > S.oy).length;
+};
+
+// Etki nesnesini kısa yazıya çevirir: { itibar: -2 } -> "İTİBAR -2"
+BO.etkiYazi = function (e) {
+  const p = [];
+  if (e.oy) p.push('OY ' + (e.oy > 0 ? '+' : '') + e.oy.toFixed(1));
+  if (e.itibar) p.push('İTİBAR ' + (e.itibar > 0 ? '+' : '') + e.itibar);
+  if (e.erzak) p.push('ERZAK ' + (e.erzak > 0 ? '+' : '') + e.erzak);
+  if (e.kasa) p.push((e.kasa > 0 ? '+' : '') + BO.tl(e.kasa));
+  if (e.rakip) p.push(BO.rakipBilgi(e.rakip.id).kisa + ' -' + e.rakip.kayip);
+  return p.join(' ') || 'ETKİSİ YOK';
+};
+
+// Rastgele bir rakip demeci: rakip sana yakınsa seni hedef alır
+BO.rakipDemec = function () {
+  const S = BO.state;
+  const r = Phaser.Utils.Array.GetRandom(BO.RIVALS);
+  const st = BO.rakip(r.id);
+  const yakin = S.oy >= st.oy - 4 || Math.random() < 0.25;
+  const liste = yakin ? BO.DEMEC[r.id].rakip : BO.DEMEC[r.id].genel;
+  return r.kisa + ": '" + Phaser.Utils.Array.GetRandom(liste).replace('{AD}', BO.kisaAd()) + "'";
 };
 
 // Sadece gündüz atlanır (akşama geçilir): yarım kazanç

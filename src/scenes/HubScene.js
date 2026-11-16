@@ -77,9 +77,10 @@ BO.HubScene = class extends Phaser.Scene {
     this.add.rectangle(wx + ww / 2 - 1, wy, 2, wh, C('k')).setOrigin(0);
     this.add.rectangle(wx - 8, roomTop + 4, ww + 16, 14, C('o')).setOrigin(0).setStrokeStyle(1, C('k'));
     BO.text(this, W / 2, roomTop + 11, BO.kisaAd(), { color: P.k, ox: 0.5, oy: 0.5 });
-    this.add.rectangle(0, roomBottom - 16, W, 16, C('m')).setOrigin(0);
-    this.add.rectangle(0, roomBottom - 16, W, 1, C('k')).setOrigin(0);
-    const podY = roomBottom - 22;
+    this.add.rectangle(0, roomBottom - 28, W, 16, C('m')).setOrigin(0);
+    this.add.rectangle(0, roomBottom - 28, W, 1, C('k')).setOrigin(0);
+    this.haberBandi(roomBottom - 12);
+    const podY = roomBottom - 34;
     this.add.rectangle(W / 2 - 18, podY, 36, 16, C('k')).setOrigin(0);
     this.add.rectangle(W / 2 - 17, podY + 1, 34, 14, C('E')).setOrigin(0);
     this.add.rectangle(W / 2 - 6, podY + 5, 12, 6, C('o')).setOrigin(0);
@@ -151,6 +152,20 @@ BO.HubScene = class extends Phaser.Scene {
     }
 
     this.cameras.main.fadeIn(300, 26, 28, 44);
+  }
+
+  // SON DAKİKA bandı: gecenin olayları ve rakip demeçleri kayar
+  haberBandi(y) {
+    const W = BO.W, P = BO.PAL, S = BO.state;
+    this.add.rectangle(0, y, W, 12, 0x1a1c2c).setOrigin(0);
+    const haberler = (S.sonHaberler || []).slice(0, 3);
+    haberler.push(BO.rakipDemec());
+    if (S.gun === 1) haberler.unshift('KAMPANYA BAŞLADI! ' + BO.kisaAd() + ' SAHADA');
+    const metin = haberler.join('   •   ') + '   •   ';
+    const t = BO.text(this, W, y + 6, metin, { color: P.y, oy: 0.5 });
+    const etiket = this.add.rectangle(0, y, 50, 12, 0xb13e53).setOrigin(0).setDepth(2);
+    BO.text(this, 25, y + 6, 'SON DAKİKA', { size: 8, color: P.w, ox: 0.5, oy: 0.5 }).setDepth(3);
+    this.tweens.add({ targets: t, x: 50 - t.width, duration: (t.width + W) * 28, repeat: -1, onRepeat: () => { t.x = W; } });
   }
 
   hotspot(x, y, w, h, fn) {
@@ -293,6 +308,7 @@ BO.HubScene = class extends Phaser.Scene {
           if (e.itibar) S.itibar = BO.clamp(S.itibar + e.itibar, 0, 100);
           if (e.oy) S.oy = Math.max(0, S.oy + e.oy);
           if (e.erzak) S.erzak = Math.max(0, S.erzak + e.erzak);
+          if (e.rakip) BO.rakibeDarbe(e.rakip.id, e.rakip.kayip);
           BO.normalizeOy();
           BO.save();
           this.refreshCards();
@@ -302,6 +318,7 @@ BO.HubScene = class extends Phaser.Scene {
           if (e.itibar) ozet.push('İTİBAR ' + (e.itibar > 0 ? '+' : '') + e.itibar);
           if (e.kasa) ozet.push((e.kasa > 0 ? '+' : '') + BO.tl(e.kasa));
           if (e.erzak) ozet.push('ERZAK ' + (e.erzak > 0 ? '+' : '') + e.erzak);
+          if (e.rakip) ozet.push(BO.rakipBilgi(e.rakip.id).kisa + ' İTİBAR -' + e.rakip.kayip);
           add(BO.text(this, W / 2, top + 88, ozet.join('\n') || 'ETKİSİ YOK', { color: P.B, ox: 0.5, align: 'center' }));
           add(BO.button(this, W / 2, top + 160, 100, 16, 'TAMAM', {
             fill: 'y', shade: 'o', depth: 510,

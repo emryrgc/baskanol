@@ -42,8 +42,8 @@ BO.SkipScene = class extends Phaser.Scene {
     if (olaylar.length) {
       BO.text(this, 10, y, 'RAKİPLER:', { color: P.o }); y += 12;
       olaylar.slice(0, 3).forEach((o) => {
-        BO.text(this, 10, y, o.yazi, { color: P.L, wrap: W - 20 }); y += 11;
-        BO.text(this, W - 10, y, o.etki, { color: P[o.renk], ox: 1 }); y += 12;
+        const t = BO.text(this, 10, y, o.yazi, { color: P.L, wrap: W - 20 }); y += t.height - 1;
+        BO.text(this, W - 10, y, o.etki, { color: P[o.renk], ox: 1 }); y += 13;
       });
     }
     y += 2;
